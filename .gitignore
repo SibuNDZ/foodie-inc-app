@@ -1,0 +1,25 @@
+# Node.js & React (frontend-ui)
+node_modules/
+.env
+build/
+dist/
+*.log
+
+# Python or other backend (backend-api)
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.env
+*.log
+.mypy_cache/
+venv/
+.env.*
+
+# IDE & OS-specific files
+.idea/
+.DS_Store
+Thumbs.db
+
+# Misc
+*.bak
+*.swp
