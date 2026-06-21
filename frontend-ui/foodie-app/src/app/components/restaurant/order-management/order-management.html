@@ -1,0 +1,116 @@
+<section class="order-management">
+	<header class="hero">
+		<div>
+			<p class="eyebrow">Restaurant Ops</p>
+			<h1>Order Management</h1>
+			<p class="subtitle">Move tickets through confirmation, preparation, and pickup so dispatch can claim them.</p>
+		</div>
+
+		<a class="link-btn" routerLink="/my-restaurant">Back to dashboard</a>
+	</header>
+
+	@if (errorMessage()) {
+		<p class="state state-error">{{ errorMessage() }}</p>
+	} @else {
+		<section class="toolbar">
+			<label>
+				<span>Restaurant</span>
+				<select [ngModel]="selectedRestaurantId()" (ngModelChange)="changeRestaurant($event)">
+					@for (restaurant of restaurants(); track restaurant.id) {
+						<option [value]="restaurant.id">{{ restaurant.name }}</option>
+					}
+				</select>
+			</label>
+
+			<button type="button" class="refresh-btn" (click)="refreshOrders()" [disabled]="isLoading()">
+				{{ isLoading() ? 'Refreshing...' : 'Refresh' }}
+			</button>
+		</section>
+
+		<section class="summary-grid">
+			<article class="summary-card">
+				<span class="summary-value">{{ orders().length }}</span>
+				<span class="summary-label">Orders</span>
+			</article>
+			<article class="summary-card">
+				<span class="summary-value">{{ pendingCount() }}</span>
+				<span class="summary-label">Pending</span>
+			</article>
+			<article class="summary-card">
+				<span class="summary-value">{{ readyCount() }}</span>
+				<span class="summary-label">Ready for pickup</span>
+			</article>
+			<article class="summary-card">
+				<span class="summary-value">{{ completedOrders().length }}</span>
+				<span class="summary-label">Completed</span>
+			</article>
+		</section>
+
+		<section class="order-section">
+			<h2>Active Orders</h2>
+			@if (isLoading() && activeOrders().length === 0) {
+				<p class="placeholder">Loading orders...</p>
+			} @else if (activeOrders().length === 0) {
+				<p class="placeholder">No active orders at the moment.</p>
+			} @else {
+				<div class="cards">
+					@for (order of activeOrders(); track order.id) {
+						<article class="order-card">
+							<div class="order-card__top">
+								<div>
+									<h3>{{ order.orderNumber }}</h3>
+									<p class="meta">{{ order.username }} · {{ order.createdAt | date: 'short' }}</p>
+								</div>
+								<span class="badge" [class]="'badge ' + statusBadgeClass(order)">{{ statusLabel(order) }}</span>
+							</div>
+
+							<p class="meta"><strong>Total:</strong> {{ order.totalAmount | currency }}</p>
+							<p class="meta"><strong>Delivery:</strong> {{ order.deliveryAddress }}</p>
+							<p class="meta"><strong>Items:</strong> {{ order.orderItems.length }}</p>
+
+							@if (order.status === 'READY_FOR_PICKUP') {
+								<p class="dispatch-note">Dispatch will assign a driver automatically when this order is marked ready.</p>
+							}
+
+							<button type="button" class="advance-btn" [disabled]="!canAdvance(order)" (click)="advanceOrder(order)">
+								{{ updatingOrderId() === order.id ? 'Updating...' : nextActionLabel(order) }}
+							</button>
+						</article>
+					}
+				</div>
+			}
+		</section>
+
+		<section class="order-section">
+			<h2>Completed Orders</h2>
+			@if (completedOrders().length === 0) {
+				<p class="placeholder">No completed orders yet.</p>
+			} @else {
+				<div class="table-wrap">
+					<table>
+						<thead>
+							<tr>
+								<th>Order</th>
+								<th>Customer</th>
+								<th>Status</th>
+								<th>Total</th>
+								<th>Created</th>
+							</tr>
+						</thead>
+						<tbody>
+							@for (order of completedOrders(); track order.id) {
+								<tr>
+									<td>{{ order.orderNumber }}</td>
+									<td>{{ order.username }}</td>
+									<td><span class="badge" [class]="'badge ' + statusBadgeClass(order)">{{ statusLabel(order) }}</span></td>
+									<td>{{ order.totalAmount | currency }}</td>
+									<td>{{ order.createdAt | date: 'short' }}</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+			}
+		</section>
+	}
+</section>

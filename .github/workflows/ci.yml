@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend-api
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "25"
+          cache: maven
+      - name: Run dispatch concurrency test (MySQL Testcontainers)
+        run: ./mvnw -B -Dtest=DispatchConcurrencyIntegrationTest test
+      - name: Assert dispatch concurrency test was executed
+        run: |
+          REPORT=target/surefire-reports/com.foodieinc.backend.service.DispatchConcurrencyIntegrationTest.txt
+          test -f "$REPORT"
+          if grep -q "Skipped: 0" "$REPORT"; then
+            echo "DispatchConcurrencyIntegrationTest executed against Testcontainers"
+          else
+            echo "DispatchConcurrencyIntegrationTest was skipped; Docker/Testcontainers coverage missing"
+            cat "$REPORT"
+            exit 1
+          fi
+      - name: Build and test
+        run: ./mvnw -B test
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend-ui/foodie-app
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: frontend-ui/foodie-app/package-lock.json
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Verify frontend (build + tests)
+        run: npm run verify
+
+  docker:
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build backend image
+        run: docker build -f backend-api/Dockerfile backend-api
+      - name: Build frontend image
+        run: docker build -f frontend-ui/foodie-app/Dockerfile frontend-ui/foodie-app

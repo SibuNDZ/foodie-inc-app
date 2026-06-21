@@ -1,0 +1,91 @@
+<section class="admin-order-management">
+	<header class="hero">
+		<div>
+			<p class="eyebrow">Admin Console</p>
+			<h1>Order Management</h1>
+			<p class="subtitle">Review and adjust order statuses across all restaurants.</p>
+		</div>
+		<button type="button" class="refresh-btn" (click)="refresh()" [disabled]="isLoading()">
+			{{ isLoading() ? 'Refreshing...' : 'Refresh' }}
+		</button>
+	</header>
+
+	@if (errorMessage()) {
+		<p class="placeholder">{{ errorMessage() }}</p>
+	}
+
+	<section class="filters">
+		<label>
+			<span>Search</span>
+			<input type="search" placeholder="Order number, user, or restaurant" [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)" />
+		</label>
+
+		<label>
+			<span>Status</span>
+			<select [ngModel]="statusFilter()" (ngModelChange)="statusFilter.set($event)">
+				<option value="ALL">All</option>
+				@for (status of statusOptions; track status) {
+					<option [value]="status">{{ statusLabel(status) }}</option>
+				}
+			</select>
+		</label>
+
+		<label>
+			<span>Restaurant</span>
+			<select [ngModel]="restaurantFilter()" (ngModelChange)="restaurantFilter.set($event)">
+				<option value="ALL">All restaurants</option>
+				@for (restaurant of restaurants(); track restaurant.id) {
+					<option [ngValue]="restaurant.id">{{ restaurant.name }}</option>
+				}
+			</select>
+		</label>
+	</section>
+
+	@if (isLoading() && orders().length === 0) {
+		<p class="placeholder">Loading orders...</p>
+	} @else if (filteredOrders().length === 0) {
+		<p class="placeholder">No orders match the current filters.</p>
+	} @else {
+		<div class="table-wrap">
+			<table>
+				<thead>
+					<tr>
+						<th>Order</th>
+						<th>User</th>
+						<th>Restaurant</th>
+						<th>Status</th>
+						<th>Created</th>
+						<th>Total</th>
+						<th>Update</th>
+					</tr>
+				</thead>
+				<tbody>
+					@for (order of filteredOrders(); track order.id) {
+						<tr>
+							<td>{{ order.orderNumber }}</td>
+							<td>{{ order.username }}</td>
+							<td>{{ order.restaurantName }}</td>
+							<td>
+								<span class="badge" [class]="'badge ' + statusBadgeClass(order.status)">{{ statusLabel(order.status) }}</span>
+							</td>
+							<td>{{ order.createdAt | date: 'short' }}</td>
+							<td>{{ order.totalAmount | currency }}</td>
+							<td>
+								<div class="status-editor">
+									<select [ngModel]="getDraftStatus(order)" (ngModelChange)="setDraftStatus(order.id, $event)">
+										@for (status of statusOptions; track status) {
+											<option [value]="status">{{ statusLabel(status) }}</option>
+										}
+									</select>
+									<button type="button" (click)="saveStatus(order)" [disabled]="updatingOrderId() === order.id">
+										{{ updatingOrderId() === order.id ? 'Saving...' : 'Save' }}
+									</button>
+								</div>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	}
+</section>

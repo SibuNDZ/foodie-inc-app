@@ -1,0 +1,124 @@
+<section class="dish-management">
+	<h1>Dish Management</h1>
+
+	@if (restaurants().length === 0) {
+		<p class="state">No owned restaurants found.</p>
+	} @else {
+		<label class="field">
+			<span>Restaurant</span>
+			<select [value]="selectedRestaurantId() ?? ''" (change)="changeRestaurant($any($event.target).value)">
+				@for (restaurant of restaurants(); track restaurant.id) {
+					<option [value]="restaurant.id">{{ restaurant.name }}</option>
+				}
+			</select>
+		</label>
+
+		<div class="layout">
+			<form class="dish-form" (ngSubmit)="saveDish()">
+				<h2>{{ editingDishId() ? 'Edit Dish' : 'Add New Dish' }}</h2>
+
+				<label class="field">
+					<span>Name</span>
+					<input
+						type="text"
+						[ngModel]="form().name || ''"
+						(ngModelChange)="updateForm('name', $event)"
+						name="name"
+						required
+					/>
+				</label>
+
+				<label class="field">
+					<span>Description</span>
+					<textarea
+						[ngModel]="form().description || ''"
+						(ngModelChange)="updateForm('description', $event)"
+						name="description"
+						rows="3"></textarea>
+				</label>
+
+				<label class="field">
+					<span>Price</span>
+					<input
+						type="number"
+						min="0.01"
+						step="0.01"
+						[ngModel]="form().price || 0"
+						(ngModelChange)="updateForm('price', +$event)"
+						name="price"
+						required
+					/>
+				</label>
+
+				<div class="checks">
+					<label>
+						<input
+							type="checkbox"
+							[ngModel]="form().isVegetarian || false"
+							(ngModelChange)="updateForm('isVegetarian', $event)"
+							name="isVegetarian"
+						/>
+						Vegetarian
+					</label>
+					<label>
+						<input
+							type="checkbox"
+							[ngModel]="form().isVegan || false"
+							(ngModelChange)="updateForm('isVegan', $event)"
+							name="isVegan"
+						/>
+						Vegan
+					</label>
+					<label>
+						<input
+							type="checkbox"
+							[ngModel]="form().isGlutenFree || false"
+							(ngModelChange)="updateForm('isGlutenFree', $event)"
+							name="isGlutenFree"
+						/>
+						Gluten Free
+					</label>
+					<label>
+						<input
+							type="checkbox"
+							[ngModel]="form().isAvailable !== false"
+							(ngModelChange)="updateForm('isAvailable', $event)"
+							name="isAvailable"
+						/>
+						Available
+					</label>
+				</div>
+
+				<div class="form-actions">
+					<button type="submit" [disabled]="isSaving()">{{ isSaving() ? 'Saving...' : (editingDishId() ? 'Update Dish' : 'Create Dish') }}</button>
+					@if (editingDishId()) {
+						<button type="button" class="secondary" (click)="cancelEdit()">Cancel</button>
+					}
+				</div>
+			</form>
+
+			<div class="dish-list">
+				<h2>Current Dishes</h2>
+
+				@if (isLoading()) {
+					<p class="state">Loading dishes...</p>
+				} @else if (dishes().length === 0) {
+					<p class="state">No dishes found for this restaurant.</p>
+				} @else {
+					@for (dish of dishes(); track dish.id) {
+						<article class="dish-item">
+							<div>
+								<h3>{{ dish.name }}</h3>
+								<p>{{ dish.price | currency }}</p>
+							</div>
+							<div class="item-actions">
+								<button type="button" (click)="editDish(dish)">Edit</button>
+								<button type="button" class="danger" (click)="deleteDish(dish.id)">Delete</button>
+							</div>
+						</article>
+					}
+				}
+			</div>
+		</div>
+	}
+</section>

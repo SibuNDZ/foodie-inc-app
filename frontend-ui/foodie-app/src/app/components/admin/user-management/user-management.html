@@ -1,0 +1,94 @@
+<section class="admin-user-management">
+	<header class="hero">
+		<div>
+			<p class="eyebrow">Admin Console</p>
+			<h1>User Management</h1>
+			<p class="subtitle">Adjust user role and active account state.</p>
+		</div>
+		<button type="button" class="refresh-btn" (click)="refresh()" [disabled]="isLoading()">
+			{{ isLoading() ? 'Refreshing...' : 'Refresh' }}
+		</button>
+	</header>
+
+	@if (errorMessage()) {
+		<p class="subtitle">{{ errorMessage() }}</p>
+	}
+
+	<section class="filters">
+		<label>
+			<span>Search</span>
+			<input type="search" placeholder="Username, email, or name" [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)" />
+		</label>
+
+		<label>
+			<span>Role</span>
+			<select [ngModel]="roleFilter()" (ngModelChange)="roleFilter.set($event)">
+				<option value="ALL">All roles</option>
+				@for (role of roles; track role) {
+					<option [value]="role">{{ role }}</option>
+				}
+			</select>
+		</label>
+
+		<label>
+			<span>Status</span>
+			<select [ngModel]="activeFilter()" (ngModelChange)="activeFilter.set($event)">
+				<option value="ALL">All statuses</option>
+				<option value="ACTIVE">Active</option>
+				<option value="INACTIVE">Inactive</option>
+			</select>
+		</label>
+	</section>
+
+	<section class="table-wrap">
+		@if (isLoading() && users().length === 0) {
+			<p class="subtitle">Loading users...</p>
+		} @else if (filteredUsers().length === 0) {
+			<p class="subtitle">No users match the current filters.</p>
+		} @else {
+		<table>
+			<thead>
+				<tr>
+					<th>User</th>
+					<th>Email</th>
+					<th>Role</th>
+					<th>Active</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				@for (user of filteredUsers(); track user.id) {
+					<tr>
+						<td>
+							<strong>{{ user.username }}</strong>
+							<div class="meta">{{ user.firstName || '' }} {{ user.lastName || '' }}</div>
+						</td>
+						<td>{{ user.email }}</td>
+						<td>
+							<select [ngModel]="user.role" (ngModelChange)="updateRole(user, $event)" [disabled]="updatingUserId() === user.id || isSelf(user)">
+								@for (role of roles; track role) {
+									<option [value]="role">{{ role }}</option>
+								}
+							</select>
+						</td>
+						<td>
+							<label class="toggle">
+								<input type="checkbox" [ngModel]="user.isActive !== false" (ngModelChange)="updateActive(user, $event)" [disabled]="updatingUserId() === user.id || isSelf(user)" />
+								<span>{{ user.isActive === false ? 'Inactive' : 'Active' }}</span>
+							</label>
+						</td>
+						<td>
+							<button type="button" class="danger" (click)="deactivateUser(user)" [disabled]="updatingUserId() === user.id || user.isActive === false || isSelf(user)">
+								{{ updatingUserId() === user.id ? 'Saving...' : 'Deactivate' }}
+							</button>
+							@if (isSelf(user)) {
+								<div class="meta">Current account</div>
+							}
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		}
+	</section>
+</section>

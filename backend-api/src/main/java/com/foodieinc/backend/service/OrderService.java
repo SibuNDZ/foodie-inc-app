@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,6 +29,9 @@ public class OrderService {
     private final UserRepository userRepository;
     private final RestaurantRepository restaurantRepository;
     private final DishRepository dishRepository;
+    private final DriverProfileRepository driverProfileRepository;
+    private final ActiveDriverAssignmentRepository activeDriverAssignmentRepository;
+    private final DispatchService dispatchService;
 
     private static final BigDecimal TAX_RATE = new BigDecimal("0.08");
 
@@ -131,21 +135,89 @@ public class OrderService {
         }
         Order.OrderStatus parsedStatus = Order.OrderStatus.valueOf(status);
         order.setStatus(parsedStatus);
+
+        if (parsedStatus == Order.OrderStatus.READY_FOR_PICKUP && order.getDriver() == null) {
+            dispatchService.tryAssignDriver(order);
+        }
+
         Order updatedOrder = orderRepository.save(order);
         return convertToDTO(updatedOrder);
     }
 
-    public OrderDTO assignDeliveryPerson(User user, Long orderId, Long deliveryPersonId) {
+    public OrderDTO assignDeliveryPerson(User user, Long orderId, Long driverProfileId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order", "id", orderId));
 
         assertCanAssignDelivery(user, order);
-        User deliveryPerson = userRepository.findById(deliveryPersonId)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", deliveryPersonId));
+        if (order.getDriver() != null) {
+            throw new IllegalStateException("Order already has an assigned driver");
+        }
 
-        order.setDeliveryPerson(deliveryPerson);
-        Order updatedOrder = orderRepository.save(order);
-        return convertToDTO(updatedOrder);
+        DriverProfile driver = driverProfileRepository.findById(driverProfileId)
+                .orElseThrow(() -> new ResourceNotFoundException("DriverProfile", "id", driverProfileId));
+
+        boolean assigned = dispatchService.tryAssignSpecificDriver(order, driver);
+        if (!assigned) {
+            throw new IllegalStateException("Driver profile " + driverProfileId + " is not available for assignment");
+        }
+
+        return convertToDTO(orderRepository.save(order));
+    }
+
+    public OrderDTO updateDeliveryStatus(User user, Long orderId, String deliveryStatus) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order", "id", orderId));
+
+        if (!isDeliveryPersonForOrder(user, order)) {
+            throw new AccessDeniedException("Only the assigned driver can update the delivery status");
+        }
+        if (deliveryStatus == null || deliveryStatus.isBlank()) {
+            throw new IllegalArgumentException("deliveryStatus is required");
+        }
+
+        Order.DeliveryStatus next = Order.DeliveryStatus.valueOf(deliveryStatus);
+        validateDeliveryStatusTransition(order.getDeliveryStatus(), next);
+        order.setDeliveryStatus(next);
+
+        switch (next) {
+            case PICKED_UP -> {
+                order.setPickedUpTime(LocalDateTime.now());
+                order.setStatus(Order.OrderStatus.OUT_FOR_DELIVERY);
+            }
+            case IN_TRANSIT -> {
+                // order is already OUT_FOR_DELIVERY; no additional state changes
+            }
+            case DELIVERED -> {
+                order.setActualDeliveryTime(LocalDateTime.now());
+                order.setStatus(Order.OrderStatus.DELIVERED);
+                releaseDriverAssignment(order);
+            }
+            default -> throw new IllegalArgumentException("Unsupported delivery status: " + next);
+        }
+
+        return convertToDTO(orderRepository.save(order));
+    }
+
+    public List<OrderDTO> getOrdersByDriver(Long userId) {
+        return orderRepository.findByDriverUserIdOrderByCreatedAtDesc(userId)
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private void validateDeliveryStatusTransition(Order.DeliveryStatus current,
+                                                   Order.DeliveryStatus next) {
+        boolean valid = switch (next) {
+            case PICKED_UP -> current == Order.DeliveryStatus.ASSIGNED;
+            case IN_TRANSIT -> current == Order.DeliveryStatus.PICKED_UP;
+            case DELIVERED  -> current == Order.DeliveryStatus.PICKED_UP
+                               || current == Order.DeliveryStatus.IN_TRANSIT;
+            default -> false;
+        };
+        if (!valid) {
+            throw new IllegalStateException(
+                    String.format("Cannot transition delivery status from %s to %s", current, next));
+        }
     }
 
     public OrderDTO rateOrder(User user, Long orderId, Integer rating, String feedback) {
@@ -168,8 +240,29 @@ public class OrderService {
             throw new IllegalStateException("Cannot cancel a delivered order");
         }
 
+        // Release the driver if they haven't completed the delivery.
+        // This covers ASSIGNED (driver notified but hasn't moved) and PICKED_UP /
+        // IN_TRANSIT (driver has the food but the order is being cancelled — they
+        // need to be freed so dispatch can route them to the next order).
+        if (order.getDriver() != null
+                && order.getDeliveryStatus() != Order.DeliveryStatus.DELIVERED) {
+            releaseDriverAssignment(order);
+        }
+
         order.setStatus(Order.OrderStatus.CANCELLED);
         orderRepository.save(order);
+    }
+
+    private void releaseDriverAssignment(Order order) {
+        if (order.getDriver() == null) {
+            return;
+        }
+
+        DriverProfile driver = order.getDriver();
+        int deleted = activeDriverAssignmentRepository.deleteByOrderId(order.getId());
+        if (deleted > 0 || !activeDriverAssignmentRepository.existsByDriverId(driver.getId())) {
+            driverProfileRepository.releaseDriver(driver.getId());
+        }
     }
 
     private void assertCanViewOrder(User user, Order order) {
@@ -246,8 +339,8 @@ public class OrderService {
 
     private boolean isDeliveryPersonForOrder(User user, Order order) {
         return user.getRole() == User.UserRole.DELIVERY_PERSON
-                && order.getDeliveryPerson() != null
-                && order.getDeliveryPerson().getId().equals(user.getId());
+                && order.getDriver() != null
+                && order.getDriver().getUser().getId().equals(user.getId());
     }
 
     private boolean isCustomerForOrder(User user, Order order) {
@@ -279,9 +372,18 @@ public class OrderService {
         dto.setPaymentMethod(order.getPaymentMethod());
         dto.setPaymentStatus(order.getPaymentStatus().name());
 
-        if (order.getDeliveryPerson() != null) {
-            dto.setDeliveryPersonId(order.getDeliveryPerson().getId());
-            dto.setDeliveryPersonName(order.getDeliveryPerson().getFirstName() + " " + order.getDeliveryPerson().getLastName());
+        if (order.getDriver() != null) {
+            DriverProfile driver = order.getDriver();
+            dto.setDriverProfileId(driver.getId());
+            dto.setDriverName(driver.getUser().getFirstName() + " " + driver.getUser().getLastName());
+            dto.setDriverVehicleType(driver.getVehicleType().name());
+            dto.setDriverLicensePlate(driver.getLicensePlate());
+            dto.setDriverLatitude(driver.getCurrentLatitude());
+            dto.setDriverLongitude(driver.getCurrentLongitude());
+        }
+
+        if (order.getDeliveryStatus() != null) {
+            dto.setDeliveryStatus(order.getDeliveryStatus().name());
         }
 
         dto.setEstimatedDeliveryTime(order.getEstimatedDeliveryTime());

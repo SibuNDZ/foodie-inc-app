@@ -1,0 +1,137 @@
+:host {
+	display: block;
+}
+
+.admin-order-management {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 1rem;
+}
+
+.hero,
+.filters {
+	background: #fff;
+	border: 1px solid #e2e8f0;
+	border-radius: 0.9rem;
+	padding: 1rem;
+	margin-bottom: 1rem;
+}
+
+.hero {
+	display: flex;
+	justify-content: space-between;
+	gap: 1rem;
+	align-items: flex-start;
+}
+
+.eyebrow {
+	margin: 0 0 0.2rem;
+	color: #7c2d12;
+	font-weight: 700;
+	text-transform: uppercase;
+	font-size: 0.78rem;
+}
+
+.subtitle,
+.placeholder {
+	color: #475569;
+}
+
+.refresh-btn,
+.status-editor button {
+	border: 0;
+	border-radius: 0.6rem;
+	padding: 0.5rem 0.75rem;
+	font-weight: 700;
+	cursor: pointer;
+}
+
+.refresh-btn {
+	background: #e2e8f0;
+	color: #0f172a;
+}
+
+.status-editor button {
+	background: #0f766e;
+	color: #fff;
+}
+
+.filters {
+	display: grid;
+	grid-template-columns: 1.4fr 1fr 1fr;
+	gap: 0.75rem;
+	align-items: end;
+}
+
+.filters label {
+	display: grid;
+	gap: 0.35rem;
+	color: #475569;
+}
+
+.filters input,
+.filters select,
+.status-editor select {
+	border: 1px solid #cbd5e1;
+	border-radius: 0.6rem;
+	padding: 0.55rem 0.7rem;
+}
+
+.table-wrap {
+	background: #fff;
+	border: 1px solid #e2e8f0;
+	border-radius: 0.9rem;
+	padding: 0.6rem;
+	overflow-x: auto;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+th,
+td {
+	padding: 0.65rem 0.5rem;
+	border-bottom: 1px solid #e2e8f0;
+	text-align: left;
+}
+
+.status-editor {
+	display: flex;
+	gap: 0.45rem;
+	align-items: center;
+}
+
+.badge {
+	display: inline-flex;
+	align-items: center;
+	border-radius: 999px;
+	padding: 0.28rem 0.7rem;
+	font-size: 0.78rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.03em;
+	background: #e2e8f0;
+	color: #0f172a;
+}
+
+.badge-pending,
+.badge-neutral { background: #f1f5f9; }
+.badge-confirmed { background: #dbeafe; }
+.badge-preparing { background: #fef3c7; }
+.badge-ready { background: #e0f2fe; }
+.badge-dispatch { background: #ede9fe; }
+.badge-delivered { background: #dcfce7; }
+.badge-cancelled { background: #fee2e2; }
+.badge-refunded { background: #fae8ff; }
+
+@media (max-width: 900px) {
+	.hero {
+		flex-direction: column;
+	}
+
+	.filters {
+		grid-template-columns: 1fr;
+	}
+}

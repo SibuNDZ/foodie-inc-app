@@ -1,0 +1,78 @@
+<section class="restaurant-dashboard">
+	<header class="hero">
+		<div>
+			<p class="eyebrow">Restaurant Owner</p>
+			<h1>Dashboard</h1>
+			<p class="subtitle">Monitor your restaurants and jump directly to menus or orders.</p>
+		</div>
+
+		@if (restaurants().length > 0) {
+			<label class="restaurant-picker">
+				<span>Restaurant</span>
+				<select [ngModel]="selectedRestaurantId()" (ngModelChange)="changeRestaurant($event)">
+					@for (restaurant of restaurants(); track restaurant.id) {
+						<option [value]="restaurant.id">{{ restaurant.name }}</option>
+					}
+				</select>
+			</label>
+		}
+	</header>
+
+	@if (errorMessage()) {
+		<p class="state state-error">{{ errorMessage() }}</p>
+	} @else {
+		<section class="summary-grid">
+			<article class="summary-card">
+				<span class="summary-value">{{ restaurants().length }}</span>
+				<span class="summary-label">Restaurants</span>
+			</article>
+			<article class="summary-card">
+				<span class="summary-value">{{ activeOrders().length }}</span>
+				<span class="summary-label">Active orders</span>
+			</article>
+			<article class="summary-card">
+				<span class="summary-value">{{ readyOrders().length }}</span>
+				<span class="summary-label">Ready for pickup</span>
+			</article>
+			<article class="summary-card">
+				<span class="summary-value">{{ completedOrders().length }}</span>
+				<span class="summary-label">Completed</span>
+			</article>
+		</section>
+
+		<section class="actions-grid">
+			<a class="action-card" routerLink="/my-restaurant/dishes">
+				<h2>Manage Menu</h2>
+				<p>Update dishes, pricing, availability, and catalog details.</p>
+			</a>
+			<a class="action-card" routerLink="/my-restaurant/orders">
+				<h2>Manage Orders</h2>
+				<p>Confirm orders, move them through the kitchen, and trigger dispatch.</p>
+			</a>
+		</section>
+
+		<section class="panel">
+			<h2>Recent Orders</h2>
+			@if (isLoading() && orders().length === 0) {
+				<p class="placeholder">Loading restaurant activity...</p>
+			} @else if (orders().length === 0) {
+				<p class="placeholder">No orders found for this restaurant.</p>
+			} @else {
+				<div class="recent-orders">
+					@for (order of orders().slice(0, 5); track order.id) {
+						<article class="recent-order">
+							<div>
+								<h3>{{ order.orderNumber }}</h3>
+								<p class="meta">{{ order.username }} · {{ order.createdAt | date: 'short' }}</p>
+							</div>
+							<div class="order-meta">
+								<span class="status-pill">{{ statusLabel(order) }}</span>
+								<strong>{{ order.totalAmount | currency }}</strong>
+							</div>
+						</article>
+					}
+				</div>
+			}
+		</section>
+	}
+</section>

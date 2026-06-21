@@ -1,0 +1,78 @@
+<section class="order-history">
+	<header class="hero">
+		<div>
+			<p class="eyebrow">Customer</p>
+			<h1>Order History</h1>
+			<p class="subtitle">Review completed and active orders, then jump into tracking when needed.</p>
+		</div>
+		<button type="button" class="refresh-btn" (click)="refresh()" [disabled]="isLoading()">
+			{{ isLoading() ? 'Refreshing...' : 'Refresh' }}
+		</button>
+	</header>
+
+	@if (errorMessage()) {
+		<p class="state state-error">{{ errorMessage() }}</p>
+	}
+
+	<section class="summary-grid">
+		<article class="summary-card">
+			<span class="summary-value">{{ orders().length }}</span>
+			<span class="summary-label">All orders</span>
+		</article>
+		<article class="summary-card">
+			<span class="summary-value">{{ activeCount() }}</span>
+			<span class="summary-label">Active</span>
+		</article>
+		<article class="summary-card">
+			<span class="summary-value">{{ completedCount() }}</span>
+			<span class="summary-label">Completed</span>
+		</article>
+	</section>
+
+	<section class="filters">
+		<label>
+			<span>Search</span>
+			<input type="search" placeholder="Order number or restaurant" [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)" />
+		</label>
+
+		<label>
+			<span>Filter</span>
+			<select [ngModel]="filterMode()" (ngModelChange)="filterMode.set($event)">
+				<option value="all">All</option>
+				<option value="active">Active</option>
+				<option value="completed">Completed</option>
+			</select>
+		</label>
+
+		<button type="button" class="clear-btn" (click)="clearFilters()">Clear filters</button>
+	</section>
+
+	@if (isLoading() && orders().length === 0) {
+		<p class="placeholder">Loading your orders...</p>
+	} @else if (filteredOrders().length === 0 && hasActiveFilters()) {
+		<p class="placeholder">No orders match the current filters.</p>
+	} @else if (filteredOrders().length === 0) {
+		<p class="placeholder">You have not placed any orders yet.</p>
+	} @else {
+		<div class="cards">
+			@for (order of filteredOrders(); track order.id) {
+				<article class="order-card">
+					<div class="order-card__top">
+						<div>
+							<h3>{{ order.orderNumber }}</h3>
+							<p class="meta">{{ order.restaurantName }} · {{ order.createdAt | date: 'medium' }}</p>
+						</div>
+						<span class="badge" [class]="'badge ' + statusBadgeClass(order)">{{ statusLabel(order) }}</span>
+					</div>
+
+					<p class="meta"><strong>Total:</strong> {{ order.totalAmount | currency }}</p>
+					<p class="meta"><strong>Items:</strong> {{ order.orderItems.length }}</p>
+
+					<div class="card-actions">
+						<a class="action-link" [routerLink]="['/order', order.id]">Track order</a>
+					</div>
+				</article>
+			}
+		</div>
+	}
+</section>

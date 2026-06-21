@@ -1,0 +1,66 @@
+/* Foodie brand palette */
+$color-bg-base: #1E1330;
+$color-bg-surface: #2A1B40;
+$color-bg-card: #FFFFFF;
+$color-text-primary: #F5F0FA;
+$color-text-secondary: #B8A8CC;
+$color-primary: #EE3124;
+$color-primary-dark: #CF271C;
+$color-secondary: #F58C24;
+$color-secondary-light: #F8BF73;
+
+:root {
+	--color-bg-base: #{$color-bg-base};
+	--color-bg-surface: #{$color-bg-surface};
+	--color-bg-card: #{$color-bg-card};
+	--color-text-primary: #{$color-text-primary};
+	--color-text-secondary: #{$color-text-secondary};
+	--color-primary: #{$color-primary};
+	--color-primary-dark: #{$color-primary-dark};
+	--color-secondary: #{$color-secondary};
+	--color-secondary-light: #{$color-secondary-light};
+}
+
+html,
+body {
+	background: var(--color-bg-base);
+	color: var(--color-text-primary);
+}
+
+/* Primary action surfaces */
+.view-cart-btn,
+.retry-btn,
+.btn-primary,
+button.primary,
+a.primary {
+	background-color: var(--color-primary) !important;
+	border-color: var(--color-primary) !important;
+	color: #fff !important;
+}
+
+.view-cart-btn:hover,
+.retry-btn:hover,
+.btn-primary:hover,
+button.primary:hover,
+a.primary:hover {
+	background-color: var(--color-primary-dark) !important;
+	border-color: var(--color-primary-dark) !important;
+}
+
+/* Header auth links */
+.auth-links a:hover,
+.auth-links a.active,
+.auth-links a[aria-current='page'],
+header a[href='/login']:hover,
+header a[href='/register']:hover,
+header a[href='/login'].active,
+header a[href='/register'].active {
+	color: var(--color-primary) !important;
+}
+
+/* Optional warm accent utility */
+.accent-warm,
+.badge-accent {
+	background-color: var(--color-secondary-light) !important;
+	color: #4a2b00 !important;
+}

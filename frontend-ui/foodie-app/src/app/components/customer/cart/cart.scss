@@ -1,0 +1,127 @@
+:host {
+	display: block;
+}
+
+.cart-page {
+	padding: 1rem;
+	max-width: 900px;
+	margin: 0 auto;
+}
+
+.empty {
+	color: #64748b;
+}
+
+.primary-link {
+	color: #0f766e;
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.restaurant-name {
+	margin-top: 0;
+	color: #1e293b;
+}
+
+.cart-items {
+	display: grid;
+	gap: 0.75rem;
+}
+
+.cart-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background: #fff;
+	border: 1px solid #e2e8f0;
+	border-radius: 0.7rem;
+	padding: 0.8rem;
+}
+
+.cart-item h3 {
+	margin: 0;
+}
+
+.cart-item p {
+	margin: 0.25rem 0 0;
+	color: #64748b;
+}
+
+.qty-controls {
+	display: flex;
+	align-items: center;
+	gap: 0.45rem;
+}
+
+.qty-controls button {
+	border: 0;
+	border-radius: 0.35rem;
+	background: #e2e8f0;
+	padding: 0.25rem 0.5rem;
+	cursor: pointer;
+}
+
+.qty-controls .remove-btn {
+	background: #fee2e2;
+	color: #b91c1c;
+}
+
+.totals {
+	margin-top: 1rem;
+	background: #fff;
+	border: 1px solid #e2e8f0;
+	border-radius: 0.7rem;
+	padding: 0.8rem;
+}
+
+.totals p {
+	margin: 0.35rem 0;
+	display: flex;
+	justify-content: space-between;
+}
+
+.grand-total {
+	font-weight: 700;
+	font-size: 1.06rem;
+}
+
+.actions {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.75rem;
+	margin-top: 1rem;
+}
+
+.actions a,
+.clear-btn {
+	border: 0;
+	border-radius: 0.5rem;
+	padding: 0.55rem 0.85rem;
+	text-decoration: none;
+	font-weight: 600;
+}
+
+.clear-btn {
+	background: #f1f5f9;
+}
+
+.actions a {
+	background: #0f766e;
+	color: #fff;
+}
+
+.actions a.disabled {
+	pointer-events: none;
+	opacity: 0.55;
+}
+
+@media (max-width: 760px) {
+	.cart-item {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.actions {
+		flex-direction: column;
+	}
+}

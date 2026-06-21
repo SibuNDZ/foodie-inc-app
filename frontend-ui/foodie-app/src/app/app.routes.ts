@@ -1,0 +1,105 @@
+import { Routes } from '@angular/router';
+import { authGuard } from './guards/auth-guard';
+import { adminGuard } from './guards/admin-guard';
+import { restaurantOwnerGuard } from './guards/restaurant-owner-guard';
+import { deliveryPersonGuard } from './guards/delivery-person-guard';
+
+export const routes: Routes = [
+  // Public routes
+  {
+    path: '',
+    loadComponent: () => import('./components/customer/restaurant-list/restaurant-list').then(m => m.RestaurantList)
+  },
+  {
+    path: 'login',
+    loadComponent: () => import('./components/auth/login/login').then(m => m.Login)
+  },
+  {
+    path: 'register',
+    loadComponent: () => import('./components/auth/register/register').then(m => m.Register)
+  },
+  {
+    path: 'restaurants',
+    loadComponent: () => import('./components/customer/restaurant-list/restaurant-list').then(m => m.RestaurantList)
+  },
+  {
+    path: 'restaurant/:id',
+    loadComponent: () => import('./components/customer/restaurant-detail/restaurant-detail').then(m => m.RestaurantDetail)
+  },
+
+  // Customer routes (protected)
+  {
+    path: 'cart',
+    loadComponent: () => import('./components/customer/cart/cart').then(m => m.Cart),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'checkout',
+    loadComponent: () => import('./components/customer/checkout/checkout').then(m => m.Checkout),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'orders',
+    loadComponent: () => import('./components/customer/order-history/order-history').then(m => m.OrderHistory),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'order/:id',
+    loadComponent: () => import('./components/customer/order-tracking/order-tracking').then(m => m.OrderTracking),
+    canActivate: [authGuard]
+  },
+
+  // Driver routes
+  {
+    path: 'driver/deliveries',
+    loadComponent: () => import('./components/driver/delivery-worklist/delivery-worklist').then(m => m.DeliveryWorklist),
+    canActivate: [deliveryPersonGuard]
+  },
+
+  // Admin routes
+  {
+    path: 'admin',
+    canActivate: [adminGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./components/admin/dashboard/dashboard').then(m => m.Dashboard)
+      },
+      {
+        path: 'restaurants',
+        loadComponent: () => import('./components/admin/restaurant-management/restaurant-management').then(m => m.RestaurantManagement)
+      },
+      {
+        path: 'orders',
+        loadComponent: () => import('./components/admin/order-management/order-management').then(m => m.OrderManagement)
+      },
+      {
+        path: 'users',
+        loadComponent: () => import('./components/admin/user-management/user-management').then(m => m.UserManagement)
+      }
+    ]
+  },
+
+  // Restaurant owner routes
+  {
+    path: 'my-restaurant',
+    canActivate: [restaurantOwnerGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./components/restaurant/restaurant-dashboard/restaurant-dashboard').then(m => m.RestaurantDashboard)
+      },
+      {
+        path: 'dishes',
+        loadComponent: () => import('./components/restaurant/dish-management/dish-management').then(m => m.DishManagement)
+      },
+      {
+        path: 'orders',
+        loadComponent: () => import('./components/restaurant/order-management/order-management').then(m => m.OrderManagement)
+      }
+    ]
+  },
+
+  // Fallback
+  { path: '**', redirectTo: '' }
+];

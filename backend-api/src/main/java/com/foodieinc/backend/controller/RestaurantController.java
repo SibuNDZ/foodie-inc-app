@@ -2,11 +2,13 @@ package com.foodieinc.backend.controller;
 
 
 import com.foodieinc.backend.dto.RestaurantDTO;
+import com.foodieinc.backend.entity.User;
 import com.foodieinc.backend.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,17 +37,20 @@ public class RestaurantController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN') or hasRole('RESTAURANT_OWNER')")
-    public ResponseEntity<RestaurantDTO> createRestaurant(@RequestBody RestaurantDTO restaurantDTO) {
-        RestaurantDTO created = restaurantService.createRestaurant(restaurantDTO);
+    public ResponseEntity<RestaurantDTO> createRestaurant(
+            @AuthenticationPrincipal User user,
+            @RequestBody RestaurantDTO restaurantDTO) {
+        RestaurantDTO created = restaurantService.createRestaurant(user, restaurantDTO);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('RESTAURANT_OWNER')")
     public ResponseEntity<RestaurantDTO> updateRestaurant(
+            @AuthenticationPrincipal User user,
             @PathVariable Long id,
             @RequestBody RestaurantDTO restaurantDTO) {
-        return ResponseEntity.ok(restaurantService.updateRestaurant(id, restaurantDTO));
+        return ResponseEntity.ok(restaurantService.updateRestaurant(user, id, restaurantDTO));
     }
 
     @DeleteMapping("/{id}")

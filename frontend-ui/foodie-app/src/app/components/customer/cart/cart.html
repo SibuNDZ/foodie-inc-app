@@ -1,0 +1,43 @@
+<section class="cart-page">
+	<h1>Your Cart</h1>
+
+	@if (isEmpty()) {
+		<p class="empty">Your cart is empty.</p>
+		<a routerLink="/restaurants" class="primary-link">Browse restaurants</a>
+	} @else {
+		@if (cart(); as currentCart) {
+			<p class="restaurant-name">{{ currentCart.restaurantName }}</p>
+
+			<div class="cart-items">
+				@for (item of currentCart.items; track item.dish.id) {
+					<article class="cart-item">
+						<div>
+							<h3>{{ item.dish.name }}</h3>
+							<p>{{ item.dish.price | currency }} each</p>
+						</div>
+
+						<div class="qty-controls">
+							<button type="button" (click)="decrementItem(item.dish.id, item.quantity)">-</button>
+							<span>{{ item.quantity }}</span>
+							<button type="button" (click)="incrementItem(item.dish.id, item.quantity)">+</button>
+							<button type="button" class="remove-btn" (click)="removeItem(item.dish.id)">Remove</button>
+						</div>
+					</article>
+				}
+			</div>
+
+			<aside class="totals">
+				<p><span>Items:</span><span>{{ itemCount() }}</span></p>
+				<p><span>Subtotal:</span><span>{{ currentCart.subtotal | currency }}</span></p>
+				<p><span>Delivery:</span><span>{{ currentCart.deliveryFee | currency }}</span></p>
+				<p><span>Tax:</span><span>{{ currentCart.taxAmount | currency }}</span></p>
+				<p class="grand-total"><span>Total:</span><span>{{ currentCart.total | currency }}</span></p>
+			</aside>
+
+			<div class="actions">
+				<button type="button" class="clear-btn" (click)="clearCart()">Clear Cart</button>
+				<a routerLink="/checkout" [class.disabled]="!canCheckout()">Proceed to Checkout</a>
+			</div>
+		}
+	}
+</section>

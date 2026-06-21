@@ -1,0 +1,92 @@
+<section class="order-tracking">
+	@if (isLoading() && !order()) {
+		<p class="state">Loading order details...</p>
+	} @else if (errorMessage()) {
+		<p class="state state-error">{{ errorMessage() }}</p>
+		<a class="back-link" routerLink="/orders">Back to orders</a>
+	} @else if (order()) {
+		<header class="hero">
+			<div>
+				<p class="eyebrow">Order Tracking</p>
+				<h1>{{ order()!.orderNumber }}</h1>
+				<p class="subtitle">{{ order()!.restaurantName }}</p>
+			</div>
+			<div class="hero-actions">
+				<button type="button" class="refresh-btn" (click)="refreshOrder()" [disabled]="isLoading()">
+					{{ isLoading() ? 'Refreshing...' : 'Refresh' }}
+				</button>
+				@if (canCancel()) {
+					<button type="button" class="cancel-btn" (click)="cancelOrder()" [disabled]="cancelling()">
+						{{ cancelling() ? 'Cancelling...' : 'Cancel order' }}
+					</button>
+				}
+			</div>
+		</header>
+
+		<section class="summary-grid">
+			<article class="summary-card">
+				<span class="summary-label">Status</span>
+				<span class="badge" [class]="'badge ' + statusBadgeClass(order()!.status)">{{ statusLabel(order()!.status) }}</span>
+			</article>
+			<article class="summary-card">
+				<span class="summary-label">Delivery</span>
+				<span class="badge" [class]="'badge ' + deliveryBadgeClass(order()!)">{{ deliveryLabel(order()!) }}</span>
+			</article>
+			<article class="summary-card">
+				<span class="summary-label">Total</span>
+				<span class="summary-value">{{ order()!.totalAmount | currency }}</span>
+			</article>
+			<article class="summary-card">
+				<span class="summary-label">Placed</span>
+				<span class="summary-value">{{ order()!.createdAt | date: 'short' }}</span>
+			</article>
+		</section>
+
+		<section class="content-grid">
+			<div class="panel">
+				<h2>Progress</h2>
+				<div class="timeline">
+					@for (step of timeline(); track step.key) {
+						<div class="timeline-step" [class.current]="step.state === 'current'" [class.done]="step.state === 'done'">
+							<span class="dot"></span>
+							<div>
+								<p>{{ step.label }}</p>
+								<small>{{ step.key }}</small>
+							</div>
+						</div>
+					}
+				</div>
+			</div>
+
+			<div class="panel">
+				<h2>Delivery Details</h2>
+				<p><strong>Address:</strong> {{ order()!.deliveryAddress }}</p>
+				<p><strong>Instructions:</strong> {{ order()!.deliveryInstructions || 'None' }}</p>
+				<p><strong>Payment:</strong> {{ order()!.paymentMethod }} · {{ order()!.paymentStatus }}</p>
+				@if (order()!.deliveryPersonName) {
+					<p><strong>Driver:</strong> {{ order()!.deliveryPersonName }}</p>
+				}
+			</div>
+		</section>
+
+		<section class="panel">
+			<h2>Items</h2>
+			<div class="items">
+				@for (item of order()!.orderItems; track item.id ?? item.dishId) {
+					<article class="item-row">
+						<div>
+							<h3>{{ item.dishName || ('Dish #' + item.dishId) }}</h3>
+							@if (item.specialInstructions) {
+								<p class="meta">{{ item.specialInstructions }}</p>
+							}
+						</div>
+						<div class="item-pricing">
+							<span>{{ item.quantity }} x {{ item.unitPrice | currency }}</span>
+							<strong>{{ item.totalPrice | currency }}</strong>
+						</div>
+					</article>
+				}
+			</div>
+		</section>
+	}
+</section>

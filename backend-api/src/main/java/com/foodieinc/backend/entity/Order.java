@@ -64,8 +64,15 @@ public class Order {
     private PaymentStatus paymentStatus = PaymentStatus.PENDING;
 
     @ManyToOne
-    @JoinColumn(name = "delivery_person_id")
-    private User deliveryPerson;
+    @JoinColumn(name = "driver_profile_id")
+    private DriverProfile driver;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "delivery_status")
+    private DeliveryStatus deliveryStatus;
+
+    @Column(name = "picked_up_time")
+    private LocalDateTime pickedUpTime;
 
     @Column(name = "estimated_delivery_time")
     private LocalDateTime estimatedDeliveryTime;
@@ -110,5 +117,9 @@ public class Order {
 
     public enum PaymentStatus {
         PENDING, PAID, FAILED, REFUNDED
+    }
+
+    public enum DeliveryStatus {
+        ASSIGNED, PICKED_UP, IN_TRANSIT, DELIVERED
     }
 }

@@ -73,14 +73,30 @@ public class OrderController {
         return ResponseEntity.ok(orderService.updateOrderStatus(user, id, status));
     }
 
+    @PatchMapping("/{id}/delivery-status")
+    @PreAuthorize("hasRole('DELIVERY_PERSON')")
+    public ResponseEntity<OrderDTO> updateDeliveryStatus(
+            @AuthenticationPrincipal User user,
+            @PathVariable Long id,
+            @RequestBody Map<String, String> body) {
+        String deliveryStatus = body.get("deliveryStatus");
+        return ResponseEntity.ok(orderService.updateDeliveryStatus(user, id, deliveryStatus));
+    }
+
+    @GetMapping("/my-deliveries")
+    @PreAuthorize("hasRole('DELIVERY_PERSON')")
+    public ResponseEntity<List<OrderDTO>> getMyDeliveries(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(orderService.getOrdersByDriver(user.getId()));
+    }
+
     @PatchMapping("/{id}/assign-delivery")
     @PreAuthorize("hasRole('ADMIN') or hasRole('RESTAURANT_OWNER')")
     public ResponseEntity<OrderDTO> assignDeliveryPerson(
             @AuthenticationPrincipal User user,
             @PathVariable Long id,
             @RequestBody Map<String, Long> body) {
-        Long deliveryPersonId = body.get("deliveryPersonId");
-        return ResponseEntity.ok(orderService.assignDeliveryPerson(user, id, deliveryPersonId));
+        Long driverProfileId = body.get("driverProfileId");
+        return ResponseEntity.ok(orderService.assignDeliveryPerson(user, id, driverProfileId));
     }
 
     @PostMapping("/{id}/rate")

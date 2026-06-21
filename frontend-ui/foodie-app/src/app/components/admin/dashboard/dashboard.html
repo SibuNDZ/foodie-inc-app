@@ -1,0 +1,86 @@
+<section class="admin-dashboard">
+	<header class="hero">
+		<div>
+			<p class="eyebrow">Admin Console</p>
+			<h1>Platform Dashboard</h1>
+			<p class="subtitle">High-level visibility across restaurants, users, and orders.</p>
+		</div>
+		<button type="button" class="refresh-btn" (click)="refresh()" [disabled]="isLoading()">
+			{{ isLoading() ? 'Refreshing...' : 'Refresh' }}
+		</button>
+	</header>
+
+	@if (errorMessage()) {
+		<p class="placeholder">{{ errorMessage() }}</p>
+	}
+
+	<section class="summary-grid">
+		<article class="summary-card">
+			<span class="summary-value">{{ restaurants().length }}</span>
+			<span class="summary-label">Restaurants</span>
+		</article>
+		<article class="summary-card">
+			<span class="summary-value">{{ users().length }}</span>
+			<span class="summary-label">Users</span>
+		</article>
+		<article class="summary-card">
+			<span class="summary-value">{{ activeOrders().length }}</span>
+			<span class="summary-label">Active orders</span>
+		</article>
+		<article class="summary-card">
+			<span class="summary-value">{{ grossRevenue() | currency }}</span>
+			<span class="summary-label">Gross order volume</span>
+		</article>
+	</section>
+
+	<section class="quick-links">
+		<a routerLink="/admin/orders" class="quick-link-card">
+			<h2>Order Management</h2>
+			<p>Review lifecycle status and manually adjust problematic orders.</p>
+		</a>
+		<a routerLink="/admin/restaurants" class="quick-link-card">
+			<h2>Restaurant Management</h2>
+			<p>Review active stores and perform admin-level updates.</p>
+		</a>
+		<a routerLink="/admin/users" class="quick-link-card">
+			<h2>User Management</h2>
+			<p>Adjust user roles and account active status.</p>
+		</a>
+	</section>
+
+	<section class="panel">
+		<h2>Recent Orders</h2>
+		@if (isLoading() && recentOrders().length === 0) {
+			<p class="placeholder">Loading dashboard activity...</p>
+		} @else if (recentOrders().length === 0) {
+			<p class="placeholder">No orders found yet.</p>
+		} @else {
+			<div class="table-wrap">
+				<table>
+					<thead>
+						<tr>
+							<th>Order</th>
+							<th>User</th>
+							<th>Restaurant</th>
+							<th>Status</th>
+							<th>Total</th>
+							<th>Created</th>
+						</tr>
+					</thead>
+					<tbody>
+						@for (order of recentOrders(); track order.id) {
+							<tr>
+								<td>{{ order.orderNumber }}</td>
+								<td>{{ order.username }}</td>
+								<td>{{ order.restaurantName }}</td>
+								<td>{{ order.status }}</td>
+								<td>{{ order.totalAmount | currency }}</td>
+								<td>{{ order.createdAt | date: 'short' }}</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		}
+	</section>
+</section>

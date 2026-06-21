@@ -1,0 +1,96 @@
+<section class="restaurant-detail">
+	@if (isLoading()) {
+		<p class="state">Loading restaurant menu...</p>
+	} @else if (errorMessage()) {
+		<p class="state state-error">{{ errorMessage() }}</p>
+		<a class="back-link" routerLink="/restaurants">Back to restaurants</a>
+	} @else {
+		@if (restaurant(); as currentRestaurant) {
+			<header class="hero">
+				<div>
+					<h1>{{ currentRestaurant.name }}</h1>
+					<p>{{ currentRestaurant.description || currentRestaurant.address }}</p>
+					<div class="meta-row">
+						@if (currentRestaurant.estimatedDeliveryTime) {
+							<span>{{ currentRestaurant.estimatedDeliveryTime }} min</span>
+						}
+						<span>{{ (currentRestaurant.deliveryFee ?? 0) | currency }} delivery</span>
+					</div>
+				</div>
+				<a class="cart-link" routerLink="/cart">View Cart</a>
+			</header>
+		}
+
+		<div class="filters">
+			<div class="filters-row">
+				<label class="search-field">
+					<span>Search dishes</span>
+					<input
+						type="search"
+						placeholder="Search by name, description, or category"
+						[ngModel]="searchQuery()"
+						(ngModelChange)="searchQuery.set($event)"
+					/>
+				</label>
+
+				<label class="select-field">
+					<span>Category</span>
+					<select [ngModel]="selectedCategory()" (ngModelChange)="selectedCategory.set($event)">
+						<option value="all">All categories</option>
+						@for (category of availableCategories(); track category) {
+							<option [value]="category">{{ category }}</option>
+						}
+					</select>
+				</label>
+
+				<label class="select-field">
+					<span>Sort by</span>
+					<select [ngModel]="sortMode()" (ngModelChange)="sortMode.set($event)">
+						<option value="featured">Fastest prep time</option>
+						<option value="price-asc">Price: low to high</option>
+						<option value="price-desc">Price: high to low</option>
+					</select>
+				</label>
+			</div>
+
+			<div class="filters-row filters-row-secondary">
+				<label class="pill-toggle"><input type="checkbox" [ngModel]="vegetarianOnly()" (ngModelChange)="vegetarianOnly.set($event)" /> Vegetarian</label>
+				<label class="pill-toggle"><input type="checkbox" [ngModel]="veganOnly()" (ngModelChange)="veganOnly.set($event)" /> Vegan</label>
+				<label class="pill-toggle"><input type="checkbox" [ngModel]="glutenFreeOnly()" (ngModelChange)="glutenFreeOnly.set($event)" /> Gluten free</label>
+				<button type="button" class="clear-filters" (click)="clearFilters()">Clear filters</button>
+			</div>
+		</div>
+
+		<div class="results-meta">
+			<p>{{ filteredDishes().length }} of {{ dishes().length }} dishes shown</p>
+		</div>
+
+		@if (dishes().length === 0) {
+			<p class="state">No dishes available at the moment.</p>
+		} @else if (filteredDishes().length === 0) {
+			<p class="state">No dishes match the current filters.</p>
+			<button type="button" class="state-action" (click)="clearFilters()">Reset filters</button>
+		} @else {
+			<div class="dish-grid">
+				@for (dish of filteredDishes(); track dish.id) {
+					<article class="dish-card">
+						<div>
+							<h3>{{ dish.name }}</h3>
+							@if (dish.description) {
+								<p class="description">{{ dish.description }}</p>
+							}
+							@if (formatDietaryTags(dish); as dietaryTags) {
+								<p class="tags">{{ dietaryTags }}</p>
+							}
+						</div>
+
+						<div class="dish-footer">
+							<span class="price">{{ dish.price | currency }}</span>
+							<button type="button" (click)="addDishToCart(dish)">Add</button>
+						</div>
+					</article>
+				}
+			</div>
+		}
+	}
+</section>

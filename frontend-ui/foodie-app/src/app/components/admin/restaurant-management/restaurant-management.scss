@@ -1,0 +1,123 @@
+:host {
+	display: block;
+}
+
+.admin-restaurant-management {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 1rem;
+}
+
+.hero,
+.editor,
+.table-wrap {
+	background: #fff;
+	border: 1px solid #e2e8f0;
+	border-radius: 0.9rem;
+	padding: 1rem;
+	margin-bottom: 1rem;
+}
+
+.hero {
+	display: flex;
+	justify-content: space-between;
+	gap: 1rem;
+	align-items: flex-start;
+}
+
+.eyebrow {
+	margin: 0 0 0.2rem;
+	color: #7c2d12;
+	font-weight: 700;
+	text-transform: uppercase;
+	font-size: 0.78rem;
+}
+
+.subtitle {
+	color: #475569;
+}
+
+.refresh-btn,
+.save-btn,
+.cancel-btn,
+.actions button {
+	border: 0;
+	border-radius: 0.6rem;
+	padding: 0.5rem 0.75rem;
+	font-weight: 700;
+	cursor: pointer;
+}
+
+.refresh-btn,
+.cancel-btn {
+	background: #e2e8f0;
+	color: #0f172a;
+}
+
+.save-btn,
+.actions button {
+	background: #0f766e;
+	color: #fff;
+}
+
+.actions .danger {
+	background: #dc2626;
+}
+
+.form-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	gap: 0.75rem;
+}
+
+.form-grid label {
+	display: grid;
+	gap: 0.35rem;
+	color: #475569;
+}
+
+.form-grid input,
+.form-grid select {
+	border: 1px solid #cbd5e1;
+	border-radius: 0.6rem;
+	padding: 0.55rem 0.7rem;
+}
+
+.editor-actions {
+	margin-top: 0.9rem;
+	display: flex;
+	gap: 0.6rem;
+}
+
+.table-wrap {
+	overflow-x: auto;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+th,
+td {
+	text-align: left;
+	padding: 0.65rem 0.5rem;
+	border-bottom: 1px solid #e2e8f0;
+}
+
+.actions {
+	display: flex;
+	gap: 0.45rem;
+}
+
+@media (max-width: 720px) {
+	.hero {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.editor-actions,
+	.actions {
+		flex-direction: column;
+	}
+}

@@ -1,12 +1,14 @@
 package com.foodieinc.backend.controller;
 
 import com.foodieinc.backend.dto.DishDTO;
+import com.foodieinc.backend.entity.User;
 import com.foodieinc.backend.service.DishService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -41,21 +43,28 @@ public class DishController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN') or hasRole('RESTAURANT_OWNER')")
-    public ResponseEntity<DishDTO> createDish(@Valid @RequestBody DishDTO dishDTO) {
-        DishDTO created = dishService.createDish(dishDTO);
+    public ResponseEntity<DishDTO> createDish(
+            @AuthenticationPrincipal User user,
+            @Valid @RequestBody DishDTO dishDTO) {
+        DishDTO created = dishService.createDish(user, dishDTO);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('RESTAURANT_OWNER')")
-    public ResponseEntity<DishDTO> updateDish(@PathVariable Long id, @Valid @RequestBody DishDTO dishDTO) {
-        return ResponseEntity.ok(dishService.updateDish(id, dishDTO));
+    public ResponseEntity<DishDTO> updateDish(
+            @AuthenticationPrincipal User user,
+            @PathVariable Long id,
+            @Valid @RequestBody DishDTO dishDTO) {
+        return ResponseEntity.ok(dishService.updateDish(user, id, dishDTO));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('RESTAURANT_OWNER')")
-    public ResponseEntity<Void> deleteDish(@PathVariable Long id) {
-        dishService.deleteDish(id);
+    public ResponseEntity<Void> deleteDish(
+            @AuthenticationPrincipal User user,
+            @PathVariable Long id) {
+        dishService.deleteDish(user, id);
         return ResponseEntity.noContent().build();
     }
 }

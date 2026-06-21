@@ -1,0 +1,76 @@
+<section class="delivery-worklist">
+  <header class="delivery-worklist__header">
+    <div>
+      <p class="eyebrow">Driver Ops</p>
+      <h1>My Deliveries</h1>
+      <p class="subtitle">Advance active orders through pickup, transit, and final drop-off.</p>
+    </div>
+    <button class="refresh-btn" type="button" (click)="refreshOrders()" [disabled]="isLoading()">
+      {{ isLoading() ? 'Refreshing...' : 'Refresh' }}
+    </button>
+  </header>
+
+  <section class="delivery-section">
+    <h2>Active</h2>
+    @if (isLoading() && activeDeliveries().length === 0) {
+      <p class="placeholder">Loading active deliveries...</p>
+    } @else if (activeDeliveries().length === 0) {
+      <p class="placeholder">No active deliveries assigned.</p>
+    } @else {
+      <div class="cards">
+        @for (order of activeDeliveries(); track order.id) {
+          <article class="delivery-card">
+            <div class="delivery-card__top">
+              <h3>{{ order.orderNumber }}</h3>
+              <span class="badge" [class]="'badge ' + deliveryBadgeClass(order)">
+                {{ order.deliveryStatus ?? 'PENDING_ASSIGNMENT' }}
+              </span>
+            </div>
+            <p class="meta"><strong>Restaurant:</strong> {{ order.restaurantName }}</p>
+            <p class="meta"><strong>Address:</strong> {{ order.deliveryAddress }}</p>
+            <p class="meta"><strong>Total:</strong> {{ order.totalAmount | currency }}</p>
+            <p class="meta"><strong>Placed:</strong> {{ order.createdAt | date: 'short' }}</p>
+
+            <button
+              type="button"
+              class="advance-btn"
+              [disabled]="!canAdvance(order)"
+              (click)="advanceDelivery(order)">
+              {{ updatingOrderId() === order.id ? 'Updating...' : nextLabel(order) }}
+            </button>
+          </article>
+        }
+      </div>
+    }
+  </section>
+
+  <section class="delivery-section">
+    <h2>Completed</h2>
+    @if (completedDeliveries().length === 0) {
+      <p class="placeholder">No completed deliveries yet.</p>
+    } @else {
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Order</th>
+              <th>Restaurant</th>
+              <th>Delivered At</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (order of completedDeliveries(); track order.id) {
+              <tr>
+                <td>{{ order.orderNumber }}</td>
+                <td>{{ order.restaurantName }}</td>
+                <td>{{ order.actualDeliveryTime ? (order.actualDeliveryTime | date: 'short') : 'N/A' }}</td>
+                <td>{{ order.totalAmount | currency }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+</section>

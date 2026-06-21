@@ -1,0 +1,71 @@
+<section class="checkout-page">
+	<h1>Checkout</h1>
+	<p class="intro">Review your order, confirm the delivery address, and add any instructions before placing it.</p>
+
+	@if (!cart() || cart()!.items.length === 0) {
+		<p class="empty">Your cart is empty.</p>
+		<a routerLink="/restaurants" class="back-link">Back to restaurants</a>
+	} @else {
+		@if (cart(); as currentCart) {
+			<div class="layout">
+				<form class="checkout-form" (ngSubmit)="placeOrder()">
+					<div class="form-section-header">
+						<h2>Delivery details</h2>
+						<p>Make sure the address is complete so the driver can find you quickly.</p>
+					</div>
+
+					<label for="address">Delivery Address</label>
+					<textarea
+						id="address"
+						name="address"
+						[(ngModel)]="deliveryAddress"
+						rows="3"
+						required
+						autocomplete="street-address"
+						placeholder="Enter full delivery address"></textarea>
+					<p class="helper">Include apartment, building, gate code, or any delivery landmark.</p>
+
+					<label for="instructions">Delivery Instructions</label>
+					<textarea
+						id="instructions"
+						name="instructions"
+						[(ngModel)]="deliveryInstructions"
+						rows="2"
+						placeholder="Apartment, gate code, landmark, etc."></textarea>
+					<p class="helper">Optional, but useful for apartment numbers, side entrances, or call-on-arrival notes.</p>
+
+					<label for="paymentMethod">Payment Method</label>
+					<select id="paymentMethod" name="paymentMethod" [(ngModel)]="paymentMethod">
+						<option value="CARD">Card</option>
+						<option value="CASH">Cash</option>
+						<option value="WALLET">Wallet</option>
+					</select>
+					<p class="helper">Payment is recorded with the order and can be confirmed by the driver flow.</p>
+
+					<button type="submit" [disabled]="isSubmitting()">
+						{{ isSubmitting() ? 'Placing Order...' : 'Place Order' }}
+					</button>
+				</form>
+
+				<aside class="summary">
+					<h2>Order Summary</h2>
+					<p class="restaurant">From {{ currentCart.restaurantName }}</p>
+					<p class="summary-note">{{ currentCart.items.length }} item(s) ready for delivery.</p>
+
+					@for (item of currentCart.items; track item.dish.id) {
+						<p class="line-item">
+							<span>{{ item.quantity }} x {{ item.dish.name }}</span>
+							<span>{{ item.quantity * item.dish.price | currency }}</span>
+						</p>
+					}
+
+					<hr />
+					<p class="line-item"><span>Subtotal</span><span>{{ currentCart.subtotal | currency }}</span></p>
+					<p class="line-item"><span>Delivery</span><span>{{ currentCart.deliveryFee | currency }}</span></p>
+					<p class="line-item"><span>Tax</span><span>{{ currentCart.taxAmount | currency }}</span></p>
+					<p class="line-item total"><span>Total</span><span>{{ currentCart.total | currency }}</span></p>
+				</aside>
+			</div>
+		}
+	}
+</section>

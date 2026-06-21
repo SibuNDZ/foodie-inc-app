@@ -1,0 +1,101 @@
+<div class="restaurant-list-container">
+  <header class="hero-section">
+    <div class="hero-content">
+      <h1>Discover Delicious Food</h1>
+      <p>Order from the best restaurants in your area</p>
+
+      <div class="search-box">
+        <input
+          type="text"
+          [(ngModel)]="searchQuery"
+          (keyup.enter)="onSearch()"
+          placeholder="Search restaurants or cuisines..."
+          class="search-input"
+        />
+        <button class="search-btn" (click)="onSearch()">Search</button>
+        @if (searchQuery) {
+          <button class="clear-btn" (click)="clearSearch()">Clear</button>
+        }
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    @if (isLoading()) {
+      <div class="loading-container">
+        <div class="spinner"></div>
+        <p>Loading restaurants...</p>
+      </div>
+    } @else if (errorMessage()) {
+      <div class="error-container">
+        <p>{{ errorMessage() }}</p>
+        <button class="btn btn-primary" (click)="loadRestaurants()">Try Again</button>
+      </div>
+    } @else if (filteredRestaurants().length === 0) {
+      <div class="empty-state">
+        <h3>No restaurants found</h3>
+        <p>Try adjusting your search or browse all restaurants</p>
+        @if (searchQuery) {
+          <button class="btn btn-primary" (click)="clearSearch()">View All Restaurants</button>
+        }
+      </div>
+    } @else {
+      <div class="restaurants-grid">
+        @for (restaurant of filteredRestaurants(); track restaurant.id) {
+          <a [routerLink]="['/restaurant', restaurant.id]" class="restaurant-card">
+            <div class="restaurant-image">
+              @if (restaurant.imageUrl) {
+                <img [src]="restaurant.imageUrl" [alt]="restaurant.name" />
+              } @else {
+                <div class="placeholder-image">
+                  <span>{{ restaurant.name.charAt(0) }}</span>
+                </div>
+              }
+              @if (!restaurant.isOpen) {
+                <div class="closed-badge">Closed</div>
+              }
+            </div>
+
+            <div class="restaurant-info">
+              <h3>{{ restaurant.name }}</h3>
+              <p class="cuisine">{{ restaurant.cuisineType || 'Various' }}</p>
+
+              <div class="restaurant-meta">
+                <div class="rating">
+                  @for (star of getStarRating(restaurant.averageRating); track $index) {
+                    <span class="star" [class.full]="star === 'full'" [class.half]="star === 'half'">
+                      @if (star === 'full') { ★ }
+                      @else if (star === 'half') { ★ }
+                      @else { ☆ }
+                    </span>
+                  }
+                  <span class="rating-text">
+                    {{ restaurant.averageRating?.toFixed(1) || 'New' }}
+                    @if (restaurant.totalReviews) {
+                      ({{ restaurant.totalReviews }})
+                    }
+                  </span>
+                </div>
+
+                <div class="delivery-info">
+                  @if (restaurant.estimatedDeliveryTime) {
+                    <span class="delivery-time">{{ restaurant.estimatedDeliveryTime }} min</span>
+                  }
+                  @if (restaurant.deliveryFee !== undefined) {
+                    <span class="delivery-fee">
+                      {{ restaurant.deliveryFee === 0 ? 'Free delivery' : ((restaurant.deliveryFee | currency) + ' delivery') }}
+                    </span>
+                  }
+                </div>
+              </div>
+
+              @if (restaurant.minimumOrder) {
+                <p class="minimum-order">Min. order: {{ restaurant.minimumOrder | currency }}</p>
+              }
+            </div>
+          </a>
+        }
+      </div>
+    }
+  </main>
+</div>

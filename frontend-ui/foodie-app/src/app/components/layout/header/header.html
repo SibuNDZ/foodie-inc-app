@@ -1,0 +1,33 @@
+<header class="topbar">
+	<a class="brand" routerLink="/">Foodie Inc</a>
+
+	<nav class="nav-links" aria-label="Primary">
+		<a routerLink="/restaurants" routerLinkActive="active-link">Explore</a>
+
+		@if (authService.isAuthenticated()) {
+			<a routerLink="/orders" routerLinkActive="active-link">My Orders</a>
+
+			@if (authService.currentUser()?.role === UserRole.DELIVERY_PERSON) {
+				<a routerLink="/driver/deliveries" routerLinkActive="active-link">Driver Deliveries</a>
+			}
+
+			@if (authService.currentUser()?.role === UserRole.RESTAURANT_OWNER) {
+				<a routerLink="/my-restaurant" routerLinkActive="active-link">Restaurant Ops</a>
+			}
+
+			@if (authService.currentUser()?.role === UserRole.ADMIN) {
+				<a routerLink="/admin" routerLinkActive="active-link">Admin</a>
+			}
+		}
+	</nav>
+
+	<div class="auth-actions">
+		@if (authService.isAuthenticated()) {
+			<span class="welcome">{{ authService.currentUser()?.username }}</span>
+			<button type="button" class="logout-btn" (click)="logout()">Logout</button>
+		} @else {
+			<a routerLink="/login" routerLinkActive="active-link">Login</a>
+			<a routerLink="/register" routerLinkActive="active-link">Register</a>
+		}
+	</div>
+</header>

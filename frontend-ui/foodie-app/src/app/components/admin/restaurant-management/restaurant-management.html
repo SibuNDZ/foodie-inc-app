@@ -1,0 +1,109 @@
+<section class="admin-restaurant-management">
+	<header class="hero">
+		<div>
+			<p class="eyebrow">Admin Console</p>
+			<h1>Restaurant Management</h1>
+			<p class="subtitle">Create, update, and deactivate restaurant records.</p>
+		</div>
+		<button type="button" class="refresh-btn" (click)="refresh()" [disabled]="isLoading()">
+			{{ isLoading() ? 'Refreshing...' : 'Refresh' }}
+		</button>
+	</header>
+
+	@if (errorMessage()) {
+		<p class="subtitle">{{ errorMessage() }}</p>
+	}
+
+	<section class="editor">
+		<h2>{{ isEditing() ? 'Edit Restaurant' : 'Add Restaurant' }}</h2>
+		<div class="form-grid">
+			<label>
+				<span>Name</span>
+				<input [ngModel]="form().name" (ngModelChange)="updateForm('name', $event)" />
+			</label>
+			<label>
+				<span>Address</span>
+				<input [ngModel]="form().address" (ngModelChange)="updateForm('address', $event)" />
+			</label>
+			<label>
+				<span>City</span>
+				<input [ngModel]="form().city" (ngModelChange)="updateForm('city', $event)" />
+			</label>
+			<label>
+				<span>State</span>
+				<input [ngModel]="form().state" (ngModelChange)="updateForm('state', $event)" />
+			</label>
+			<label>
+				<span>Cuisine Type</span>
+				<input [ngModel]="form().cuisineType" (ngModelChange)="updateForm('cuisineType', $event)" />
+			</label>
+			<label>
+				<span>Owner</span>
+				<select [ngModel]="ownerId()" (ngModelChange)="ownerId.set($event ? Number($event) : null)" [disabled]="isOwnersLoading()">
+					<option [ngValue]="null">No owner assigned</option>
+					@for (owner of ownerCandidates(); track owner.id) {
+						<option [ngValue]="owner.id">{{ owner.username }}</option>
+					}
+				</select>
+				@if (isOwnersLoading()) {
+					<small class="meta">Loading owner accounts...</small>
+				}
+			</label>
+			<label>
+				<span>Delivery Fee</span>
+				<input type="number" step="0.01" [ngModel]="form().deliveryFee" (ngModelChange)="updateForm('deliveryFee', $event === '' ? 0 : Number($event))" />
+			</label>
+			<label>
+				<span>Minimum Order</span>
+				<input type="number" step="0.01" [ngModel]="form().minimumOrder" (ngModelChange)="updateForm('minimumOrder', $event === '' ? 0 : Number($event))" />
+			</label>
+			<label>
+				<span>Estimated Delivery (min)</span>
+				<input type="number" [ngModel]="form().estimatedDeliveryTime" (ngModelChange)="updateForm('estimatedDeliveryTime', $event === '' ? 0 : Number($event))" />
+			</label>
+		</div>
+
+		<div class="editor-actions">
+			<button type="button" class="save-btn" (click)="saveRestaurant()" [disabled]="isSaving()">
+				{{ isSaving() ? 'Saving...' : (isEditing() ? 'Update Restaurant' : 'Create Restaurant') }}
+			</button>
+			@if (isEditing()) {
+				<button type="button" class="cancel-btn" (click)="cancelEdit()">Cancel</button>
+			}
+		</div>
+	</section>
+
+	<section class="table-wrap">
+		@if (isLoading() && restaurants().length === 0) {
+			<p class="subtitle">Loading restaurants...</p>
+		} @else if (restaurants().length === 0) {
+			<p class="subtitle">No restaurants found.</p>
+		} @else {
+		<table>
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Cuisine</th>
+					<th>Owner Id</th>
+					<th>Address</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				@for (restaurant of restaurants(); track restaurant.id) {
+					<tr>
+						<td>{{ restaurant.name }}</td>
+						<td>{{ restaurant.cuisineType || 'N/A' }}</td>
+						<td>{{ restaurant.ownerId ?? 'Unassigned' }}</td>
+						<td>{{ restaurant.address }}</td>
+						<td class="actions">
+							<button type="button" (click)="editRestaurant(restaurant)">Edit</button>
+							<button type="button" class="danger" (click)="removeRestaurant(restaurant)">Deactivate</button>
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		}
+	</section>
+</section>

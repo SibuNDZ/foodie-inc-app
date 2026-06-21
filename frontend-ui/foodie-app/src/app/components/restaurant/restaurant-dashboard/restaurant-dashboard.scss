@@ -1,0 +1,162 @@
+:host {
+	display: block;
+}
+
+.restaurant-dashboard {
+	max-width: 1100px;
+	margin: 0 auto;
+	padding: 1rem;
+}
+
+.hero,
+.summary-grid,
+.actions-grid,
+.panel {
+	background: #fff;
+	border: 1px solid #e2e8f0;
+	border-radius: 0.9rem;
+	padding: 1rem;
+	margin-bottom: 1rem;
+}
+
+.hero {
+	display: flex;
+	justify-content: space-between;
+	gap: 1rem;
+	align-items: flex-start;
+}
+
+.eyebrow {
+	margin: 0 0 0.2rem;
+	color: #0f766e;
+	font-weight: 700;
+	text-transform: uppercase;
+	font-size: 0.78rem;
+}
+
+.subtitle,
+.meta,
+.placeholder,
+.state {
+	color: #475569;
+}
+
+.state-error {
+	color: #b91c1c;
+}
+
+.restaurant-picker {
+	display: grid;
+	gap: 0.35rem;
+	color: #475569;
+}
+
+.restaurant-picker select {
+	min-width: 260px;
+	padding: 0.6rem 0.75rem;
+	border: 1px solid #cbd5e1;
+	border-radius: 0.6rem;
+}
+
+.summary-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+	gap: 0.75rem;
+}
+
+.summary-card {
+	display: grid;
+	gap: 0.2rem;
+	background: linear-gradient(135deg, #f8fafc, #ffffff);
+	border: 1px solid #e2e8f0;
+	border-radius: 0.8rem;
+	padding: 1rem;
+}
+
+.summary-value {
+	font-size: 1.7rem;
+	font-weight: 800;
+}
+
+.summary-label {
+	color: #64748b;
+}
+
+.actions-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+	gap: 0.9rem;
+}
+
+.action-card {
+	display: grid;
+	gap: 0.4rem;
+	padding: 1rem;
+	border-radius: 0.9rem;
+	text-decoration: none;
+	background: linear-gradient(135deg, #ecfeff, #f8fafc);
+	border: 1px solid #cbd5e1;
+	color: inherit;
+}
+
+.action-card h2 {
+	margin: 0;
+}
+
+.panel h2 {
+	margin-top: 0;
+}
+
+.recent-orders {
+	display: grid;
+	gap: 0.75rem;
+}
+
+.recent-order {
+	display: flex;
+	justify-content: space-between;
+	gap: 1rem;
+	padding: 0.8rem;
+	border-radius: 0.75rem;
+	background: #f8fafc;
+	border: 1px solid #e2e8f0;
+}
+
+.recent-order h3 {
+	margin: 0;
+}
+
+.order-meta {
+	display: grid;
+	justify-items: end;
+	gap: 0.35rem;
+}
+
+.status-pill {
+	display: inline-flex;
+	padding: 0.28rem 0.7rem;
+	border-radius: 999px;
+	background: #e2e8f0;
+	font-size: 0.78rem;
+	font-weight: 700;
+	text-transform: uppercase;
+}
+
+@media (max-width: 720px) {
+	.hero {
+		flex-direction: column;
+	}
+
+	.restaurant-picker select {
+		min-width: 0;
+		width: 100%;
+	}
+
+	.recent-order {
+		flex-direction: column;
+	}
+
+	.order-meta {
+		justify-items: start;
+	}
+}

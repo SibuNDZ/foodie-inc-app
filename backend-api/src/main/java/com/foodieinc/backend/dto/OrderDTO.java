@@ -28,8 +28,14 @@ public class OrderDTO {
     private String deliveryInstructions;
     private String paymentMethod;
     private String paymentStatus;
-    private Long deliveryPersonId;
-    private String deliveryPersonName;
+    private Long driverProfileId;
+    private String driverName;
+    private String driverVehicleType;
+    private String driverLicensePlate;
+    private BigDecimal driverLatitude;
+    private BigDecimal driverLongitude;
+    private String deliveryStatus;
+    private LocalDateTime pickedUpTime;
     private LocalDateTime estimatedDeliveryTime;
     private LocalDateTime actualDeliveryTime;
     private Integer customerRating;

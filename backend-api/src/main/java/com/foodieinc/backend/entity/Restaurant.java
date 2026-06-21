@@ -74,6 +74,12 @@ public class Restaurant {
     @Column(name = "is_open")
     private boolean isOpen = true;
 
+    @Column(name = "latitude", precision = 9, scale = 6)
+    private BigDecimal latitude;
+
+    @Column(name = "longitude", precision = 9, scale = 6)
+    private BigDecimal longitude;
+
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private User owner;

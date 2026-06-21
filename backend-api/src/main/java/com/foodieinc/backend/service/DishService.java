@@ -4,11 +4,13 @@ import com.foodieinc.backend.dto.DishDTO;
 import com.foodieinc.backend.entity.Dish;
 import com.foodieinc.backend.entity.DishCategory;
 import com.foodieinc.backend.entity.Restaurant;
+import com.foodieinc.backend.entity.User;
 import com.foodieinc.backend.exception.ResourceNotFoundException;
 import com.foodieinc.backend.repository.DishCategoryRepository;
 import com.foodieinc.backend.repository.DishRepository;
 import com.foodieinc.backend.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,9 +48,10 @@ public class DishService {
         return convertToDTO(dish);
     }
 
-    public DishDTO createDish(DishDTO dishDTO) {
+    public DishDTO createDish(User user, DishDTO dishDTO) {
         Restaurant restaurant = restaurantRepository.findById(dishDTO.getRestaurantId())
                 .orElseThrow(() -> new ResourceNotFoundException("Restaurant", "id", dishDTO.getRestaurantId()));
+        assertCanManageRestaurant(user, restaurant);
 
         Dish dish = new Dish();
         updateDishFromDTO(dish, dishDTO);
@@ -64,9 +67,15 @@ public class DishService {
         return convertToDTO(savedDish);
     }
 
-    public DishDTO updateDish(Long id, DishDTO dishDTO) {
+    public DishDTO updateDish(User user, Long id, DishDTO dishDTO) {
         Dish dish = dishRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Dish", "id", id));
+        assertCanManageDish(user, dish);
+
+        if (dishDTO.getRestaurantId() != null
+                && !dishDTO.getRestaurantId().equals(dish.getRestaurant().getId())) {
+            throw new AccessDeniedException("Dish cannot be moved to another restaurant");
+        }
 
         updateDishFromDTO(dish, dishDTO);
 
@@ -80,11 +89,30 @@ public class DishService {
         return convertToDTO(updatedDish);
     }
 
-    public void deleteDish(Long id) {
+    public void deleteDish(User user, Long id) {
         Dish dish = dishRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Dish", "id", id));
+        assertCanManageDish(user, dish);
         dish.setAvailable(false);
         dishRepository.save(dish);
+    }
+
+    private void assertCanManageDish(User user, Dish dish) {
+        assertCanManageRestaurant(user, dish.getRestaurant());
+    }
+
+    private void assertCanManageRestaurant(User user, Restaurant restaurant) {
+        if (user.getRole() == User.UserRole.ADMIN) {
+            return;
+        }
+
+        if (user.getRole() == User.UserRole.RESTAURANT_OWNER
+                && restaurant.getOwner() != null
+                && restaurant.getOwner().getId().equals(user.getId())) {
+            return;
+        }
+
+        throw new AccessDeniedException("You do not have permission to manage this restaurant's dishes");
     }
 
     private void updateDishFromDTO(Dish dish, DishDTO dto) {

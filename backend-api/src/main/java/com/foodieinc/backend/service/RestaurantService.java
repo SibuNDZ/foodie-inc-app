@@ -7,6 +7,7 @@ import com.foodieinc.backend.exception.ResourceNotFoundException;
 import com.foodieinc.backend.repository.RestaurantRepository;
 import com.foodieinc.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,35 +42,59 @@ public class RestaurantService {
                 .collect(Collectors.toList());
     }
 
-    public RestaurantDTO createRestaurant(RestaurantDTO restaurantDTO) {
+    public RestaurantDTO createRestaurant(User user, RestaurantDTO restaurantDTO) {
         Restaurant restaurant = new Restaurant();
         updateRestaurantFromDTO(restaurant, restaurantDTO);
         restaurant.setActive(true);
 
-        if (restaurantDTO.getOwnerId() != null) {
-            User owner = userRepository.findById(restaurantDTO.getOwnerId())
-                    .orElseThrow(() -> new ResourceNotFoundException("User", "id", restaurantDTO.getOwnerId()));
-            restaurant.setOwner(owner);
+        if (user.getRole() == User.UserRole.ADMIN) {
+            if (restaurantDTO.getOwnerId() != null) {
+                User owner = userRepository.findById(restaurantDTO.getOwnerId())
+                        .orElseThrow(() -> new ResourceNotFoundException("User", "id", restaurantDTO.getOwnerId()));
+                restaurant.setOwner(owner);
+            }
+        } else if (user.getRole() == User.UserRole.RESTAURANT_OWNER) {
+            restaurant.setOwner(user);
+        } else {
+            throw new AccessDeniedException("You do not have permission to create restaurants");
         }
 
         Restaurant savedRestaurant = restaurantRepository.save(restaurant);
         return convertToDTO(savedRestaurant);
     }
 
-    public RestaurantDTO updateRestaurant(Long id, RestaurantDTO restaurantDTO) {
+    public RestaurantDTO updateRestaurant(User user, Long id, RestaurantDTO restaurantDTO) {
         Restaurant restaurant = restaurantRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Restaurant", "id", id));
 
+        assertCanManageRestaurant(user, restaurant);
+
         updateRestaurantFromDTO(restaurant, restaurantDTO);
 
-        if (restaurantDTO.getOwnerId() != null) {
+        if (user.getRole() == User.UserRole.ADMIN && restaurantDTO.getOwnerId() != null) {
             User owner = userRepository.findById(restaurantDTO.getOwnerId())
                     .orElseThrow(() -> new ResourceNotFoundException("User", "id", restaurantDTO.getOwnerId()));
             restaurant.setOwner(owner);
+        } else if (user.getRole() == User.UserRole.RESTAURANT_OWNER) {
+            restaurant.setOwner(user);
         }
 
         Restaurant updatedRestaurant = restaurantRepository.save(restaurant);
         return convertToDTO(updatedRestaurant);
+    }
+
+    private void assertCanManageRestaurant(User user, Restaurant restaurant) {
+        if (user.getRole() == User.UserRole.ADMIN) {
+            return;
+        }
+
+        if (user.getRole() == User.UserRole.RESTAURANT_OWNER
+                && restaurant.getOwner() != null
+                && restaurant.getOwner().getId().equals(user.getId())) {
+            return;
+        }
+
+        throw new AccessDeniedException("You do not have permission to manage this restaurant");
     }
 
     public void deleteRestaurant(Long id) {
@@ -110,6 +135,8 @@ public class RestaurantService {
         restaurant.setOpeningTime(dto.getOpeningTime());
         restaurant.setClosingTime(dto.getClosingTime());
         restaurant.setOpen(dto.isOpen());
+        restaurant.setLatitude(dto.getLatitude());
+        restaurant.setLongitude(dto.getLongitude());
     }
 
     private RestaurantDTO convertToDTO(Restaurant restaurant) {
@@ -137,6 +164,8 @@ public class RestaurantService {
         if (restaurant.getOwner() != null) {
             dto.setOwnerId(restaurant.getOwner().getId());
         }
+        dto.setLatitude(restaurant.getLatitude());
+        dto.setLongitude(restaurant.getLongitude());
         return dto;
     }
 }

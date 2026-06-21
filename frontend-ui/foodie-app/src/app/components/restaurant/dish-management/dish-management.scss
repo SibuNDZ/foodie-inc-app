@@ -1,0 +1,110 @@
+:host {
+	display: block;
+}
+
+.dish-management {
+	max-width: 1100px;
+	margin: 0 auto;
+	padding: 1rem;
+}
+
+.layout {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 1rem;
+	margin-top: 1rem;
+}
+
+.dish-form,
+.dish-list {
+	background: #fff;
+	border: 1px solid #e2e8f0;
+	border-radius: 0.8rem;
+	padding: 1rem;
+}
+
+.field {
+	display: grid;
+	gap: 0.35rem;
+	margin-bottom: 0.65rem;
+}
+
+input,
+textarea,
+select {
+	border: 1px solid #cbd5e1;
+	border-radius: 0.5rem;
+	padding: 0.5rem;
+	font: inherit;
+}
+
+.checks {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 0.35rem;
+	margin: 0.6rem 0;
+}
+
+.checks label {
+	display: flex;
+	gap: 0.45rem;
+	align-items: center;
+}
+
+.form-actions {
+	display: flex;
+	gap: 0.6rem;
+}
+
+button {
+	border: 0;
+	border-radius: 0.55rem;
+	background: #0f766e;
+	color: #fff;
+	padding: 0.5rem 0.75rem;
+	cursor: pointer;
+	font-weight: 600;
+}
+
+button.secondary {
+	background: #334155;
+}
+
+button.danger {
+	background: #b91c1c;
+}
+
+.dish-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	border: 1px solid #e2e8f0;
+	border-radius: 0.65rem;
+	padding: 0.7rem;
+	margin-top: 0.6rem;
+}
+
+.dish-item h3,
+.dish-item p {
+	margin: 0;
+}
+
+.dish-item p {
+	color: #475569;
+	margin-top: 0.2rem;
+}
+
+.item-actions {
+	display: flex;
+	gap: 0.45rem;
+}
+
+.state {
+	color: #64748b;
+}
+
+@media (max-width: 900px) {
+	.layout {
+		grid-template-columns: 1fr;
+	}
+}

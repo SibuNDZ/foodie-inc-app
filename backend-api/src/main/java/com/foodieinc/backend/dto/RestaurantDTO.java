@@ -39,4 +39,6 @@ public class RestaurantDTO {
     private boolean isActive;
     private boolean isOpen;
     private Long ownerId;
+    private BigDecimal latitude;
+    private BigDecimal longitude;
 }
