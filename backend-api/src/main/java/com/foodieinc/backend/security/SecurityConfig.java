@@ -58,18 +58,13 @@ public class SecurityConfig {
         http
             .cors(cors -> cors.configurationSource(request -> {
                 var corsConfig = new org.springframework.web.cors.CorsConfiguration();
-                List<String> allowedOrigins = parseAllowedOrigins(corsAllowedOrigins);
-                if (!allowedOrigins.isEmpty()) {
-                    boolean hasPattern = allowedOrigins.stream().anyMatch(origin -> origin.contains("*"));
-                    if (hasPattern) {
-                        corsConfig.setAllowedOriginPatterns(allowedOrigins);
-                    } else {
-                        corsConfig.setAllowedOrigins(allowedOrigins);
-                    }
+                List<String> allowedOriginPatterns = parseAllowedOrigins(corsAllowedOrigins);
+                if (!allowedOriginPatterns.isEmpty()) {
+                    corsConfig.setAllowedOriginPatterns(allowedOriginPatterns);
                 }
                 corsConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
                 corsConfig.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin"));
-                corsConfig.setAllowCredentials(!allowedOrigins.isEmpty());
+                corsConfig.setAllowCredentials(true);
                 return corsConfig;
             }))
             .csrf(csrf -> csrf.disable())
