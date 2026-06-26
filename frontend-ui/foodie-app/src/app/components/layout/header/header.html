@@ -17,6 +17,7 @@
 
 			@if (authService.currentUser()?.role === UserRole.ADMIN) {
 				<a routerLink="/admin" routerLinkActive="active-link">Admin</a>
+				<a routerLink="/admin/restaurants/pending" routerLinkActive="active-link">Pending</a>
 			}
 		}
 	</nav>

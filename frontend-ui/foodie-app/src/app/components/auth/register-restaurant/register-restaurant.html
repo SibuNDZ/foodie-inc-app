@@ -1,0 +1,145 @@
+<div class="register-container">
+  <div class="register-card">
+
+    @if (successResponse()) {
+      <div class="success-panel">
+        <div class="success-icon">🎉</div>
+        <h2>Application Submitted!</h2>
+        <p class="success-msg">
+          {{ successResponse()!.message }}
+        </p>
+        <div class="success-details">
+          <span class="detail-item"><strong>Account:</strong> {{ successResponse()!.username }}</span>
+          <span class="detail-item"><strong>Restaurant:</strong> {{ successResponse()!.restaurantName }}</span>
+          <span class="detail-item"><strong>Status:</strong> <span class="badge-pending">Pending Review</span></span>
+        </div>
+        <p class="next-steps">
+          You can <a routerLink="/login">sign in</a> with your new account while you wait for approval.
+          Your restaurant will go live once an admin approves your application.
+        </p>
+      </div>
+    } @else {
+      <h2>Register as a Restaurant Owner</h2>
+      <p class="subtitle">Submit your details and we'll review your application</p>
+
+      @if (errorMessage()) {
+        <div class="alert alert-danger">{{ errorMessage() }}</div>
+      }
+
+      <form (ngSubmit)="onSubmit()">
+
+        <!-- ACCOUNT DETAILS -->
+        <div class="form-section">
+          <h3 class="section-title">Account Details</h3>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName">First Name</label>
+              <input type="text" id="firstName" [(ngModel)]="formData.firstName"
+                     name="firstName" class="form-control" placeholder="Jane" />
+            </div>
+            <div class="form-group">
+              <label for="lastName">Last Name</label>
+              <input type="text" id="lastName" [(ngModel)]="formData.lastName"
+                     name="lastName" class="form-control" placeholder="Doe" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="username">Username *</label>
+            <input type="text" id="username" [(ngModel)]="formData.username"
+                   name="username" class="form-control" placeholder="Choose a username" required />
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" [(ngModel)]="formData.email"
+                   name="email" class="form-control" placeholder="jane@restaurant.com" required />
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone" [(ngModel)]="formData.phone"
+                   name="phone" class="form-control" placeholder="+1 (555) 123-4567" />
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password *</label>
+            <input type="password" id="password" [(ngModel)]="formData.password"
+                   name="password" class="form-control" placeholder="At least 6 characters" required />
+          </div>
+
+          <div class="form-group">
+            <label for="confirmPassword">Confirm Password *</label>
+            <input type="password" id="confirmPassword" [(ngModel)]="confirmPassword"
+                   name="confirmPassword" class="form-control" placeholder="Confirm your password" required />
+          </div>
+        </div>
+
+        <!-- RESTAURANT DETAILS -->
+        <div class="form-section">
+          <h3 class="section-title">Restaurant Details</h3>
+
+          <div class="form-group">
+            <label for="restaurantName">Restaurant Name *</label>
+            <input type="text" id="restaurantName" [(ngModel)]="formData.restaurantName"
+                   name="restaurantName" class="form-control" placeholder="The Golden Fork" required />
+          </div>
+
+          <div class="form-group">
+            <label for="cuisineType">Cuisine Type</label>
+            <input type="text" id="cuisineType" [(ngModel)]="formData.cuisineType"
+                   name="cuisineType" class="form-control" placeholder="e.g. Italian, South African, Chinese" />
+          </div>
+
+          <div class="form-group">
+            <label for="restaurantAddress">Address *</label>
+            <input type="text" id="restaurantAddress" [(ngModel)]="formData.restaurantAddress"
+                   name="restaurantAddress" class="form-control" placeholder="123 Main Street" required />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="city">City</label>
+              <input type="text" id="city" [(ngModel)]="formData.city"
+                     name="city" class="form-control" placeholder="Cape Town" />
+            </div>
+            <div class="form-group">
+              <label for="state">Province / State</label>
+              <input type="text" id="state" [(ngModel)]="formData.state"
+                     name="state" class="form-control" placeholder="Western Cape" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="restaurantPhone">Restaurant Phone</label>
+            <input type="tel" id="restaurantPhone" [(ngModel)]="formData.restaurantPhone"
+                   name="restaurantPhone" class="form-control" placeholder="021 555 1234" />
+          </div>
+
+          <div class="form-group">
+            <label for="description">Description <span class="optional">(optional)</span></label>
+            <textarea id="description" [(ngModel)]="formData.description"
+                      name="description" class="form-control"
+                      placeholder="Tell customers what makes your restaurant special"
+                      rows="3"></textarea>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" [disabled]="isLoading()">
+          @if (isLoading()) {
+            <span>Submitting application...</span>
+          } @else {
+            <span>Submit Application</span>
+          }
+        </button>
+      </form>
+
+      <div class="register-footer">
+        <p>Already have an account? <a routerLink="/login">Sign in</a></p>
+        <p>Registering as a customer? <a routerLink="/register">Customer registration</a></p>
+      </div>
+    }
+
+  </div>
+</div>

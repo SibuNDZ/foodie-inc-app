@@ -64,4 +64,22 @@ export class RestaurantService {
   deleteRestaurant(id: number): Observable<void> {
     return this.http.delete<void>(`${this.API_URL}/${id}`);
   }
+
+  getPendingRestaurants(): Observable<Restaurant[]> {
+    return this.http
+      .get<any[]>(`${this.API_URL}/pending`)
+      .pipe(map(list => list.map(r => this.toRestaurant(r))));
+  }
+
+  approveRestaurant(id: number): Observable<Restaurant> {
+    return this.http
+      .patch<any>(`${this.API_URL}/${id}/approve`, {})
+      .pipe(map(r => this.toRestaurant(r)));
+  }
+
+  rejectRestaurant(id: number, reason: string): Observable<Restaurant> {
+    return this.http
+      .patch<any>(`${this.API_URL}/${id}/reject`, { reason })
+      .pipe(map(r => this.toRestaurant(r)));
+  }
 }

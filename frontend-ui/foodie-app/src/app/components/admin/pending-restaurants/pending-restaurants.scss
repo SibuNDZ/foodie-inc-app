@@ -1,0 +1,238 @@
+.pending-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+.page-header {
+  margin-bottom: 28px;
+
+  h1 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #222;
+    margin: 0 0 6px;
+  }
+
+  .subtitle {
+    color: #666;
+    font-size: 15px;
+    margin: 0;
+  }
+}
+
+.results-count {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 12px;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.applications-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+
+  thead tr {
+    background: #f5f3ff;
+  }
+
+  th {
+    text-align: left;
+    padding: 14px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-bottom: 2px solid #e8e0f0;
+  }
+
+  td {
+    padding: 14px 16px;
+    font-size: 14px;
+    color: #333;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;
+  }
+
+  tbody tr:hover {
+    background: #faf8ff;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+}
+
+.restaurant-name {
+  font-weight: 600;
+  color: #222;
+}
+
+.address-cell {
+  color: #555;
+  max-width: 220px;
+}
+
+.owner-cell {
+  color: #777;
+  font-size: 13px;
+}
+
+.actions-col {
+  width: 180px;
+}
+
+.actions-cell {
+  display: flex;
+  gap: 8px;
+  flex-wrap: nowrap;
+}
+
+.btn {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+  white-space: nowrap;
+
+  &:hover {
+    opacity: 0.88;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.btn-approve {
+  background: #27ae60;
+  color: white;
+}
+
+.btn-reject {
+  background: #e74c3c;
+  color: white;
+}
+
+.btn-secondary {
+  background: #ccc;
+  color: #333;
+}
+
+/* States */
+.loading-state {
+  text-align: center;
+  padding: 60px;
+  color: #888;
+  font-size: 15px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 64px 24px;
+  color: #666;
+
+  .empty-icon {
+    font-size: 52px;
+    margin-bottom: 16px;
+  }
+
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 8px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 15px;
+  }
+}
+
+.alert-danger {
+  background: #fff0f0;
+  border: 1px solid #ffcccc;
+  color: #c0392b;
+  padding: 14px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+/* Rejection modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  border-radius: 14px;
+  padding: 28px;
+  width: 100%;
+  max-width: 460px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+
+  h3 {
+    margin: 0 0 8px;
+    font-size: 20px;
+    color: #222;
+  }
+
+  p {
+    font-size: 14px;
+    color: #666;
+    margin: 0 0 20px;
+  }
+}
+
+.form-group {
+  margin-bottom: 20px;
+
+  label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    font-size: 14px;
+    color: #333;
+  }
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px 14px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: #764ba2;
+  }
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}

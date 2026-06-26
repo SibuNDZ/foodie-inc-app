@@ -1,0 +1,72 @@
+<div class="pending-container">
+  <div class="page-header">
+    <h1>Pending Restaurant Applications</h1>
+    <p class="subtitle">Review and approve or reject new restaurant registrations</p>
+  </div>
+
+  @if (isLoading()) {
+    <div class="loading-state">Loading applications...</div>
+  } @else if (errorMessage()) {
+    <div class="alert alert-danger">{{ errorMessage() }}</div>
+  } @else if (restaurants().length === 0) {
+    <div class="empty-state">
+      <div class="empty-icon">✅</div>
+      <h3>All caught up</h3>
+      <p>No pending restaurant applications at the moment.</p>
+    </div>
+  } @else {
+    <div class="results-count">{{ restaurants().length }} pending application{{ restaurants().length !== 1 ? 's' : '' }}</div>
+    <div class="table-wrapper">
+      <table class="applications-table">
+        <thead>
+          <tr>
+            <th>Restaurant</th>
+            <th>Cuisine</th>
+            <th>Address</th>
+            <th>Owner</th>
+            <th class="actions-col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (r of restaurants(); track r.id) {
+            <tr>
+              <td class="restaurant-name">{{ r.name }}</td>
+              <td>{{ r.cuisineType || '—' }}</td>
+              <td class="address-cell">{{ r.address }}{{ r.city ? ', ' + r.city : '' }}</td>
+              <td class="owner-cell">#{{ r.ownerId }}</td>
+              <td class="actions-cell">
+                <button class="btn btn-approve" (click)="approve(r.id)">Approve</button>
+                <button class="btn btn-reject" (click)="openRejectModal(r.id)">Reject</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <!-- Rejection reason modal -->
+  @if (rejectingId() !== null) {
+    <div class="modal-backdrop" (click)="cancelReject()">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <h3>Reject Application</h3>
+        <p>Optionally provide a reason that will be stored on the application record.</p>
+        <div class="form-group">
+          <label for="reason">Rejection Reason</label>
+          <textarea
+            id="reason"
+            [(ngModel)]="rejectionReason"
+            name="reason"
+            class="form-control"
+            placeholder="e.g. Incomplete information, duplicate listing..."
+            rows="3"
+          ></textarea>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" (click)="cancelReject()">Cancel</button>
+          <button class="btn btn-reject" (click)="confirmReject()">Confirm Rejection</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

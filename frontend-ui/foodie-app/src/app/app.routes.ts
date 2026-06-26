@@ -19,6 +19,10 @@ export const routes: Routes = [
     loadComponent: () => import('./components/auth/register/register').then(m => m.Register)
   },
   {
+    path: 'register/restaurant',
+    loadComponent: () => import('./components/auth/register-restaurant/register-restaurant').then(m => m.RegisterRestaurant)
+  },
+  {
     path: 'restaurants',
     loadComponent: () => import('./components/customer/restaurant-list/restaurant-list').then(m => m.RestaurantList)
   },
@@ -76,6 +80,10 @@ export const routes: Routes = [
       {
         path: 'users',
         loadComponent: () => import('./components/admin/user-management/user-management').then(m => m.UserManagement)
+      },
+      {
+        path: 'restaurants/pending',
+        loadComponent: () => import('./components/admin/pending-restaurants/pending-restaurants').then(m => m.PendingRestaurants)
       }
     ]
   },

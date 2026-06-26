@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap, catchError, throwError } from 'rxjs';
 import { User, LoginRequest, RegisterRequest, AuthResponse, UserRole } from '../models';
+import { RestaurantRegistrationRequest, RestaurantApplicationResponse } from '../models';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -47,6 +48,15 @@ export class AuthService {
     return this.http.post<User>(`${this.API_URL}/register`, userData).pipe(
       catchError(error => {
         console.error('Registration error:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  registerRestaurant(request: RestaurantRegistrationRequest): Observable<RestaurantApplicationResponse> {
+    return this.http.post<RestaurantApplicationResponse>(`${this.API_URL}/register/restaurant`, request).pipe(
+      catchError(error => {
+        console.error('Restaurant registration error:', error);
         return throwError(() => error);
       })
     );
