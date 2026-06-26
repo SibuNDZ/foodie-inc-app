@@ -22,6 +22,11 @@ export interface Restaurant {
   isActive: boolean;
   isOpen: boolean;
   ownerId?: number;
+  ownerUsername?: string;
+  owner?: {
+    id?: number;
+    username?: string;
+  };
   approvalStatus?: 'PENDING_REVIEW' | 'APPROVED' | 'REJECTED';
   rejectionReason?: string;
 }

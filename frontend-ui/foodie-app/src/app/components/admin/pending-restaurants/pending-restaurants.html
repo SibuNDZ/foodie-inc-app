@@ -33,7 +33,7 @@
               <td class="restaurant-name">{{ r.name }}</td>
               <td>{{ r.cuisineType || '—' }}</td>
               <td class="address-cell">{{ r.address }}{{ r.city ? ', ' + r.city : '' }}</td>
-              <td class="owner-cell">#{{ r.ownerId }}</td>
+              <td class="owner-cell">{{ ownerDisplayName(r) }}</td>
               <td class="actions-cell">
                 <button class="btn btn-approve" (click)="approve(r.id)">Approve</button>
                 <button class="btn btn-reject" (click)="openRejectModal(r.id)">Reject</button>

@@ -17,7 +17,8 @@ export class RestaurantService {
     return {
       ...payload,
       isOpen: payload.isOpen ?? payload.open ?? false,
-      isActive: payload.isActive ?? payload.active ?? false
+      isActive: payload.isActive ?? payload.active ?? false,
+      ownerUsername: payload.ownerUsername ?? payload.owner?.username
     } as Restaurant;
   }
 

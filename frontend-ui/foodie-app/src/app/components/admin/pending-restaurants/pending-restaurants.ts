@@ -82,4 +82,8 @@ export class PendingRestaurants implements OnInit {
       }
     });
   }
+
+  ownerDisplayName(restaurant: Restaurant): string {
+    return restaurant.ownerUsername ?? restaurant.owner?.username ?? (restaurant.ownerId ? `#${restaurant.ownerId}` : '—');
+  }
 }
