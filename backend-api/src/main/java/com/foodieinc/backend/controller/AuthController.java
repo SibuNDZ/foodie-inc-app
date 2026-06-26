@@ -2,9 +2,12 @@ package com.foodieinc.backend.controller;
 
 import com.foodieinc.backend.dto.JwtResponse;
 import com.foodieinc.backend.dto.LoginRequest;
+import com.foodieinc.backend.dto.RestaurantApplicationResponse;
+import com.foodieinc.backend.dto.RestaurantRegistrationRequest;
 import com.foodieinc.backend.dto.UserDTO;
 import com.foodieinc.backend.dto.UserRegistrationDTO;
 import com.foodieinc.backend.security.JwtTokenProvider;
+import com.foodieinc.backend.service.RestaurantService;
 import com.foodieinc.backend.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +27,7 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
     private final JwtTokenProvider tokenProvider;
+    private final RestaurantService restaurantService;
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -46,5 +50,12 @@ public class AuthController {
     public ResponseEntity<UserDTO> registerUser(@Valid @RequestBody UserRegistrationDTO registrationDTO) {
         UserDTO newUser = userService.registerUser(registrationDTO);
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/register/restaurant")
+    public ResponseEntity<RestaurantApplicationResponse> registerRestaurant(
+            @Valid @RequestBody RestaurantRegistrationRequest request) {
+        RestaurantApplicationResponse response = restaurantService.registerRestaurant(request);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 }

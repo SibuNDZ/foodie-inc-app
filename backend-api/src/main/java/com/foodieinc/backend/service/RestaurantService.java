@@ -1,13 +1,17 @@
 package com.foodieinc.backend.service;
 
+import com.foodieinc.backend.dto.RestaurantApplicationResponse;
 import com.foodieinc.backend.dto.RestaurantDTO;
+import com.foodieinc.backend.dto.RestaurantRegistrationRequest;
 import com.foodieinc.backend.entity.Restaurant;
 import com.foodieinc.backend.entity.User;
 import com.foodieinc.backend.exception.ResourceNotFoundException;
+import com.foodieinc.backend.exception.UserAlreadyExistsException;
 import com.foodieinc.backend.repository.RestaurantRepository;
 import com.foodieinc.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +25,7 @@ public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public List<RestaurantDTO> getAllActiveRestaurants() {
         return restaurantRepository.findByIsActiveTrue()
@@ -45,9 +50,10 @@ public class RestaurantService {
     public RestaurantDTO createRestaurant(User user, RestaurantDTO restaurantDTO) {
         Restaurant restaurant = new Restaurant();
         updateRestaurantFromDTO(restaurant, restaurantDTO);
-        restaurant.setActive(true);
 
         if (user.getRole() == User.UserRole.ADMIN) {
+            restaurant.setActive(true);
+            restaurant.setApprovalStatus(Restaurant.ApprovalStatus.APPROVED);
             if (restaurantDTO.getOwnerId() != null) {
                 User owner = userRepository.findById(restaurantDTO.getOwnerId())
                         .orElseThrow(() -> new ResourceNotFoundException("User", "id", restaurantDTO.getOwnerId()));
@@ -55,6 +61,9 @@ public class RestaurantService {
             }
         } else if (user.getRole() == User.UserRole.RESTAURANT_OWNER) {
             restaurant.setOwner(user);
+            restaurant.setActive(false);
+            restaurant.setOpen(false);
+            restaurant.setApprovalStatus(Restaurant.ApprovalStatus.PENDING_REVIEW);
         } else {
             throw new AccessDeniedException("You do not have permission to create restaurants");
         }
@@ -166,6 +175,88 @@ public class RestaurantService {
         }
         dto.setLatitude(restaurant.getLatitude());
         dto.setLongitude(restaurant.getLongitude());
+        if (restaurant.getApprovalStatus() != null) {
+            dto.setApprovalStatus(restaurant.getApprovalStatus().name());
+        }
+        dto.setRejectionReason(restaurant.getRejectionReason());
         return dto;
+    }
+
+    public RestaurantApplicationResponse registerRestaurant(RestaurantRegistrationRequest request) {
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new UserAlreadyExistsException("Username '" + request.getUsername() + "' is already taken");
+        }
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new UserAlreadyExistsException("Email '" + request.getEmail() + "' is already registered");
+        }
+
+        User owner = new User();
+        owner.setUsername(request.getUsername());
+        owner.setEmail(request.getEmail());
+        owner.setPassword(passwordEncoder.encode(request.getPassword()));
+        owner.setFirstName(request.getFirstName());
+        owner.setLastName(request.getLastName());
+        owner.setPhone(request.getPhone());
+        owner.setRole(User.UserRole.RESTAURANT_OWNER);
+        owner.setActive(true);
+        owner = userRepository.save(owner);
+
+        Restaurant restaurant = new Restaurant();
+        restaurant.setName(request.getRestaurantName());
+        restaurant.setAddress(request.getRestaurantAddress());
+        restaurant.setCity(request.getCity());
+        restaurant.setState(request.getState());
+        restaurant.setZipCode(request.getZipCode());
+        restaurant.setPhone(request.getRestaurantPhone());
+        restaurant.setEmail(request.getRestaurantEmail());
+        restaurant.setCuisineType(request.getCuisineType());
+        restaurant.setDescription(request.getDescription());
+        restaurant.setDeliveryFee(request.getDeliveryFee());
+        restaurant.setMinimumOrder(request.getMinimumOrder());
+        restaurant.setEstimatedDeliveryTime(request.getEstimatedDeliveryTime());
+        restaurant.setOwner(owner);
+        restaurant.setActive(false);
+        restaurant.setOpen(false);
+        restaurant.setApprovalStatus(Restaurant.ApprovalStatus.PENDING_REVIEW);
+        restaurant = restaurantRepository.save(restaurant);
+
+        return new RestaurantApplicationResponse(
+                owner.getId(), owner.getUsername(),
+                restaurant.getId(), restaurant.getName(),
+                Restaurant.ApprovalStatus.PENDING_REVIEW.name(),
+                "Your restaurant application has been submitted and is pending admin review."
+        );
+    }
+
+    public List<RestaurantDTO> getPendingRestaurants() {
+        return restaurantRepository
+                .findByApprovalStatusOrderByCreatedAtAsc(Restaurant.ApprovalStatus.PENDING_REVIEW)
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public RestaurantDTO approveRestaurant(Long id) {
+        Restaurant restaurant = restaurantRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant", "id", id));
+        if (restaurant.getApprovalStatus() != Restaurant.ApprovalStatus.PENDING_REVIEW) {
+            throw new IllegalStateException("Only PENDING_REVIEW restaurants can be approved");
+        }
+        restaurant.setApprovalStatus(Restaurant.ApprovalStatus.APPROVED);
+        restaurant.setActive(true);
+        restaurant.setOpen(true);
+        return convertToDTO(restaurantRepository.save(restaurant));
+    }
+
+    public RestaurantDTO rejectRestaurant(Long id, String reason) {
+        Restaurant restaurant = restaurantRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant", "id", id));
+        if (restaurant.getApprovalStatus() != Restaurant.ApprovalStatus.PENDING_REVIEW) {
+            throw new IllegalStateException("Only PENDING_REVIEW restaurants can be rejected");
+        }
+        restaurant.setApprovalStatus(Restaurant.ApprovalStatus.REJECTED);
+        restaurant.setRejectionReason(reason);
+        restaurant.setActive(false);
+        return convertToDTO(restaurantRepository.save(restaurant));
     }
 }

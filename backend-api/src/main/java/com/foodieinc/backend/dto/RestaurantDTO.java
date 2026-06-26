@@ -41,4 +41,6 @@ public class RestaurantDTO {
     private Long ownerId;
     private BigDecimal latitude;
     private BigDecimal longitude;
+    private String approvalStatus;
+    private String rejectionReason;
 }

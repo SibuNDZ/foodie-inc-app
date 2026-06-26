@@ -74,6 +74,17 @@ public class Restaurant {
     @Column(name = "is_open")
     private boolean isOpen = true;
 
+    public enum ApprovalStatus {
+        PENDING_REVIEW, APPROVED, REJECTED
+    }
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "approval_status")
+    private ApprovalStatus approvalStatus = ApprovalStatus.APPROVED;
+
+    @Column(name = "rejection_reason", columnDefinition = "TEXT")
+    private String rejectionReason;
+
     @Column(name = "latitude", precision = 9, scale = 6)
     private BigDecimal latitude;
 

@@ -35,6 +35,11 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     boolean existsByName(String name);
 
     /**
+     * Find restaurants by approval status, ordered oldest first (for admin review queue).
+     */
+    List<Restaurant> findByApprovalStatusOrderByCreatedAtAsc(Restaurant.ApprovalStatus approvalStatus);
+
+    /**
      * Retrieve the top 5 most recently added active restaurants.
      * Useful for featured listings or dashboard widgets.
      */

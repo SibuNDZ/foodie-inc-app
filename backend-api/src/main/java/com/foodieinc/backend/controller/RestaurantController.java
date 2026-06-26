@@ -12,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/restaurants")
@@ -35,6 +36,12 @@ public class RestaurantController {
         return ResponseEntity.ok(restaurantService.searchRestaurants(query));
     }
 
+    @GetMapping("/pending")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<RestaurantDTO>> getPendingRestaurants() {
+        return ResponseEntity.ok(restaurantService.getPendingRestaurants());
+    }
+
     @PostMapping
     @PreAuthorize("hasRole('ADMIN') or hasRole('RESTAURANT_OWNER')")
     public ResponseEntity<RestaurantDTO> createRestaurant(
@@ -51,6 +58,21 @@ public class RestaurantController {
             @PathVariable Long id,
             @RequestBody RestaurantDTO restaurantDTO) {
         return ResponseEntity.ok(restaurantService.updateRestaurant(user, id, restaurantDTO));
+    }
+
+    @PatchMapping("/{id}/approve")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<RestaurantDTO> approveRestaurant(@PathVariable Long id) {
+        return ResponseEntity.ok(restaurantService.approveRestaurant(id));
+    }
+
+    @PatchMapping("/{id}/reject")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<RestaurantDTO> rejectRestaurant(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> body) {
+        String reason = body.getOrDefault("reason", "Application did not meet requirements");
+        return ResponseEntity.ok(restaurantService.rejectRestaurant(id, reason));
     }
 
     @DeleteMapping("/{id}")

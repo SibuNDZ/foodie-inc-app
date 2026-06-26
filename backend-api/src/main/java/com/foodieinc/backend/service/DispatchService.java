@@ -1,17 +1,13 @@
 package com.foodieinc.backend.service;
 
-import com.foodieinc.backend.entity.ActiveDriverAssignment;
 import com.foodieinc.backend.entity.DriverProfile;
 import com.foodieinc.backend.entity.Order;
 import com.foodieinc.backend.entity.Restaurant;
-import com.foodieinc.backend.repository.ActiveDriverAssignmentRepository;
 import com.foodieinc.backend.repository.DriverProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -21,23 +17,22 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(propagation = Propagation.MANDATORY)
+@Transactional
 public class DispatchService {
 
     private static final Logger logger = LoggerFactory.getLogger(DispatchService.class);
 
     private final DriverProfileRepository driverProfileRepository;
-    private final ActiveDriverAssignmentRepository activeDriverAssignmentRepository;
 
     /**
      * Attempts to assign the nearest available driver to an order.
      * <p>
      * <strong>Concurrency safety:</strong> candidates are ranked first, then each
-        * is claimed with an atomic conditional update ({@code available=true -> false})
-        * via {@link com.foodieinc.backend.repository.DriverProfileRepository#claimDriver}.
-        * If the claim returns 0 rows, another transaction already claimed that driver,
-        * and the loop immediately tries the next ranked candidate. No broad table lock
-        * or retry loop is needed.
+     * is claimed with an atomic {@code UPDATE … WHERE available = true}. InnoDB
+     * serialises concurrent UPDATEs to the same row via row-level locking, so the
+     * second caller to attempt the same driver sees 0 rows affected after the first
+     * transaction commits and simply moves on to the next candidate. No broad table
+     * lock or optimistic-retry loop is needed.
      * <p>
      * <strong>Selection strategy:</strong>
      * <ol>
@@ -45,12 +40,8 @@ public class DispatchService {
      *       restaurant. Drivers without a location are placed at the end.</li>
      *   <li>Within each group, most-recently-active is the tiebreaker.</li>
      * </ol>
-     * <strong>Transaction contract:</strong> this method carries
-     * {@code propagation = MANDATORY} and <em>must</em> be called inside an
-     * existing transaction. The method mutates both {@code order} and the chosen
-     * {@link com.foodieinc.backend.entity.DriverProfile} but does <em>not</em>
-     * save them directly — the caller's {@code save} flush commits everything
-     * atomically.
+     * The method mutates {@code order} but does <em>not</em> save it — that is the
+     * caller's responsibility so the whole operation is one transaction.
      *
      * @return the assigned {@link DriverProfile}, or empty if no driver was available
      */
@@ -66,15 +57,22 @@ public class DispatchService {
         List<DriverProfile> ranked = rank(candidates, order.getRestaurant());
 
         for (DriverProfile candidate : ranked) {
-            if (!tryAssignSpecificDriver(order, candidate)) {
+            int claimed = driverProfileRepository.claimDriver(candidate.getId());
+            if (claimed == 0) {
+                // Another concurrent transaction got there first; try the next candidate.
+                logger.debug("Driver {} (profile {}) was claimed by a concurrent transaction; skipping",
+                        candidate.getUser().getUsername(), candidate.getId());
                 continue;
             }
 
+            order.setDriver(candidate);
+            order.setDeliveryStatus(Order.DeliveryStatus.ASSIGNED);
+
             logger.info("Dispatched driver {} (profile {}) to order {} — distance: {}",
-                candidate.getUser().getUsername(),
-                candidate.getId(),
+                    candidate.getUser().getUsername(),
+                    candidate.getId(),
                     order.getOrderNumber(),
-                formatDistance(candidate, order.getRestaurant()));
+                    formatDistance(candidate, order.getRestaurant()));
 
             return Optional.of(candidate);
         }
@@ -84,35 +82,22 @@ public class DispatchService {
         return Optional.empty();
     }
 
-    public boolean tryAssignSpecificDriver(Order order, DriverProfile candidate) {
-        int claimed = driverProfileRepository.claimDriver(candidate.getId());
+    /**
+     * Atomically claims a specific driver for an order (admin/manual assignment).
+     * Uses the same {@code claimDriver} atomic UPDATE to avoid double-booking.
+     *
+     * @return {@code true} if the driver was available and claimed, {@code false} if already taken
+     */
+    public boolean tryAssignSpecificDriver(Order order, DriverProfile driver) {
+        int claimed = driverProfileRepository.claimDriver(driver.getId());
         if (claimed == 0) {
-            logger.debug("Driver {} (profile {}) is locked or unavailable; skipping",
-                    candidate.getUser().getUsername(), candidate.getId());
             return false;
         }
-
-        DriverProfile driver = driverProfileRepository.findById(candidate.getId())
-                .orElse(candidate);
         order.setDriver(driver);
         order.setDeliveryStatus(Order.DeliveryStatus.ASSIGNED);
-
-        ActiveDriverAssignment assignment = new ActiveDriverAssignment();
-        assignment.setDriver(driver);
-        assignment.setOrder(order);
-
-        try {
-            activeDriverAssignmentRepository.saveAndFlush(assignment);
-            return true;
-        } catch (DataIntegrityViolationException ex) {
-            // Another transaction already created an active assignment; release this claim.
-            driverProfileRepository.releaseDriver(driver.getId());
-            order.setDriver(null);
-            order.setDeliveryStatus(null);
-            logger.debug("Driver {} (profile {}) active-assignment guard rejected claim",
-                    candidate.getUser().getUsername(), candidate.getId());
-            return false;
-        }
+        logger.info("Manually assigned driver {} (profile {}) to order {}",
+                driver.getUser().getUsername(), driver.getId(), order.getOrderNumber());
+        return true;
     }
 
     /**
@@ -143,9 +128,7 @@ public class DispatchService {
 
     private String formatDistance(DriverProfile driver, Restaurant restaurant) {
         if (restaurant.getLatitude() == null
-            || restaurant.getLongitude() == null
-            || driver.getCurrentLatitude() == null
-            || driver.getCurrentLongitude() == null) {
+                || driver.getCurrentLatitude() == null) {
             return "unknown (no coordinates)";
         }
         double km = haversineKm(driver.getCurrentLatitude(), driver.getCurrentLongitude(),
