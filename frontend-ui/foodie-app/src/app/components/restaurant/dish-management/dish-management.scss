@@ -103,6 +103,17 @@ button.danger {
 	color: #64748b;
 }
 
+// ── White-surface contrast ────────────────────────────────────────────────────
+.dish-form,
+.dish-list {
+	color: #0f172a;
+}
+
+.dish-management h1,
+.dish-management h2 {
+	color: #0f172a;
+}
+
 @media (max-width: 900px) {
 	.layout {
 		grid-template-columns: 1fr;

@@ -166,6 +166,16 @@ th {
   color: #475569;
 }
 
+// ── White-surface contrast ────────────────────────────────────────────────────
+h1 {
+  color: #0f172a;
+}
+
+.delivery-card,
+.table-wrap {
+  color: #0f172a;
+}
+
 @media (max-width: 720px) {
   .delivery-worklist__header {
     flex-direction: column;

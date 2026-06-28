@@ -64,3 +64,12 @@ header a[href='/register'].active {
 	background-color: var(--color-secondary-light) !important;
 	color: #4a2b00 !important;
 }
+
+/* ── Form field text contrast ─────────────────────────────────────────────── */
+/* body { color: #F5F0FA } (near-white) makes input text invisible on white   */
+/* form fields. These overrides ensure readable contrast in all components.   */
+input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='color']),
+textarea,
+select {
+	color: #0f172a;
+}

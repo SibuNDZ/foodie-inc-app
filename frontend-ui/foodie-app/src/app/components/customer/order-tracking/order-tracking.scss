@@ -188,6 +188,21 @@
 	gap: 0.2rem;
 }
 
+// ── White-surface contrast: body is near-white, cards are white ──────────────
+.hero,
+.panel,
+.summary-grid,
+.summary-card,
+.summary-value,
+.timeline-step,
+.item-row {
+	color: #0f172a;
+}
+
+.content-grid h2 {
+	color: #0f172a;
+}
+
 @media (max-width: 860px) {
 	.hero,
 	.content-grid {

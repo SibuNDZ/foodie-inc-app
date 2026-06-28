@@ -115,6 +115,17 @@
 	opacity: 0.55;
 }
 
+// ── White-surface contrast ────────────────────────────────────────────────────
+.cart-item,
+.totals {
+	color: #0f172a;
+}
+
+.cart-page h1,
+.cart-page h2 {
+	color: #0f172a;
+}
+
 @media (max-width: 760px) {
 	.cart-item {
 		flex-direction: column;

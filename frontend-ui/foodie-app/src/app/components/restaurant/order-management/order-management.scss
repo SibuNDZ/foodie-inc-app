@@ -194,7 +194,15 @@ td {
 	padding: 0.65rem 0.5rem;
 	border-bottom: 1px solid #e2e8f0;
 }
-
+// ── White-surface contrast ────────────────────────────────────────────────────
+.hero,
+.toolbar,
+.order-section,
+.summary-card,
+.summary-value,
+.order-card {
+	color: #0f172a;
+}
 @media (max-width: 720px) {
 	.hero,
 	.toolbar {
