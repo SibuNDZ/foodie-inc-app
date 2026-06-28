@@ -44,4 +44,10 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
      * Useful for featured listings or dashboard widgets.
      */
     List<Restaurant> findTop5ByIsActiveTrueOrderByCreatedAtDesc();
+
+    /**
+     * Find the single restaurant owned by a given user (regardless of active/approval status).
+     * Used by owner-scoped endpoints so an owner always sees their own restaurant.
+     */
+    java.util.Optional<Restaurant> findByOwnerId(Long ownerId);
 }

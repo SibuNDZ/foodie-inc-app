@@ -13,6 +13,9 @@ import java.util.List;
 public interface DishRepository extends JpaRepository<Dish, Long> {
     List<Dish> findByRestaurantIdAndIsAvailableTrue(Long restaurantId);
 
+    /** Returns ALL dishes for a restaurant (including unavailable), sorted by name. Used by owner management views. */
+    List<Dish> findByRestaurantIdOrderByNameAsc(Long restaurantId);
+
     @Query("SELECT d FROM Dish d WHERE d.restaurant.id = :restaurantId AND d.isAvailable = true AND " +
             "(:vegetarian IS NULL OR d.isVegetarian = :vegetarian) AND " +
             "(:vegan IS NULL OR d.isVegan = :vegan) AND " +

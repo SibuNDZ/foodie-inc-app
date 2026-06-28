@@ -1,5 +1,6 @@
 package com.foodieinc.backend.service;
 
+import com.foodieinc.backend.dto.DishCategoryDTO;
 import com.foodieinc.backend.dto.DishDTO;
 import com.foodieinc.backend.entity.Dish;
 import com.foodieinc.backend.entity.DishCategory;
@@ -113,6 +114,79 @@ public class DishService {
         }
 
         throw new AccessDeniedException("You do not have permission to manage this restaurant's dishes");
+    }
+
+    // ── Owner-scoped methods ──────────────────────────────────────────────────
+
+    public List<DishCategoryDTO> getActiveCategories() {
+        return dishCategoryRepository.findByIsActiveTrueOrderByDisplayOrderAsc()
+                .stream()
+                .map(c -> new DishCategoryDTO(c.getId(), c.getName(), c.getDisplayOrder()))
+                .collect(Collectors.toList());
+    }
+
+    public List<DishDTO> getAllDishesForOwner(User owner) {
+        Restaurant restaurant = getOwnerRestaurantOrThrow(owner);
+        return dishRepository.findByRestaurantIdOrderByNameAsc(restaurant.getId())
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public DishDTO createDishForOwner(User owner, DishDTO dishDTO) {
+        Restaurant restaurant = getOwnerRestaurantOrThrow(owner);
+
+        Dish dish = new Dish();
+        updateDishFromDTO(dish, dishDTO);
+        dish.setRestaurant(restaurant);
+
+        if (dishDTO.getCategoryId() != null) {
+            DishCategory category = dishCategoryRepository.findById(dishDTO.getCategoryId())
+                    .orElseThrow(() -> new ResourceNotFoundException("DishCategory", "id", dishDTO.getCategoryId()));
+            dish.setCategory(category);
+        }
+
+        return convertToDTO(dishRepository.save(dish));
+    }
+
+    public DishDTO updateDishForOwner(User owner, Long id, DishDTO dishDTO) {
+        Restaurant ownerRestaurant = getOwnerRestaurantOrThrow(owner);
+        Dish dish = dishRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Dish", "id", id));
+
+        if (!dish.getRestaurant().getId().equals(ownerRestaurant.getId())) {
+            throw new AccessDeniedException("You do not have permission to manage this dish");
+        }
+
+        updateDishFromDTO(dish, dishDTO);
+
+        if (dishDTO.getCategoryId() != null) {
+            DishCategory category = dishCategoryRepository.findById(dishDTO.getCategoryId())
+                    .orElseThrow(() -> new ResourceNotFoundException("DishCategory", "id", dishDTO.getCategoryId()));
+            dish.setCategory(category);
+        } else {
+            dish.setCategory(null);
+        }
+
+        return convertToDTO(dishRepository.save(dish));
+    }
+
+    public void deleteDishForOwner(User owner, Long id) {
+        Restaurant ownerRestaurant = getOwnerRestaurantOrThrow(owner);
+        Dish dish = dishRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Dish", "id", id));
+
+        if (!dish.getRestaurant().getId().equals(ownerRestaurant.getId())) {
+            throw new AccessDeniedException("You do not have permission to manage this dish");
+        }
+
+        dish.setAvailable(false);
+        dishRepository.save(dish);
+    }
+
+    private Restaurant getOwnerRestaurantOrThrow(User owner) {
+        return restaurantRepository.findByOwnerId(owner.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant", "owner", owner.getId()));
     }
 
     private void updateDishFromDTO(Dish dish, DishDTO dto) {

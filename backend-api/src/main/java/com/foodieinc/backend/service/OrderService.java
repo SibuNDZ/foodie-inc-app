@@ -406,4 +406,53 @@ public class OrderService {
         dto.setSpecialInstructions(item.getSpecialInstructions());
         return dto;
     }
+
+    // ── Owner-scoped methods ──────────────────────────────────────────────────
+
+    public List<OrderDTO> getOrdersForOwnerRestaurant(User owner) {
+        Restaurant restaurant = restaurantRepository.findByOwnerId(owner.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant", "owner", owner.getId()));
+        return orderRepository.findByRestaurantIdOrderByCreatedAtDesc(restaurant.getId())
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public OrderDTO updateOwnerOrderStatus(User owner, Long orderId, String status) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order", "id", orderId));
+
+        // Validate the order belongs to this owner's restaurant
+        Restaurant restaurant = order.getRestaurant();
+        if (restaurant.getOwner() == null || !restaurant.getOwner().getId().equals(owner.getId())) {
+            throw new AccessDeniedException("You do not have permission to update this order");
+        }
+
+        if (status == null || status.isBlank()) {
+            throw new IllegalArgumentException("Order status is required");
+        }
+
+        Order.OrderStatus parsedStatus;
+        try {
+            parsedStatus = Order.OrderStatus.valueOf(status);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid order status: " + status);
+        }
+
+        // Owners may only advance through their kitchen workflow
+        if (parsedStatus != Order.OrderStatus.CONFIRMED
+                && parsedStatus != Order.OrderStatus.PREPARING
+                && parsedStatus != Order.OrderStatus.READY_FOR_PICKUP) {
+            throw new AccessDeniedException(
+                    "Restaurant owners can only set status to CONFIRMED, PREPARING, or READY_FOR_PICKUP");
+        }
+
+        order.setStatus(parsedStatus);
+
+        if (parsedStatus == Order.OrderStatus.READY_FOR_PICKUP && order.getDriver() == null) {
+            dispatchService.tryAssignDriver(order);
+        }
+
+        return convertToDTO(orderRepository.save(order));
+    }
 }

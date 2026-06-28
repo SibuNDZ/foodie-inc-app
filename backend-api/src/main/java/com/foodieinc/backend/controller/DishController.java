@@ -1,5 +1,6 @@
 package com.foodieinc.backend.controller;
 
+import com.foodieinc.backend.dto.DishCategoryDTO;
 import com.foodieinc.backend.dto.DishDTO;
 import com.foodieinc.backend.entity.User;
 import com.foodieinc.backend.service.DishService;
@@ -24,6 +25,11 @@ public class DishController {
     @GetMapping("/restaurant/{restaurantId}")
     public ResponseEntity<List<DishDTO>> getDishesByRestaurant(@PathVariable Long restaurantId) {
         return ResponseEntity.ok(dishService.getDishesByRestaurant(restaurantId));
+    }
+
+    @GetMapping("/categories")
+    public ResponseEntity<List<DishCategoryDTO>> getCategories() {
+        return ResponseEntity.ok(dishService.getActiveCategories());
     }
 
     @GetMapping("/restaurant/{restaurantId}/filter")

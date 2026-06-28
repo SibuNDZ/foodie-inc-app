@@ -74,6 +74,7 @@ public class SecurityConfig {
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers("/restaurants", "/restaurants/{id}", "/restaurants/search").permitAll()
                 .requestMatchers("/dishes/restaurant/{restaurantId}").permitAll()
+                .requestMatchers("/dishes/categories").permitAll()
                 .anyRequest().authenticated()
             );
 

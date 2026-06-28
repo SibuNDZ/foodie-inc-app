@@ -259,4 +259,31 @@ public class RestaurantService {
         restaurant.setActive(false);
         return convertToDTO(restaurantRepository.save(restaurant));
     }
+
+    // ── Owner-scoped methods ──────────────────────────────────────────────────
+
+    public RestaurantDTO getRestaurantByOwner(Long ownerId) {
+        Restaurant restaurant = restaurantRepository.findByOwnerId(ownerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant", "owner", ownerId));
+        return convertToDTO(restaurant);
+    }
+
+    public RestaurantDTO updateOwnRestaurant(User owner, RestaurantDTO dto) {
+        Restaurant restaurant = restaurantRepository.findByOwnerId(owner.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant", "owner", owner.getId()));
+
+        // Only allow editing safe profile fields; approval status, owner, and coordinates are immutable here
+        if (dto.getName() != null && !dto.getName().isBlank()) restaurant.setName(dto.getName());
+        if (dto.getDescription() != null) restaurant.setDescription(dto.getDescription());
+        if (dto.getAddress() != null && !dto.getAddress().isBlank()) restaurant.setAddress(dto.getAddress());
+        if (dto.getCity() != null) restaurant.setCity(dto.getCity());
+        if (dto.getPhone() != null) restaurant.setPhone(dto.getPhone());
+        if (dto.getCuisineType() != null) restaurant.setCuisineType(dto.getCuisineType());
+        if (dto.getImageUrl() != null) restaurant.setImageUrl(dto.getImageUrl());
+        if (dto.getOpeningTime() != null) restaurant.setOpeningTime(dto.getOpeningTime());
+        if (dto.getClosingTime() != null) restaurant.setClosingTime(dto.getClosingTime());
+        restaurant.setOpen(dto.isOpen());
+
+        return convertToDTO(restaurantRepository.save(restaurant));
+    }
 }
