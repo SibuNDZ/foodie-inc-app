@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../services/auth';
+import { PushNotificationService } from '../../../services/push-notification';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -20,6 +21,7 @@ export class Login {
 
   constructor(
     private authService: AuthService,
+    private pushNotificationService: PushNotificationService,
     private router: Router,
     private route: ActivatedRoute,
     private toastr: ToastrService
@@ -39,6 +41,8 @@ export class Login {
     this.authService.login({ username: this.username, password: this.password }).subscribe({
       next: () => {
         this.toastr.success('Login successful!');
+        this.pushNotificationService.requestPermissionAndSubscribe()
+          .catch(err => console.warn('Push subscription failed:', err));
         this.router.navigateByUrl(this.returnUrl);
       },
       error: (error) => {
