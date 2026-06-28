@@ -96,6 +96,13 @@
 
 .hero h1 {
 	margin: 0;
+	color: #1a1a1a;
+	font-weight: 800;
+}
+
+.hero p {
+	color: #555555;
+	margin: 0.3rem 0 0;
 }
 
 .meta-row {
@@ -120,32 +127,54 @@
 
 .dish-grid {
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-	gap: 0.9rem;
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	gap: 0.75rem;
 }
 
+// ── Horizontal dish card ──────────────────────────────────────────────────────
 .dish-card {
 	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
+	flex-direction: row;
+	align-items: stretch;
 	background: #fff;
 	border: 1px solid #e2e8f0;
 	border-radius: 0.75rem;
+	overflow: hidden;
+	transition: box-shadow 0.2s;
+
+	&:hover { box-shadow: 0 2px 10px rgba(0, 0, 0, 0.09); }
+}
+
+.dish-info {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
 	padding: 0.9rem;
+	min-width: 0;
 }
 
-.dish-card h3 {
-	margin: 0;
+.dish-name {
+	margin: 0 0 0.3rem;
+	color: #1a1a1a;
+	font-weight: 700;
+	font-size: 1rem;
+	line-height: 1.3;
 }
 
-.description {
-	color: #475569;
-	margin: 0.5rem 0;
+.dish-description {
+	color: #444444;
+	font-size: 0.875rem;
+	margin: 0 0 0.4rem;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	flex: 1;
 }
 
 .tags {
-	margin: 0;
-	font-size: 0.82rem;
+	margin: 0 0 0.4rem;
+	font-size: 0.78rem;
 	color: #7c3aed;
 }
 
@@ -153,20 +182,56 @@
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	margin-top: 0.8rem;
+	margin-top: auto;
+	padding-top: 0.5rem;
 }
 
-.price {
+.dish-price {
+	color: #E5402E;
 	font-weight: 700;
+	font-size: 1rem;
 }
 
-.dish-footer button {
+.add-btn {
 	border: 0;
-	background: #0ea5e9;
+	background: #E5402E;
 	color: #fff;
 	border-radius: 0.45rem;
-	padding: 0.4rem 0.65rem;
+	padding: 0.35rem 0.75rem;
+	font-weight: 700;
+	font-size: 0.875rem;
 	cursor: pointer;
+	transition: background 0.15s;
+
+	&:hover { background: #c93520; }
+}
+
+// ── Dish image (right side) ───────────────────────────────────────────────────
+.dish-image {
+	width: 100px;
+	flex-shrink: 0;
+
+	img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+	}
+
+	&--placeholder {
+		background: linear-gradient(135deg, #E5402E 0%, #F2A33D 100%);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+}
+
+.dish-initial {
+	color: #fff;
+	font-size: 2rem;
+	font-weight: 700;
+	line-height: 1;
+	text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 }
 
 .state {

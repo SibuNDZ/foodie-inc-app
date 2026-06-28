@@ -74,19 +74,25 @@
 			<div class="dish-grid">
 				@for (dish of filteredDishes(); track dish.id) {
 					<article class="dish-card">
-						<div>
-							<h3>{{ dish.name }}</h3>
+						<div class="dish-info">
+							<h3 class="dish-name">{{ dish.name }}</h3>
 							@if (dish.description) {
-								<p class="description">{{ dish.description }}</p>
+								<p class="dish-description">{{ dish.description }}</p>
 							}
 							@if (formatDietaryTags(dish); as dietaryTags) {
 								<p class="tags">{{ dietaryTags }}</p>
 							}
+							<div class="dish-footer">
+								<span class="dish-price">{{ dish.price | currency }}</span>
+								<button type="button" class="add-btn" (click)="addDishToCart(dish)">Add</button>
+							</div>
 						</div>
-
-						<div class="dish-footer">
-							<span class="price">{{ dish.price | currency }}</span>
-							<button type="button" (click)="addDishToCart(dish)">Add</button>
+						<div class="dish-image" [class.dish-image--placeholder]="!dish.imageUrl">
+							@if (dish.imageUrl) {
+								<img [src]="dish.imageUrl" [alt]="dish.name" loading="lazy" />
+							} @else {
+								<span class="dish-initial">{{ dish.name.charAt(0).toUpperCase() }}</span>
+							}
 						</div>
 					</article>
 				}
