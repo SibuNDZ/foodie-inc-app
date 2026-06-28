@@ -5,10 +5,10 @@ import com.foodieinc.backend.entity.User;
 import com.foodieinc.backend.repository.OrderRepository;
 import com.foodieinc.backend.repository.UserRepository;
 import com.foodieinc.backend.service.StripeService;
+import com.stripe.exception.EventDataObjectDeserializationException;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Event;
-import com.stripe.model.StripeObject;
 import com.stripe.model.checkout.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -63,18 +63,23 @@ public class PaymentController {
             Event event = stripeService.constructWebhookEvent(payload, sigHeader);
 
             if ("checkout.session.completed".equals(event.getType())) {
-                StripeObject stripeObject = event.getDataObjectDeserializer()
-                    .getObject()
-                    .orElse(null);
-
-                if (stripeObject instanceof Session session) {
-                    String orderId = session.getMetadata().get("orderId");
-                    orderRepository.findById(Long.parseLong(orderId))
-                        .ifPresent(order -> {
-                            order.setPaymentStatus(Order.PaymentStatus.PAID);
-                            order.setStatus(Order.OrderStatus.CONFIRMED);
-                            orderRepository.save(order);
-                        });
+                try {
+                    // Use deserializeUnsafe() so API-version mismatches don't silently drop the event
+                    Session session = (Session) event.getDataObjectDeserializer().deserializeUnsafe();
+                    if (session != null) {
+                        String orderId = session.getMetadata().get("orderId");
+                        if (orderId != null) {
+                            orderRepository.findById(Long.parseLong(orderId))
+                                .ifPresent(order -> {
+                                    order.setPaymentStatus(Order.PaymentStatus.PAID);
+                                    order.setStatus(Order.OrderStatus.CONFIRMED);
+                                    orderRepository.save(order);
+                                });
+                        }
+                    }
+                } catch (EventDataObjectDeserializationException e) {
+                    // Deserialization failed — still return 200 so Stripe doesn't retry
+                    return ResponseEntity.ok("Received (deserialization error)");
                 }
             }
 
