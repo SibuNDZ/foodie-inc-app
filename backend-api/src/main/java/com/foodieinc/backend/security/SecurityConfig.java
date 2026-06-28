@@ -76,6 +76,7 @@ public class SecurityConfig {
                 .requestMatchers("/dishes/restaurant/{restaurantId}").permitAll()
                 .requestMatchers("/dishes/categories").permitAll()
                 .requestMatchers("/payments/webhook").permitAll()
+                .requestMatchers("/push/vapid-public-key").permitAll()
                 .anyRequest().authenticated()
             );
 

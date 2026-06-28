@@ -4,6 +4,7 @@ import com.foodieinc.backend.entity.Order;
 import com.foodieinc.backend.entity.User;
 import com.foodieinc.backend.repository.OrderRepository;
 import com.foodieinc.backend.repository.UserRepository;
+import com.foodieinc.backend.service.PushNotificationService;
 import com.foodieinc.backend.service.StripeService;
 import com.stripe.exception.EventDataObjectDeserializationException;
 import com.stripe.exception.SignatureVerificationException;
@@ -13,6 +14,7 @@ import com.stripe.model.checkout.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -25,6 +27,7 @@ public class PaymentController {
     @Autowired private StripeService stripeService;
     @Autowired private OrderRepository orderRepository;
     @Autowired private UserRepository userRepository;
+    @Autowired private PushNotificationService pushNotificationService;
 
     /** Authenticated: customer initiates Stripe Checkout */
     @PostMapping("/create-checkout-session/{orderId}")
@@ -54,6 +57,7 @@ public class PaymentController {
     }
 
     /** Unauthenticated: Stripe calls this server-to-server after payment */
+    @Transactional
     @PostMapping("/webhook")
     public ResponseEntity<String> handleWebhook(
             @RequestBody String payload,
@@ -69,12 +73,18 @@ public class PaymentController {
                     if (session != null) {
                         String orderId = session.getMetadata().get("orderId");
                         if (orderId != null) {
-                            orderRepository.findById(Long.parseLong(orderId))
-                                .ifPresent(order -> {
-                                    order.setPaymentStatus(Order.PaymentStatus.PAID);
-                                    order.setStatus(Order.OrderStatus.CONFIRMED);
-                                    orderRepository.save(order);
-                                });
+                            Order order = orderRepository.findById(Long.parseLong(orderId)).orElse(null);
+                            if (order != null) {
+                                order.setPaymentStatus(Order.PaymentStatus.PAID);
+                                order.setStatus(Order.OrderStatus.CONFIRMED);
+                                orderRepository.save(order);
+                                pushNotificationService.sendToUser(
+                                    order.getRestaurant().getOwner(),
+                                    "New Order Received",
+                                    "Order #" + order.getId() + " \u2014 R" + order.getTotalAmount() + " from " + order.getUser().getFirstName(),
+                                    "https://www.foodieapp.co.za/owner/dashboard"
+                                );
+                            }
                         }
                     }
                 } catch (EventDataObjectDeserializationException e) {

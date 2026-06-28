@@ -32,6 +32,7 @@ public class OrderService {
     private final DriverProfileRepository driverProfileRepository;
     private final ActiveDriverAssignmentRepository activeDriverAssignmentRepository;
     private final DispatchService dispatchService;
+    private final PushNotificationService pushNotificationService;
 
     private static final BigDecimal TAX_RATE = new BigDecimal("0.08");
 
@@ -451,6 +452,25 @@ public class OrderService {
 
         if (parsedStatus == Order.OrderStatus.READY_FOR_PICKUP && order.getDriver() == null) {
             dispatchService.tryAssignDriver(order);
+        }
+
+        // Notify customer of their order's progress
+        User customer = order.getUser();
+        String restaurantName = order.getRestaurant().getName();
+        switch (parsedStatus) {
+            case CONFIRMED -> pushNotificationService.sendToUser(customer,
+                "Order Confirmed",
+                restaurantName + " has confirmed your order",
+                "https://www.foodieapp.co.za/orders");
+            case PREPARING -> pushNotificationService.sendToUser(customer,
+                "Order Being Prepared",
+                restaurantName + " is preparing your food",
+                "https://www.foodieapp.co.za/orders");
+            case READY_FOR_PICKUP -> pushNotificationService.sendToUser(customer,
+                "Order Ready",
+                "Your order from " + restaurantName + " is ready for pickup",
+                "https://www.foodieapp.co.za/orders");
+            default -> { /* no notification needed */ }
         }
 
         return convertToDTO(orderRepository.save(order));
