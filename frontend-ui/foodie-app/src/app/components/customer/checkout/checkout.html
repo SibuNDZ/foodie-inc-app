@@ -45,11 +45,22 @@
 					<p class="summary-note">{{ currentCart.items.length }} item(s) ready for delivery.</p>
 
 					@for (item of currentCart.items; track item.dish.id) {
-						<p class="line-item">
-							<span>{{ item.quantity }} x {{ item.dish.name }}</span>
-							<span>{{ item.quantity * item.dish.price | currency }}</span>
-						</p>
+						<div class="cart-item-row">
+							<span class="item-name">{{ item.dish.name }}</span>
+							<div class="item-controls">
+								<div class="qty-ctrl">
+									<button type="button" class="qty-btn" (click)="updateQuantity(item.dish.id, -1)">−</button>
+									<span class="qty-val">{{ item.quantity }}</span>
+									<button type="button" class="qty-btn" (click)="updateQuantity(item.dish.id, 1)">+</button>
+								</div>
+								<span class="item-price">{{ item.quantity * item.dish.price | currency }}</span>
+							</div>
+						</div>
 					}
+
+					<a [routerLink]="['/restaurant', currentCart.restaurantId]" class="add-more-link">
+						+ Add more items from {{ currentCart.restaurantName }}
+					</a>
 
 					<hr />
 					<p class="line-item"><span>Subtotal</span><span>{{ currentCart.subtotal | currency }}</span></p>

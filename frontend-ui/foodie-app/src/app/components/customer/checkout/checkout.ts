@@ -27,6 +27,18 @@ export class Checkout {
   protected deliveryAddress = '';
   protected deliveryInstructions = '';
 
+  protected updateQuantity(dishId: number, delta: number): void {
+    const cart = this.cart();
+    if (!cart) return;
+    const item = cart.items.find(i => i.dish.id === dishId);
+    if (!item) return;
+    this.cartService.updateItemQuantity(dishId, item.quantity + delta);
+  }
+
+  protected removeItem(dishId: number): void {
+    this.cartService.removeItem(dishId);
+  }
+
   protected placeOrder(): void {
     const cart = this.cart();
     if (!cart || cart.items.length === 0) {

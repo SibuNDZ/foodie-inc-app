@@ -45,12 +45,19 @@
 .form-section-header h2,
 .summary h2 {
 	margin: 0;
+	color: #0f172a;
 }
 
 .form-section-header p,
 .summary-note {
 	margin: 0.25rem 0 0;
 	color: #64748b;
+}
+
+label {
+	color: #0f172a;
+	font-weight: 600;
+	font-size: 0.9rem;
 }
 
 textarea,
@@ -64,7 +71,7 @@ select {
 button {
 	border: 0;
 	border-radius: 0.6rem;
-	background: #0f766e;
+	background: #E5402E;
 	color: #fff;
 	padding: 0.6rem 0.9rem;
 	font-weight: 700;
@@ -97,6 +104,72 @@ button:disabled {
 .line-item.total {
 	font-size: 1.05rem;
 	font-weight: 700;
+	color: #0f172a;
+}
+
+// ── Cart item row with quantity controls ──────────────────────────────────────────
+.cart-item-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.45rem 0;
+	border-bottom: 1px solid #f1f5f9;
+
+	.item-name {
+		flex: 1;
+		color: #0f172a;
+		font-size: 0.9rem;
+	}
+
+	.item-controls {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+	}
+
+	.item-price {
+		color: #0f172a;
+		font-weight: 600;
+		min-width: 4rem;
+		text-align: right;
+	}
+}
+
+.qty-ctrl {
+	display: flex;
+	align-items: center;
+	gap: 0.4rem;
+
+	.qty-btn {
+		background: #f1f5f9;
+		color: #0f172a;
+		border: 1px solid #e2e8f0;
+		border-radius: 0.35rem;
+		padding: 0.2rem 0.55rem;
+		font-size: 1rem;
+		font-weight: 700;
+		line-height: 1;
+		cursor: pointer;
+		&:hover { background: #e2e8f0; }
+	}
+
+	.qty-val {
+		min-width: 1.5rem;
+		text-align: center;
+		color: #0f172a;
+		font-weight: 700;
+	}
+}
+
+.add-more-link {
+	display: block;
+	margin: 0.6rem 0 0.2rem;
+	color: #E5402E;
+	font-size: 0.875rem;
+	font-weight: 600;
+	text-decoration: none;
+	&:hover { text-decoration: underline; }
 }
 
 .summary-note {
