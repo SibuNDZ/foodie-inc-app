@@ -5,17 +5,21 @@
 }
 
 .page-header {
-  margin-bottom: 28px;
+  margin-bottom: 1rem;
+  background: #2A1B40;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.9rem;
+  padding: 1rem;
 
   h1 {
     font-size: 26px;
     font-weight: 700;
-    color: #222;
+    color: #F5F0FA;
     margin: 0 0 6px;
   }
 
   .subtitle {
-    color: #666;
+    color: #B8A8CC;
     font-size: 15px;
     margin: 0;
   }
@@ -23,7 +27,7 @@
 
 .results-count {
   font-size: 14px;
-  color: #888;
+  color: #B8A8CC;
   margin-bottom: 12px;
 }
 
@@ -134,14 +138,14 @@
 .loading-state {
   text-align: center;
   padding: 60px;
-  color: #888;
+  color: #B8A8CC;
   font-size: 15px;
 }
 
 .empty-state {
   text-align: center;
   padding: 64px 24px;
-  color: #666;
+  color: #B8A8CC;
 
   .empty-icon {
     font-size: 52px;
@@ -151,7 +155,7 @@
   h3 {
     font-size: 20px;
     font-weight: 600;
-    color: #333;
+    color: #F5F0FA;
     margin: 0 0 8px;
   }
 

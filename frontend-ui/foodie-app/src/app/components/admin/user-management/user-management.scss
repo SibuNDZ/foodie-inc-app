@@ -11,8 +11,8 @@
 .hero,
 .filters,
 .table-wrap {
-	background: #fff;
-	border: 1px solid #e2e8f0;
+	background: #2A1B40;
+	border: 1px solid rgba(255, 255, 255, 0.08);
 	border-radius: 0.9rem;
 	padding: 1rem;
 	margin-bottom: 1rem;
@@ -27,15 +27,19 @@
 
 .eyebrow {
 	margin: 0 0 0.2rem;
-	color: #7c2d12;
+	color: #B8A8CC;
 	font-weight: 700;
 	text-transform: uppercase;
 	font-size: 0.78rem;
 }
 
+h1, h2 {
+	color: #F5F0FA;
+}
+
 .subtitle,
 .meta {
-	color: #475569;
+	color: #B8A8CC;
 }
 
 .refresh-btn,
@@ -48,8 +52,8 @@
 }
 
 .refresh-btn {
-	background: #e2e8f0;
-	color: #0f172a;
+	background: rgba(255, 255, 255, 0.08);
+	color: #F5F0FA;
 }
 
 .danger {
@@ -67,15 +71,17 @@
 .filters label {
 	display: grid;
 	gap: 0.35rem;
-	color: #475569;
+	color: #B8A8CC;
 }
 
 .filters input,
 .filters select,
 table select {
-	border: 1px solid #cbd5e1;
+	border: 1px solid rgba(255, 255, 255, 0.15);
 	border-radius: 0.6rem;
 	padding: 0.55rem 0.7rem;
+	background: #1E1330;
+	color: #F5F0FA;
 }
 
 .table-wrap {
@@ -90,9 +96,14 @@ table {
 th,
 td {
 	padding: 0.65rem 0.5rem;
-	border-bottom: 1px solid #e2e8f0;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 	text-align: left;
 	vertical-align: middle;
+	color: #B8A8CC;
+}
+
+th {
+	color: #F5F0FA;
 }
 
 .toggle {
