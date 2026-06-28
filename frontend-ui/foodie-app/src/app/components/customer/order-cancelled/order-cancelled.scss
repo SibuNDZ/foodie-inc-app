@@ -1,0 +1,46 @@
+:host { display: block; }
+
+.cancelled-page {
+	max-width: 520px;
+	margin: 80px auto;
+	padding: 2rem;
+	text-align: center;
+	background: var(--color-bg-surface);
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	border-radius: 1rem;
+
+	.icon { font-size: 3.5rem; margin-bottom: 1rem; }
+
+	h1 {
+		color: #F5F0FA;
+		font-size: 1.8rem;
+		margin: 0 0 0.75rem;
+	}
+
+	.message { color: #B8A8CC; margin: 0 0 1.5rem; }
+}
+
+.actions {
+	display: flex;
+	gap: 0.75rem;
+	justify-content: center;
+	flex-wrap: wrap;
+}
+
+.btn {
+	padding: 0.6rem 1.4rem;
+	border-radius: 0.5rem;
+	font-weight: 700;
+	text-decoration: none;
+	font-size: 0.95rem;
+}
+
+.btn-primary {
+	background: #E5402E;
+	color: #fff;
+}
+
+.btn-secondary {
+	background: rgba(255, 255, 255, 0.08);
+	color: #F5F0FA;
+}

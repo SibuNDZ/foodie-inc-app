@@ -5,6 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { CartService } from '../../../services/cart';
 import { OrderService } from '../../../services/order';
+import { PaymentService } from '../../../services/payment';
 import { CreateOrderRequest } from '../../../models';
 
 @Component({
@@ -16,6 +17,7 @@ import { CreateOrderRequest } from '../../../models';
 export class Checkout {
   private readonly cartService = inject(CartService);
   private readonly orderService = inject(OrderService);
+  private readonly paymentService = inject(PaymentService);
   private readonly router = inject(Router);
   private readonly toastr = inject(ToastrService);
 
@@ -24,7 +26,6 @@ export class Checkout {
 
   protected deliveryAddress = '';
   protected deliveryInstructions = '';
-  protected paymentMethod = 'CARD';
 
   protected placeOrder(): void {
     const cart = this.cart();
@@ -47,21 +48,28 @@ export class Checkout {
       })),
       deliveryAddress: this.deliveryAddress.trim(),
       deliveryInstructions: this.deliveryInstructions.trim() || undefined,
-      paymentMethod: this.paymentMethod
+      paymentMethod: 'CARD'
     };
 
     this.isSubmitting.set(true);
     this.orderService.createOrder(request).subscribe({
       next: (order) => {
-        this.cartService.clearCart();
-        this.toastr.success(`Order ${order.orderNumber} placed successfully.`);
-        this.router.navigate(['/order', order.id]);
+        this.paymentService.createCheckoutSession(order.id).subscribe({
+          next: (session) => {
+            // Redirect browser to Stripe-hosted payment page
+            window.location.href = session.url;
+          },
+          error: () => {
+            this.toastr.warning('Order saved but payment could not start. Retry from My Orders.');
+            this.isSubmitting.set(false);
+            this.router.navigate(['/orders']);
+          }
+        });
       },
       error: () => {
-        this.toastr.error('Unable to place order right now. Please try again.');
+        this.toastr.error('Unable to place order. Please try again.');
         this.isSubmitting.set(false);
       }
     });
   }
-
 }

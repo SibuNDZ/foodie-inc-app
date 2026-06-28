@@ -1,0 +1,14 @@
+<section class="success-page">
+	<div class="icon">✅</div>
+	<h1>Order Confirmed!</h1>
+	<p class="message">Your payment was successful and your order is now being processed.</p>
+
+	@if (sessionId) {
+		<p class="ref">Reference: <code>{{ sessionId }}</code></p>
+	}
+
+	<div class="actions">
+		<a routerLink="/orders" class="btn btn-primary">Track My Order</a>
+		<a routerLink="/restaurants" class="btn btn-secondary">Order Again</a>
+	</div>
+</section>

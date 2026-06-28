@@ -43,6 +43,14 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
+    path: 'order/success',
+    loadComponent: () => import('./components/customer/order-success/order-success').then(m => m.OrderSuccess)
+  },
+  {
+    path: 'order/cancelled',
+    loadComponent: () => import('./components/customer/order-cancelled/order-cancelled').then(m => m.OrderCancelled)
+  },
+  {
     path: 'orders',
     loadComponent: () => import('./components/customer/order-history/order-history').then(m => m.OrderHistory),
     canActivate: [authGuard]

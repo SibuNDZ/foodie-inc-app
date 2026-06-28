@@ -24,6 +24,11 @@
 
 	<div class="auth-actions">
 		@if (authService.isAuthenticated()) {
+			@if (!cartService.isEmpty()) {
+				<a routerLink="/checkout" class="cart-btn">
+					🛒 <span class="cart-count">{{ cartService.itemCount() }}</span>
+				</a>
+			}
 			<span class="welcome">{{ authService.currentUser()?.username }}</span>
 			<button type="button" class="logout-btn" (click)="logout()">Logout</button>
 		} @else {

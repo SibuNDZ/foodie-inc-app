@@ -34,16 +34,8 @@
 						placeholder="Apartment, gate code, landmark, etc."></textarea>
 					<p class="helper">Optional, but useful for apartment numbers, side entrances, or call-on-arrival notes.</p>
 
-					<label for="paymentMethod">Payment Method</label>
-					<select id="paymentMethod" name="paymentMethod" [(ngModel)]="paymentMethod">
-						<option value="CARD">Card</option>
-						<option value="CASH">Cash</option>
-						<option value="WALLET">Wallet</option>
-					</select>
-					<p class="helper">Payment is recorded with the order and can be confirmed by the driver flow.</p>
-
 					<button type="submit" [disabled]="isSubmitting()">
-						{{ isSubmitting() ? 'Placing Order...' : 'Place Order' }}
+						{{ isSubmitting() ? 'Redirecting to payment...' : 'Place Order and Pay' }}
 					</button>
 				</form>
 

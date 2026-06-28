@@ -56,6 +56,9 @@ public class Order {
     @Column(name = "delivery_instructions", columnDefinition = "TEXT")
     private String deliveryInstructions;
 
+    @Column(name = "stripe_session_id")
+    private String stripeSessionId;
+
     @Column(name = "payment_method")
     private String paymentMethod;
 
