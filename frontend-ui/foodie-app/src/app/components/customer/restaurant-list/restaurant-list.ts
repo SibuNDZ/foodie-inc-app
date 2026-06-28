@@ -80,4 +80,15 @@ export class RestaurantList implements OnInit {
     }
     return stars;
   }
+
+  getDeliveryDisplay(fee: number | null | undefined): string {
+    if (fee === null || fee === undefined) return 'Free delivery';
+    if (fee === 0) return 'Free delivery';
+    return `R${Number(fee).toFixed(2)} delivery`;
+  }
+
+  getDeliveryTimeDisplay(minutes: number | null | undefined): string {
+    if (!minutes) return '20–35 min';
+    return `${minutes} min`;
+  }
 }

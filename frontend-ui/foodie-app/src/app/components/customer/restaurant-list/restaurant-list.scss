@@ -112,131 +112,143 @@
 
 .restaurants-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 24px;
 }
 
+// ── Card ──────────────────────────────────────────────────────────────────────
 .restaurant-card {
-  background: white;
-  border-radius: 16px;
+  background: #ffffff;
+  border-radius: 12px;
   overflow: hidden;
   text-decoration: none;
   color: inherit;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
 
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
   }
 }
 
-.restaurant-image {
+// ── Card image ────────────────────────────────────────────────────────────────
+.card-image {
   position: relative;
-  height: 180px;
+  height: 200px;
   overflow: hidden;
+  flex-shrink: 0;
 
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
   }
 
-  .placeholder-image {
+  &__placeholder {
     width: 100%;
     height: 100%;
-    background: linear-gradient(145deg, var(--color-bg-surface) 0%, var(--color-primary-dark) 100%);
+    background: linear-gradient(135deg, #E5402E 0%, #F2A33D 100%);
     display: flex;
     align-items: center;
     justify-content: center;
 
     span {
-      font-size: 64px;
-      color: white;
+      font-size: 72px;
+      color: #ffffff;
       font-weight: 700;
+      line-height: 1;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
     }
   }
+}
 
-  .closed-badge {
+// ── Badges ────────────────────────────────────────────────────────────────────
+.badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  line-height: 1.4;
+
+  &--closed {
     position: absolute;
-    top: 12px;
-    right: 12px;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 6px 12px;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.75);
+    color: #ffffff;
     border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
+    padding: 4px 10px;
+  }
+
+  &--new {
+    background: #E5402E;
+    color: #ffffff;
+    vertical-align: middle;
   }
 }
 
-.restaurant-info {
-  padding: 20px;
-
-  h3 {
-    margin: 0 0 4px;
-    font-size: 20px;
-    font-weight: 600;
-    color: #333;
-  }
-
-  .cuisine {
-    color: #666;
-    margin: 0 0 12px;
-    font-size: 14px;
-  }
-}
-
-.restaurant-meta {
+// ── Card body ─────────────────────────────────────────────────────────────────
+.card-body {
+  padding: 14px 16px 16px;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.card-name {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-cuisine {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #666666;
+}
+
+// ── Meta row (⭐ • time • fee) ─────────────────────────────────────────────────
+.card-meta {
+  display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 8px;
-}
-
-.rating {
-  display: flex;
-  align-items: center;
   gap: 4px;
+  font-size: 0.85rem;
+  color: #555555;
+  margin-top: 6px;
+}
 
-  .star {
-    color: #ddd;
-    font-size: 14px;
+.meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
 
-    &.full, &.half {
-      color: #ffc107;
-    }
-  }
-
-  .rating-text {
-    font-size: 14px;
-    color: #666;
-    margin-left: 4px;
+  strong {
+    font-weight: 600;
+    color: #1a1a1a;
   }
 }
 
-.delivery-info {
-  display: flex;
-  gap: 12px;
-  font-size: 13px;
-  color: #666;
-
-  .delivery-time {
-    &::before {
-      content: '⏱ ';
-    }
-  }
-
-  .delivery-fee {
-    color: #28a745;
-  }
+.meta-dim {
+  color: #999999;
+  font-size: 0.8rem;
 }
 
-.minimum-order {
-  margin: 12px 0 0;
-  font-size: 13px;
-  color: #888;
+.meta-sep {
+  color: #cccccc;
+  font-size: 0.75rem;
+  padding: 0 1px;
 }
 
 .btn {

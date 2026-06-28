@@ -43,56 +43,43 @@
       <div class="restaurants-grid">
         @for (restaurant of filteredRestaurants(); track restaurant.id) {
           <a [routerLink]="['/restaurant', restaurant.id]" class="restaurant-card">
-            <div class="restaurant-image">
+
+            <div class="card-image">
               @if (restaurant.imageUrl) {
-                <img [src]="restaurant.imageUrl" [alt]="restaurant.name" />
+                <img [src]="restaurant.imageUrl" [alt]="restaurant.name" loading="lazy" />
               } @else {
-                <div class="placeholder-image">
-                  <span>{{ restaurant.name.charAt(0) }}</span>
+                <div class="card-image__placeholder">
+                  <span>{{ restaurant.name.charAt(0).toUpperCase() }}</span>
                 </div>
               }
               @if (!restaurant.isOpen) {
-                <div class="closed-badge">Closed</div>
+                <span class="badge badge--closed">Closed</span>
               }
             </div>
 
-            <div class="restaurant-info">
-              <h3>{{ restaurant.name }}</h3>
-              <p class="cuisine">{{ restaurant.cuisineType || 'Various' }}</p>
+            <div class="card-body">
+              <h3 class="card-name">{{ restaurant.name }}</h3>
+              <p class="card-cuisine">{{ restaurant.cuisineType || 'Various' }}</p>
 
-              <div class="restaurant-meta">
-                <div class="rating">
-                  @for (star of getStarRating(restaurant.averageRating); track $index) {
-                    <span class="star" [class.full]="star === 'full'" [class.half]="star === 'half'">
-                      @if (star === 'full') { ★ }
-                      @else if (star === 'half') { ★ }
-                      @else { ☆ }
-                    </span>
-                  }
-                  <span class="rating-text">
-                    {{ restaurant.averageRating?.toFixed(1) || 'New' }}
+              <div class="card-meta">
+                <span class="meta-item">
+                  ⭐
+                  @if (restaurant.averageRating) {
+                    <strong>{{ restaurant.averageRating.toFixed(1) }}</strong>
                     @if (restaurant.totalReviews) {
-                      ({{ restaurant.totalReviews }})
+                      <span class="meta-dim">({{ restaurant.totalReviews }})</span>
                     }
-                  </span>
-                </div>
-
-                <div class="delivery-info">
-                  @if (restaurant.estimatedDeliveryTime) {
-                    <span class="delivery-time">{{ restaurant.estimatedDeliveryTime }} min</span>
+                  } @else {
+                    <span class="badge badge--new">New</span>
                   }
-                  @if (restaurant.deliveryFee !== undefined) {
-                    <span class="delivery-fee">
-                      {{ restaurant.deliveryFee === 0 ? 'Free delivery' : ((restaurant.deliveryFee | currency) + ' delivery') }}
-                    </span>
-                  }
-                </div>
+                </span>
+                <span class="meta-sep">•</span>
+                <span class="meta-item">{{ getDeliveryTimeDisplay(restaurant.estimatedDeliveryTime) }}</span>
+                <span class="meta-sep">•</span>
+                <span class="meta-item">{{ getDeliveryDisplay(restaurant.deliveryFee) }}</span>
               </div>
-
-              @if (restaurant.minimumOrder) {
-                <p class="minimum-order">Min. order: {{ restaurant.minimumOrder | currency }}</p>
-              }
             </div>
+
           </a>
         }
       </div>
