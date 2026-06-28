@@ -1,0 +1,403 @@
+<section class="owner-dashboard">
+
+  <!-- ── Page header + tab nav ──────────────────────────────────────── -->
+  <header class="dash-header">
+    <div>
+      <p class="eyebrow">Restaurant Owner</p>
+      <h1>My Restaurant</h1>
+    </div>
+    <nav class="tab-nav" role="tablist">
+      <button
+        role="tab"
+        [attr.aria-selected]="activeTab() === 'restaurant'"
+        [class.tab--active]="activeTab() === 'restaurant'"
+        (click)="switchTab('restaurant')">My Restaurant</button>
+      <button
+        role="tab"
+        [attr.aria-selected]="activeTab() === 'menu'"
+        [class.tab--active]="activeTab() === 'menu'"
+        (click)="switchTab('menu')">Menu</button>
+      <button
+        role="tab"
+        [attr.aria-selected]="activeTab() === 'orders'"
+        [class.tab--active]="activeTab() === 'orders'"
+        (click)="switchTab('orders')">Orders</button>
+    </nav>
+  </header>
+
+  <!-- ══════════════════════════════════════════════════════════════════
+       TAB 1 — MY RESTAURANT
+  ══════════════════════════════════════════════════════════════════════ -->
+  @if (activeTab() === 'restaurant') {
+    <div class="tab-panel" role="tabpanel">
+
+      @if (restaurantLoading()) {
+        <p class="state">Loading restaurant…</p>
+      } @else if (!restaurant()) {
+        <p class="state state-error">Could not load your restaurant. Please refresh.</p>
+      } @else {
+
+        <!-- View mode -->
+        @if (!isEditing()) {
+          <div class="card">
+            <div class="card-row card-row--between">
+              <h2 class="restaurant-name">{{ restaurant()!.name }}</h2>
+              <span class="status-pill" [ngClass]="approvalClass(restaurant()!.approvalStatus)">
+                {{ approvalLabel(restaurant()!.approvalStatus) }}
+              </span>
+            </div>
+
+            <dl class="detail-grid">
+              <dt>Address</dt>
+              <dd>{{ restaurant()!.address }}{{ restaurant()!.city ? ', ' + restaurant()!.city : '' }}</dd>
+
+              <dt>Cuisine</dt>
+              <dd>{{ restaurant()!.cuisineType || '—' }}</dd>
+
+              <dt>Phone</dt>
+              <dd>{{ restaurant()!.phone || '—' }}</dd>
+
+              <dt>Description</dt>
+              <dd>{{ restaurant()!.description || '—' }}</dd>
+
+              <dt>Currently open</dt>
+              <dd>{{ restaurant()!.isOpen ? 'Yes' : 'No' }}</dd>
+            </dl>
+
+            <div class="card-actions">
+              <button type="button" class="btn btn-primary" (click)="startEdit()">Edit</button>
+            </div>
+          </div>
+
+        <!-- Edit mode -->
+        } @else {
+          <div class="card">
+            <h2>Edit Restaurant Profile</h2>
+
+            <div class="form-grid">
+              <label class="field">
+                <span>Name <span class="req">*</span></span>
+                <input type="text"
+                  [ngModel]="editForm().name || ''"
+                  (ngModelChange)="setEditField('name', $event)"
+                  name="name" required />
+              </label>
+
+              <label class="field">
+                <span>Address <span class="req">*</span></span>
+                <input type="text"
+                  [ngModel]="editForm().address || ''"
+                  (ngModelChange)="setEditField('address', $event)"
+                  name="address" required />
+              </label>
+
+              <label class="field">
+                <span>City</span>
+                <input type="text"
+                  [ngModel]="editForm().city || ''"
+                  (ngModelChange)="setEditField('city', $event)"
+                  name="city" />
+              </label>
+
+              <label class="field">
+                <span>Phone</span>
+                <input type="tel"
+                  [ngModel]="editForm().phone || ''"
+                  (ngModelChange)="setEditField('phone', $event)"
+                  name="phone" />
+              </label>
+
+              <label class="field">
+                <span>Cuisine type</span>
+                <input type="text"
+                  [ngModel]="editForm().cuisineType || ''"
+                  (ngModelChange)="setEditField('cuisineType', $event)"
+                  name="cuisineType" />
+              </label>
+
+              <label class="field field--full">
+                <span>Description</span>
+                <textarea
+                  [ngModel]="editForm().description || ''"
+                  (ngModelChange)="setEditField('description', $event)"
+                  name="description" rows="3"></textarea>
+              </label>
+
+              <label class="field field--checkbox">
+                <input type="checkbox"
+                  [ngModel]="editForm().isOpen || false"
+                  (ngModelChange)="setEditField('isOpen', $event)"
+                  name="isOpen" />
+                <span>Restaurant is currently open</span>
+              </label>
+            </div>
+
+            <div class="card-actions">
+              <button type="button" class="btn btn-primary" [disabled]="isSaving()" (click)="saveRestaurant()">
+                {{ isSaving() ? 'Saving…' : 'Save' }}
+              </button>
+              <button type="button" class="btn btn-secondary" (click)="cancelEdit()">Cancel</button>
+            </div>
+          </div>
+        }
+      }
+    </div>
+  }
+
+  <!-- ══════════════════════════════════════════════════════════════════
+       TAB 2 — MENU MANAGEMENT
+  ══════════════════════════════════════════════════════════════════════ -->
+  @if (activeTab() === 'menu') {
+    <div class="tab-panel" role="tabpanel">
+
+      <!-- Add / Edit dish form -->
+      @if (showDishForm()) {
+        <div class="card">
+          <h2>{{ editingDishId() ? 'Edit Dish' : 'Add New Dish' }}</h2>
+
+          <div class="form-grid">
+            <label class="field">
+              <span>Name <span class="req">*</span></span>
+              <input type="text"
+                [ngModel]="dishForm().name || ''"
+                (ngModelChange)="setDishField('name', $event)"
+                name="dishName" required />
+            </label>
+
+            <label class="field">
+              <span>Price (ZAR) <span class="req">*</span></span>
+              <input type="number" min="0.01" step="0.01"
+                [ngModel]="dishForm().price || 0"
+                (ngModelChange)="setDishField('price', +$event)"
+                name="price" required />
+            </label>
+
+            <label class="field">
+              <span>Category</span>
+              <select
+                [ngModel]="dishForm().categoryId ?? ''"
+                (ngModelChange)="setDishField('categoryId', $event ? +$event : undefined)"
+                name="categoryId">
+                <option value="">— None —</option>
+                @for (cat of categories(); track cat.id) {
+                  <option [value]="cat.id">{{ cat.name }}</option>
+                }
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Image URL</span>
+              <input type="url"
+                [ngModel]="dishForm().imageUrl || ''"
+                (ngModelChange)="setDishField('imageUrl', $event)"
+                name="imageUrl" />
+            </label>
+
+            <label class="field field--full">
+              <span>Description</span>
+              <textarea
+                [ngModel]="dishForm().description || ''"
+                (ngModelChange)="setDishField('description', $event)"
+                name="dishDesc" rows="2"></textarea>
+            </label>
+
+            <div class="field field--checks">
+              <label class="check">
+                <input type="checkbox"
+                  [ngModel]="dishForm().isVegetarian || false"
+                  (ngModelChange)="setDishField('isVegetarian', $event)"
+                  name="veg" />
+                Vegetarian
+              </label>
+              <label class="check">
+                <input type="checkbox"
+                  [ngModel]="dishForm().isVegan || false"
+                  (ngModelChange)="setDishField('isVegan', $event)"
+                  name="vegan" />
+                Vegan
+              </label>
+              <label class="check">
+                <input type="checkbox"
+                  [ngModel]="dishForm().isGlutenFree || false"
+                  (ngModelChange)="setDishField('isGlutenFree', $event)"
+                  name="gf" />
+                Gluten-free
+              </label>
+              <label class="check">
+                <input type="checkbox"
+                  [ngModel]="dishForm().isAvailable !== false"
+                  (ngModelChange)="setDishField('isAvailable', $event)"
+                  name="avail" />
+                Available
+              </label>
+            </div>
+          </div>
+
+          <div class="card-actions">
+            <button type="button" class="btn btn-primary" [disabled]="isSavingDish()" (click)="saveDish()">
+              {{ isSavingDish() ? 'Saving…' : (editingDishId() ? 'Update Dish' : 'Add Dish') }}
+            </button>
+            <button type="button" class="btn btn-secondary" (click)="cancelDishForm()">Cancel</button>
+          </div>
+        </div>
+      }
+
+      <!-- Dish table -->
+      <div class="card">
+        <div class="card-row card-row--between">
+          <h2>Menu Items</h2>
+          @if (!showDishForm()) {
+            <button type="button" class="btn btn-primary" (click)="openAddDish()">+ Add Dish</button>
+          }
+        </div>
+
+        @if (dishesLoading()) {
+          <p class="state">Loading dishes…</p>
+        } @else if (dishes().length === 0) {
+          <p class="state">No dishes yet. Add your first dish above.</p>
+        } @else {
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Category</th>
+                  <th class="col-num">Price</th>
+                  <th class="col-center">Active</th>
+                  <th class="col-actions">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (dish of dishes(); track dish.id) {
+                  <tr>
+                    <td>{{ dish.name }}</td>
+                    <td>{{ categoryName(dish.categoryId) }}</td>
+                    <td class="col-num">{{ dish.price | currency:'ZAR':'symbol-narrow':'1.2-2' }}</td>
+                    <td class="col-center">
+                      <span class="dot" [ngClass]="dish.isAvailable ? 'dot--on' : 'dot--off'"></span>
+                    </td>
+                    <td class="col-actions">
+                      @if (confirmDeleteId() === dish.id) {
+                        <span class="confirm-row">
+                          Delete?
+                          <button type="button" class="btn btn-danger btn-sm" (click)="confirmDelete()">Yes</button>
+                          <button type="button" class="btn btn-secondary btn-sm" (click)="cancelDelete()">No</button>
+                        </span>
+                      } @else {
+                        <button type="button" class="btn btn-secondary btn-sm" (click)="openEditDish(dish)">Edit</button>
+                        <button type="button" class="btn btn-danger btn-sm" (click)="promptDelete(dish.id)">Delete</button>
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- ══════════════════════════════════════════════════════════════════
+       TAB 3 — ORDERS
+  ══════════════════════════════════════════════════════════════════════ -->
+  @if (activeTab() === 'orders') {
+    <div class="tab-panel" role="tabpanel">
+
+      <div class="card">
+        <div class="card-row card-row--between">
+          <h2>Incoming Orders</h2>
+          <button type="button" class="btn btn-secondary" [disabled]="ordersLoading()" (click)="loadOrders()">
+            {{ ordersLoading() ? 'Refreshing…' : 'Refresh' }}
+          </button>
+        </div>
+
+        @if (ordersLoading() && orders().length === 0) {
+          <p class="state">Loading orders…</p>
+        } @else if (orders().length === 0) {
+          <p class="state">No orders yet.</p>
+        } @else {
+
+          <!-- Active orders -->
+          @if (activeOrders().length > 0) {
+            <h3 class="section-label">Active ({{ activeOrders().length }})</h3>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Order #</th>
+                    <th>Customer</th>
+                    <th>Items</th>
+                    <th class="col-num">Total</th>
+                    <th>Status</th>
+                    <th>Placed</th>
+                    <th class="col-actions">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (order of activeOrders(); track order.id) {
+                    <tr>
+                      <td class="order-num">{{ order.orderNumber }}</td>
+                      <td>{{ order.username }}</td>
+                      <td class="items-cell">{{ itemsSummary(order) }}</td>
+                      <td class="col-num">{{ order.totalAmount | currency:'ZAR':'symbol-narrow':'1.2-2' }}</td>
+                      <td>
+                        <span class="badge" [ngClass]="statusClass(order)">{{ statusLabel(order) }}</span>
+                      </td>
+                      <td class="date-cell">{{ order.createdAt | date:'dd MMM, HH:mm' }}</td>
+                      <td class="col-actions">
+                        @if (canAdvance(order)) {
+                          <button type="button" class="btn btn-advance btn-sm"
+                            [disabled]="updatingOrderId() === order.id"
+                            (click)="advanceOrder(order)">
+                            {{ updatingOrderId() === order.id ? '…' : nextLabel(order) }}
+                          </button>
+                        } @else {
+                          <span class="no-action">—</span>
+                        }
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+
+          <!-- Past orders -->
+          @if (pastOrders().length > 0) {
+            <h3 class="section-label">Recent history ({{ pastOrders().length }})</h3>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Order #</th>
+                    <th>Customer</th>
+                    <th>Items</th>
+                    <th class="col-num">Total</th>
+                    <th>Status</th>
+                    <th>Placed</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (order of pastOrders(); track order.id) {
+                    <tr class="row--muted">
+                      <td class="order-num">{{ order.orderNumber }}</td>
+                      <td>{{ order.username }}</td>
+                      <td class="items-cell">{{ itemsSummary(order) }}</td>
+                      <td class="col-num">{{ order.totalAmount | currency:'ZAR':'symbol-narrow':'1.2-2' }}</td>
+                      <td>
+                        <span class="badge" [ngClass]="statusClass(order)">{{ statusLabel(order) }}</span>
+                      </td>
+                      <td class="date-cell">{{ order.createdAt | date:'dd MMM, HH:mm' }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        }
+      </div>
+    </div>
+  }
+
+</section>

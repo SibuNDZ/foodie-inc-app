@@ -12,7 +12,7 @@
 			}
 
 			@if (authService.currentUser()?.role === UserRole.RESTAURANT_OWNER) {
-				<a routerLink="/my-restaurant" routerLinkActive="active-link">Restaurant Ops</a>
+				<a routerLink="/owner/dashboard" routerLinkActive="active-link">My Restaurant</a>
 			}
 
 			@if (authService.currentUser()?.role === UserRole.ADMIN) {

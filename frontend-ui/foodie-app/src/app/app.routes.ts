@@ -90,6 +90,12 @@ export const routes: Routes = [
 
   // Restaurant owner routes
   {
+    path: 'owner/dashboard',
+    canActivate: [restaurantOwnerGuard],
+    loadComponent: () => import('./components/restaurant/owner-dashboard/owner-dashboard').then(m => m.OwnerDashboard)
+  },
+  // Legacy owner sub-routes kept for backward-compat (admin can still reach them)
+  {
     path: 'my-restaurant',
     canActivate: [restaurantOwnerGuard],
     children: [
