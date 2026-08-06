@@ -51,6 +51,21 @@ the default listing.
 Restaurant coordinates are set by owners on `/owner/dashboard`. There is no geocoder,
 so latitude and longitude are entered directly.
 
+## Home page dish carousel
+
+`GET /api/dishes/showcase?limit=8` (public) returns real dish photos for the carousel:
+available dishes that carry a non-blank `imageUrl`, from active restaurants, newest
+first. `limit` is clamped to 1..12.
+
+The carousel degrades in three steps, so it never renders empty or broken:
+
+1. Static category tiles in `public/categories/` are what gets server-rendered.
+2. After hydration it fetches the showcase and swaps in real photos.
+3. Any dish whose image fails to load is dropped; if none survive, the tiles return.
+
+Real photos therefore only appear once restaurant owners upload dish images through
+`/owner/dashboard`. Until then the tiles are what visitors see.
+
 ## Placeholders to replace before launch
 
 - `APP_STORE_LINKS` in `components/customer/app-download/app-download.ts` points at the

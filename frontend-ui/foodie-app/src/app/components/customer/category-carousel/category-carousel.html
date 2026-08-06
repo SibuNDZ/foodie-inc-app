@@ -2,7 +2,7 @@
 	class="carousel"
 	role="group"
 	aria-roledescription="carousel"
-	aria-label="Browse by dish category"
+	aria-label="Browse dishes from restaurants near you"
 	(mouseenter)="pause()"
 	(mouseleave)="resume()"
 	(focusin)="pause()"
@@ -14,16 +14,16 @@
 		(touchstart)="onTouchStart($event)"
 		(touchend)="onTouchEnd($event)">
 
-		@for (slide of slides; track slide.query; let i = $index) {
+		@for (slide of slides(); track slide.key; let i = $index) {
 			<div
 				class="slide"
 				role="group"
 				aria-roledescription="slide"
-				[attr.aria-label]="slide.label + ' (' + (i + 1) + ' of ' + slides.length + ')'"
+				[attr.aria-label]="slide.label + ' (' + (i + 1) + ' of ' + slides().length + ')'"
 				[class.active]="i === index()"
 				[attr.aria-hidden]="i === index() ? null : 'true'"
 				[attr.inert]="i === index() ? null : ''">
-				<button type="button" class="slide-btn" (click)="openCategory(slide)">
+				<button type="button" class="slide-btn" (click)="openSlide(slide)">
 					<img
 						class="slide-img"
 						[src]="slide.image"
@@ -31,22 +31,28 @@
 						width="400"
 						height="300"
 						[attr.loading]="i === 0 ? 'eager' : 'lazy'"
-						decoding="async" />
-					<span class="slide-label">{{ slide.label }}</span>
+						decoding="async"
+						(error)="onImageError(slide)" />
+					<span class="slide-caption">
+						<span class="slide-label">{{ slide.label }}</span>
+						@if (slide.caption) {
+							<span class="slide-sub">{{ slide.caption }}</span>
+						}
+					</span>
 				</button>
 			</div>
 		}
 	</div>
 
-	<button type="button" class="arrow arrow-prev" (click)="previous()" aria-label="Previous category">
+	<button type="button" class="arrow arrow-prev" (click)="previous()" aria-label="Previous dish">
 		<span aria-hidden="true">‹</span>
 	</button>
-	<button type="button" class="arrow arrow-next" (click)="next()" aria-label="Next category">
+	<button type="button" class="arrow arrow-next" (click)="next()" aria-label="Next dish">
 		<span aria-hidden="true">›</span>
 	</button>
 
-	<div class="dots" role="tablist" aria-label="Choose a category">
-		@for (slide of slides; track slide.query; let i = $index) {
+	<div class="dots" role="tablist" aria-label="Choose a dish">
+		@for (slide of slides(); track slide.key; let i = $index) {
 			<button
 				type="button"
 				class="dot"
@@ -58,5 +64,5 @@
 		}
 	</div>
 
-	<p class="sr-only" aria-live="polite">{{ current().label }}</p>
+	<p class="sr-only" aria-live="polite">{{ current()?.label }}</p>
 </section>

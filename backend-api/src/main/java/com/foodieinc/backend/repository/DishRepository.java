@@ -1,6 +1,7 @@
 package com.foodieinc.backend.repository;
 
 import com.foodieinc.backend.entity.Dish;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,6 +16,18 @@ public interface DishRepository extends JpaRepository<Dish, Long> {
 
     /** Returns ALL dishes for a restaurant (including unavailable), sorted by name. Used by owner management views. */
     List<Dish> findByRestaurantIdOrderByNameAsc(Long restaurantId);
+
+    /**
+     * Available dishes that actually carry a photo, from live restaurants only.
+     *
+     * <p>Feeds the home page carousel, so it deliberately excludes dishes with a
+     * null or blank image rather than letting the UI render a broken tile.
+     */
+    @Query("SELECT d FROM Dish d JOIN d.restaurant r "
+            + "WHERE d.isAvailable = true AND r.isActive = true "
+            + "AND d.imageUrl IS NOT NULL AND LENGTH(TRIM(d.imageUrl)) > 0 "
+            + "ORDER BY d.createdAt DESC, d.id DESC")
+    List<Dish> findShowcaseDishes(Pageable pageable);
 
     @Query("SELECT d FROM Dish d WHERE d.restaurant.id = :restaurantId AND d.isAvailable = true AND " +
             "(:vegetarian IS NULL OR d.isVegetarian = :vegetarian) AND " +

@@ -16,9 +16,16 @@ describe('Landing', () => {
     fixture = TestBed.createComponent(Landing);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
-  afterEach(() => TestBed.inject(HttpTestingController).verify());
+  afterEach(() => {
+    const httpMock = TestBed.inject(HttpTestingController);
+    // The nested carousel asks for real dish photos once it renders.
+    httpMock.match(r => r.url.endsWith('/dishes/showcase')).forEach(r => r.flush([]));
+    httpMock.verify();
+  });
 
   it('should create', () => {
     expect(component).toBeTruthy();

@@ -5,6 +5,16 @@ import { map } from 'rxjs/operators';
 import { Dish, DishFilter } from '../models';
 import { environment } from '../../environments/environment';
 
+/** A real dish photo for the home page carousel. */
+export interface DishShowcase {
+  id: number;
+  name: string;
+  imageUrl: string;
+  restaurantId: number;
+  restaurantName: string;
+  cuisineType?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -21,6 +31,16 @@ export class DishService {
       isVegan: payload.isVegan ?? payload.vegan ?? false,
       isGlutenFree: payload.isGlutenFree ?? payload.glutenFree ?? false
     } as Dish;
+  }
+
+  /**
+   * Real dish photos from live restaurants, for the home page carousel.
+   * The API only returns dishes that actually carry an image.
+   */
+  getShowcaseDishes(limit = 8): Observable<DishShowcase[]> {
+    return this.http.get<DishShowcase[]>(`${this.API_URL}/showcase`, {
+      params: new HttpParams().set('limit', String(limit))
+    });
   }
 
   private toApiPayload(dish: Partial<Dish>): Record<string, unknown> {

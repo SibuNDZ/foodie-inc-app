@@ -2,6 +2,7 @@ package com.foodieinc.backend.controller;
 
 import com.foodieinc.backend.dto.DishCategoryDTO;
 import com.foodieinc.backend.dto.DishDTO;
+import com.foodieinc.backend.dto.DishShowcaseDTO;
 import com.foodieinc.backend.entity.User;
 import com.foodieinc.backend.service.DishService;
 import jakarta.validation.Valid;
@@ -25,6 +26,16 @@ public class DishController {
     @GetMapping("/restaurant/{restaurantId}")
     public ResponseEntity<List<DishDTO>> getDishesByRestaurant(@PathVariable Long restaurantId) {
         return ResponseEntity.ok(dishService.getDishesByRestaurant(restaurantId));
+    }
+
+    /**
+     * Public: real dish photos for the home page carousel. Returns only available
+     * dishes that have an image, from live restaurants.
+     */
+    @GetMapping("/showcase")
+    public ResponseEntity<List<DishShowcaseDTO>> getShowcaseDishes(
+            @RequestParam(defaultValue = "8") int limit) {
+        return ResponseEntity.ok(dishService.getShowcaseDishes(limit));
     }
 
     @GetMapping("/categories")

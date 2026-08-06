@@ -2,6 +2,7 @@ package com.foodieinc.backend.service;
 
 import com.foodieinc.backend.dto.DishCategoryDTO;
 import com.foodieinc.backend.dto.DishDTO;
+import com.foodieinc.backend.dto.DishShowcaseDTO;
 import com.foodieinc.backend.entity.Dish;
 import com.foodieinc.backend.entity.DishCategory;
 import com.foodieinc.backend.entity.Restaurant;
@@ -11,6 +12,7 @@ import com.foodieinc.backend.repository.DishCategoryRepository;
 import com.foodieinc.backend.repository.DishRepository;
 import com.foodieinc.backend.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +29,29 @@ public class DishService {
     private final DishRepository dishRepository;
     private final RestaurantRepository restaurantRepository;
     private final DishCategoryRepository dishCategoryRepository;
+
+    /** Upper bound on the carousel payload, whatever the caller asks for. */
+    private static final int MAX_SHOWCASE_DISHES = 12;
+
+    /**
+     * Real dish photos for the home page carousel.
+     *
+     * @param limit how many to return; clamped to 1..{@value #MAX_SHOWCASE_DISHES}
+     */
+    public List<DishShowcaseDTO> getShowcaseDishes(int limit) {
+        int size = Math.clamp(limit, 1, MAX_SHOWCASE_DISHES);
+
+        return dishRepository.findShowcaseDishes(PageRequest.of(0, size))
+                .stream()
+                .map(dish -> new DishShowcaseDTO(
+                        dish.getId(),
+                        dish.getName(),
+                        dish.getImageUrl(),
+                        dish.getRestaurant().getId(),
+                        dish.getRestaurant().getName(),
+                        dish.getRestaurant().getCuisineType()))
+                .collect(Collectors.toList());
+    }
 
     public List<DishDTO> getDishesByRestaurant(Long restaurantId) {
         return dishRepository.findByRestaurantIdAndIsAvailableTrue(restaurantId)
