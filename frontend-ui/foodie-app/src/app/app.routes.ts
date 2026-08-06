@@ -44,6 +44,14 @@ export const routes: Routes = [
     path: 'partner-with-us',
     loadComponent: () => import('./components/marketing/partner-with-us/partner-with-us').then(m => m.PartnerWithUs)
   },
+  {
+    path: 'about-us',
+    loadComponent: () => import('./components/marketing/about-us/about-us').then(m => m.AboutUs)
+  },
+  {
+    path: 'careers',
+    loadComponent: () => import('./components/marketing/careers/careers').then(m => m.Careers)
+  },
 
   // Customer routes (protected)
   {

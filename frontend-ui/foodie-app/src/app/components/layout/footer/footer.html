@@ -1,3 +1,49 @@
 <footer class="footer">
-	<p><span class="footer-wordmark">Foodie Inc</span> Delivery Platform</p>
+	<div class="footer-inner">
+		<div class="footer-brand">
+			<a class="footer-logo" routerLink="/">
+				<app-logo-mark [size]="30" />
+				<span class="footer-wordmark">Foodie Inc</span>
+			</a>
+			<p class="footer-tagline">Order from the best restaurants in your area.</p>
+		</div>
+
+		<nav class="footer-col" aria-labelledby="footer-company">
+			<h2 class="footer-heading" id="footer-company">Company</h2>
+			<ul>
+				<li><a routerLink="/about-us">About us</a></li>
+				<li><a routerLink="/careers">Careers</a></li>
+				<li><a routerLink="/corporate-orders">Corporate orders</a></li>
+			</ul>
+		</nav>
+
+		<nav class="footer-col" aria-labelledby="footer-join">
+			<h2 class="footer-heading" id="footer-join">Work with us</h2>
+			<ul>
+				<li><a routerLink="/partner-with-us">How to become a vendor</a></li>
+				<li><a routerLink="/become-a-driver">How to become a courier</a></li>
+			</ul>
+		</nav>
+
+		<div class="footer-col">
+			<h2 class="footer-heading" id="footer-social">Follow us</h2>
+			<ul class="socials" aria-labelledby="footer-social">
+				@for (social of socials; track social.label) {
+					<li>
+						<a
+							[href]="social.url"
+							target="_blank"
+							rel="noopener noreferrer"
+							[attr.aria-label]="social.label">
+							<i [class]="social.icon" aria-hidden="true"></i>
+						</a>
+					</li>
+				}
+			</ul>
+		</div>
+	</div>
+
+	<p class="footer-legal">
+		<span class="footer-wordmark">Foodie Inc</span> Delivery Platform &copy; {{ year }}
+	</p>
 </footer>

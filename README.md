@@ -19,6 +19,48 @@ Frontend:
 
 The default API base URL for development is `http://localhost:8080/api`.
 
+Stripe and web push are optional locally. `stripe.*` and `vapid.*` default to blank,
+so the app boots without them; web push simply stays disabled. Set `STRIPE_SECRET_KEY`,
+`STRIPE_WEBHOOK_SECRET` and the `VAPID_*` variables to exercise those paths.
+
+## Public routes
+
+| Route | Purpose |
+| --- | --- |
+| `/`, `/restaurants` | Restaurant listing. Accepts `?query=` to filter. |
+| `/restaurant/:id` | Restaurant detail and menu |
+| `/corporate-orders` | Corporate ordering pitch and enquiry form |
+| `/become-a-driver` | Courier pitch |
+| `/partner-with-us` | Restaurant onboarding pitch |
+| `/about-us` | About the company |
+| `/careers` | Open roles and speculative applications |
+
+## Restaurant search API
+
+`GET /api/restaurants` takes three optional parameters and stays backward compatible
+without them:
+
+- `query` — name or cuisine substring
+- `lat`, `lng` — caller coordinates; both are required for either to take effect
+
+With valid coordinates each restaurant gains a `distanceKm` and the list is sorted
+nearest-first, with restaurants that have no coordinates last. Coordinates outside the
+WGS-84 range are ignored rather than rejected, so a bad geolocation reading degrades to
+the default listing.
+
+Restaurant coordinates are set by owners on `/owner/dashboard`. There is no geocoder,
+so latitude and longitude are entered directly.
+
+## Placeholders to replace before launch
+
+- `APP_STORE_LINKS` in `components/customer/app-download/app-download.ts` points at the
+  store home pages; there is no published native app yet. The badges also use icon-and-text
+  buttons rather than Apple's and Google's official badge artwork.
+- `SOCIAL_LINKS` in `components/layout/footer/footer.ts` points at each platform's home
+  page rather than a Foodie Inc account.
+- `CORPORATE_ENQUIRY_ADDRESS` and `CAREERS_ENQUIRY_ADDRESS` compose `mailto:` drafts;
+  there is no enquiries endpoint on the API.
+
 ## Production deployment
 
 Backend (recommended env vars):

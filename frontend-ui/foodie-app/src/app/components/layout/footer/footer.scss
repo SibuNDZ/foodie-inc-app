@@ -3,16 +3,115 @@
 	background: var(--color-bg-surface);
 	color: var(--color-text-secondary);
 	font-size: 0.85rem;
-	text-align: center;
-	padding: 0.85rem 1rem;
+	padding: 2.5rem 1.25rem 1.25rem;
 }
 
-.footer p {
-	margin: 0;
+.footer-inner {
+	max-width: 1180px;
+	margin: 0 auto;
+	display: grid;
+	grid-template-columns: 1.4fr repeat(3, 1fr);
+	gap: 2rem;
+}
+
+.footer-logo {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	text-decoration: none;
 }
 
 .footer-wordmark {
 	font-style: italic;
 	font-weight: 700;
 	color: var(--color-text-primary);
+}
+
+.footer-tagline {
+	margin: 0.6rem 0 0;
+	max-width: 32ch;
+	line-height: 1.6;
+}
+
+.footer-heading {
+	margin: 0 0 0.75rem;
+	font-size: 0.82rem;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--color-text-primary);
+}
+
+.footer-col ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.footer-col a {
+	color: var(--color-text-secondary);
+	text-decoration: none;
+
+	&:hover {
+		color: var(--color-secondary);
+	}
+}
+
+.socials {
+	flex-direction: row !important;
+	flex-wrap: wrap;
+	gap: 0.6rem !important;
+
+	a {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 38px;
+		height: 38px;
+		border-radius: 50%;
+		border: 1px solid rgba(184, 168, 204, 0.3);
+		font-size: 1.05rem;
+		transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+
+		&:hover {
+			color: #fff;
+			background: var(--color-primary);
+			border-color: var(--color-primary);
+		}
+	}
+}
+
+.footer-legal {
+	max-width: 1180px;
+	margin: 2rem auto 0;
+	padding-top: 1.25rem;
+	border-top: 1px solid rgba(184, 168, 204, 0.18);
+	text-align: center;
+}
+
+.footer :is(a):focus-visible {
+	outline: 2px solid var(--color-secondary);
+	outline-offset: 3px;
+	border-radius: 0.25rem;
+}
+
+@media (max-width: 860px) {
+	.footer-inner {
+		grid-template-columns: 1fr 1fr;
+	}
+}
+
+@media (max-width: 520px) {
+	.footer-inner {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.socials a {
+		transition: none;
+	}
 }

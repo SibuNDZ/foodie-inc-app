@@ -1,0 +1,19 @@
+<section class="promo" aria-labelledby="promo-heading">
+	<h2 class="promo-heading" id="promo-heading">Work with Foodie Inc</h2>
+
+	<ul class="promo-grid">
+		@for (card of cards; track card.route) {
+			<li class="promo-card">
+				<span class="promo-icon" aria-hidden="true">
+					<i [class]="card.icon"></i>
+				</span>
+				<h3>{{ card.title }}</h3>
+				<p>{{ card.copy }}</p>
+				<a class="promo-cta" [routerLink]="card.route">
+					{{ card.cta }}
+					<span class="promo-arrow" aria-hidden="true">→</span>
+				</a>
+			</li>
+		}
+	</ul>
+</section>

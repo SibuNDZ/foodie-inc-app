@@ -1,0 +1,145 @@
+:host { display: block; }
+
+.download {
+	margin-top: 3.5rem;
+	padding: 3.5rem 20px;
+	background:
+		radial-gradient(circle at 85% 25%, rgba(245, 140, 36, 0.18), transparent 45%),
+		linear-gradient(135deg, var(--color-bg-surface) 0%, var(--color-bg-base) 100%);
+	border-top: 1px solid rgba(184, 168, 204, 0.2);
+}
+
+.download-inner {
+	max-width: 1180px;
+	margin: 0 auto;
+	display: grid;
+	grid-template-columns: 0.85fr 1.15fr;
+	align-items: center;
+	gap: 3rem;
+}
+
+.download-art {
+	display: flex;
+	justify-content: center;
+}
+
+/* Fixed intrinsic size keeps the row from reflowing while the SVG loads. */
+.phone {
+	display: block;
+	width: 100%;
+	max-width: 260px;
+	height: auto;
+	filter: drop-shadow(0 24px 48px rgba(0, 0, 0, 0.45));
+	animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+	0%, 100% { transform: translateY(0); }
+	50% { transform: translateY(-14px); }
+}
+
+.eyebrow {
+	margin: 0 0 0.5rem;
+	font-size: 0.8rem;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--color-secondary);
+}
+
+.download-copy h2 {
+	margin: 0 0 0.75rem;
+	font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+	color: var(--color-text-primary);
+}
+
+.lede {
+	margin: 0 0 1.75rem;
+	max-width: 48ch;
+	font-size: 1.02rem;
+	line-height: 1.6;
+	color: var(--color-text-secondary);
+}
+
+.badges {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.9rem;
+}
+
+.badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.7rem;
+	padding: 0.7rem 1.25rem;
+	border: 1px solid rgba(245, 240, 250, 0.28);
+	border-radius: 0.7rem;
+	background: rgba(18, 11, 30, 0.85);
+	color: var(--color-text-primary);
+	text-decoration: none;
+	transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+
+	i {
+		font-size: 1.75rem;
+	}
+
+	&:hover {
+		transform: translateY(-3px);
+		border-color: var(--color-secondary);
+		background: rgba(42, 27, 64, 0.95);
+	}
+
+	&:focus-visible {
+		outline: 2px solid var(--color-secondary);
+		outline-offset: 3px;
+	}
+}
+
+.badge-text {
+	display: flex;
+	flex-direction: column;
+	line-height: 1.15;
+}
+
+.badge-small {
+	font-size: 0.68rem;
+	color: var(--color-text-secondary);
+}
+
+.badge-large {
+	font-size: 1.05rem;
+	font-weight: 700;
+}
+
+@media (max-width: 860px) {
+	.download-inner {
+		grid-template-columns: 1fr;
+		gap: 2rem;
+	}
+
+	.download-copy {
+		text-align: center;
+	}
+
+	.lede {
+		margin-inline: auto;
+	}
+
+	.badges {
+		justify-content: center;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.phone {
+		animation: none;
+	}
+
+	.badge {
+		transition: none;
+	}
+
+	.badge:hover {
+		transform: none;
+	}
+}
