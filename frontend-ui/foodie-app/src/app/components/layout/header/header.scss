@@ -14,10 +14,51 @@
 }
 
 .brand {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
 	font-size: inherit;
 	font-weight: 500;
 	color: var(--color-text-primary);
 	text-decoration: none;
+}
+
+.brand-wordmark {
+	font-style: italic;
+	font-weight: 700;
+	letter-spacing: 0.01em;
+	white-space: nowrap;
+}
+
+/* Hidden on desktop; the collapsible panel is always visible there. */
+.nav-toggle {
+	display: none;
+	flex-direction: column;
+	justify-content: center;
+	gap: 4px;
+	width: 40px;
+	height: 36px;
+	padding: 0 0.5rem;
+	border: 1px solid rgba(184, 168, 204, 0.35);
+	border-radius: 0.5rem;
+	background: transparent;
+	cursor: pointer;
+}
+
+.nav-toggle-bar {
+	display: block;
+	height: 2px;
+	border-radius: 2px;
+	background: var(--color-text-primary);
+}
+
+.collapsible {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	flex: 1 1 auto;
+	flex-wrap: wrap;
+	gap: 1rem;
 }
 
 .nav-links,
@@ -25,6 +66,7 @@
 	display: flex;
 	align-items: center;
 	gap: 0.85rem;
+	flex-wrap: wrap;
 }
 
 .nav-links a,
@@ -45,6 +87,13 @@
 .auth-actions a.active-link {
 	color: var(--color-primary);
 	border-bottom-color: var(--color-primary);
+}
+
+/* Keyboard users must be able to see where they are. */
+.topbar :is(a, button):focus-visible {
+	outline: 2px solid var(--color-secondary);
+	outline-offset: 2px;
+	border-radius: 0.25rem;
 }
 
 .welcome {
@@ -86,12 +135,34 @@
 
 @media (max-width: 840px) {
 	.topbar {
+		flex-wrap: nowrap;
+		align-items: center;
+	}
+
+	.nav-toggle {
+		display: flex;
+	}
+
+	/* Collapsed by default on small screens; .open reveals the stacked panel. */
+	.collapsible {
+		display: none;
+		order: 3;
+		width: 100%;
+		flex-direction: column;
 		align-items: flex-start;
+		gap: 0.75rem;
+		padding-top: 0.85rem;
+
+		&.open {
+			display: flex;
+		}
 	}
 
 	.nav-links,
 	.auth-actions {
 		width: 100%;
-		flex-wrap: wrap;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.6rem;
 	}
 }

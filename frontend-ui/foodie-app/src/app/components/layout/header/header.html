@@ -1,39 +1,60 @@
 <header class="topbar">
-	<a class="brand" routerLink="/">Foodie Inc</a>
+	<a class="brand" routerLink="/">
+		<app-logo-mark [size]="26" />
+		<span class="brand-wordmark">Foodie Inc</span>
+	</a>
 
-	<nav class="nav-links" aria-label="Primary">
-		<a routerLink="/restaurants" routerLinkActive="active-link">Explore</a>
+	<button
+		type="button"
+		class="nav-toggle"
+		[attr.aria-expanded]="menuOpen()"
+		aria-controls="primary-navigation"
+		aria-label="Menu"
+		(click)="toggleMenu()">
+		<span class="nav-toggle-bar" aria-hidden="true"></span>
+		<span class="nav-toggle-bar" aria-hidden="true"></span>
+		<span class="nav-toggle-bar" aria-hidden="true"></span>
+	</button>
 
-		@if (authService.isAuthenticated()) {
-			<a routerLink="/orders" routerLinkActive="active-link">My Orders</a>
+	<div class="collapsible" id="primary-navigation" [class.open]="menuOpen()">
+		<nav class="nav-links" aria-label="Primary">
+			<a routerLink="/restaurants" routerLinkActive="active-link" (click)="closeMenu()">Explore</a>
 
-			@if (authService.currentUser()?.role === UserRole.DELIVERY_PERSON) {
-				<a routerLink="/driver/deliveries" routerLinkActive="active-link">Driver Deliveries</a>
+			@if (authService.isAuthenticated()) {
+				<a routerLink="/orders" routerLinkActive="active-link" (click)="closeMenu()">My Orders</a>
+
+				@if (authService.currentUser()?.role === UserRole.DELIVERY_PERSON) {
+					<a routerLink="/driver/deliveries" routerLinkActive="active-link" (click)="closeMenu()">Driver Deliveries</a>
+				}
+
+				@if (authService.currentUser()?.role === UserRole.RESTAURANT_OWNER) {
+					<a routerLink="/owner/dashboard" routerLinkActive="active-link" (click)="closeMenu()">My Restaurant</a>
+				}
+
+				@if (authService.currentUser()?.role === UserRole.ADMIN) {
+					<a routerLink="/admin" routerLinkActive="active-link" (click)="closeMenu()">Admin</a>
+					<a routerLink="/admin/restaurants/pending" routerLinkActive="active-link" (click)="closeMenu()">Pending</a>
+				}
 			}
 
-			@if (authService.currentUser()?.role === UserRole.RESTAURANT_OWNER) {
-				<a routerLink="/owner/dashboard" routerLinkActive="active-link">My Restaurant</a>
-			}
+			<a routerLink="/corporate-orders" routerLinkActive="active-link" (click)="closeMenu()">Corporate Orders</a>
+			<a routerLink="/become-a-driver" routerLinkActive="active-link" (click)="closeMenu()">Become a Driver</a>
+			<a routerLink="/partner-with-us" routerLinkActive="active-link" (click)="closeMenu()">Partner with Us</a>
+		</nav>
 
-			@if (authService.currentUser()?.role === UserRole.ADMIN) {
-				<a routerLink="/admin" routerLinkActive="active-link">Admin</a>
-				<a routerLink="/admin/restaurants/pending" routerLinkActive="active-link">Pending</a>
+		<div class="auth-actions">
+			@if (authService.isAuthenticated()) {
+				@if (!cartService.isEmpty()) {
+					<a routerLink="/checkout" class="cart-btn" (click)="closeMenu()">
+						🛒 <span class="cart-count">{{ cartService.itemCount() }}</span>
+					</a>
+				}
+				<span class="welcome">{{ authService.currentUser()?.username }}</span>
+				<button type="button" class="logout-btn" (click)="logout()">Logout</button>
+			} @else {
+				<a routerLink="/login" routerLinkActive="active-link" (click)="closeMenu()">Login</a>
+				<a routerLink="/register" routerLinkActive="active-link" (click)="closeMenu()">Register</a>
 			}
-		}
-	</nav>
-
-	<div class="auth-actions">
-		@if (authService.isAuthenticated()) {
-			@if (!cartService.isEmpty()) {
-				<a routerLink="/checkout" class="cart-btn">
-					🛒 <span class="cart-count">{{ cartService.itemCount() }}</span>
-				</a>
-			}
-			<span class="welcome">{{ authService.currentUser()?.username }}</span>
-			<button type="button" class="logout-btn" (click)="logout()">Logout</button>
-		} @else {
-			<a routerLink="/login" routerLinkActive="active-link">Login</a>
-			<a routerLink="/register" routerLinkActive="active-link">Register</a>
-		}
+		</div>
 	</div>
 </header>

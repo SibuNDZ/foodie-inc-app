@@ -31,6 +31,20 @@ export const routes: Routes = [
     loadComponent: () => import('./components/customer/restaurant-detail/restaurant-detail').then(m => m.RestaurantDetail)
   },
 
+  // Marketing landing pages
+  {
+    path: 'corporate-orders',
+    loadComponent: () => import('./components/marketing/corporate-orders/corporate-orders').then(m => m.CorporateOrders)
+  },
+  {
+    path: 'become-a-driver',
+    loadComponent: () => import('./components/marketing/become-a-driver/become-a-driver').then(m => m.BecomeADriver)
+  },
+  {
+    path: 'partner-with-us',
+    loadComponent: () => import('./components/marketing/partner-with-us/partner-with-us').then(m => m.PartnerWithUs)
+  },
+
   // Customer routes (protected)
   {
     path: 'cart',

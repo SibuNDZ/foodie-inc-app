@@ -1,0 +1,103 @@
+<div class="landing">
+	<section class="landing-hero">
+		<p class="eyebrow">Corporate Orders</p>
+		<h1>Feed the whole office, without the admin</h1>
+		<p class="lede">
+			Team lunches, client meetings and late-night sprints, all on one account with a single
+			monthly invoice. Order from the same local kitchens your team already loves.
+		</p>
+		<div class="hero-actions">
+			<a class="btn btn-primary" href="#enquiry">Talk to our team</a>
+			<a class="btn btn-secondary" routerLink="/restaurants">Browse restaurants</a>
+		</div>
+	</section>
+
+	<h2 class="section-title">Why teams use Foodie Inc</h2>
+	<ul class="benefit-grid">
+		<li class="benefit">
+			<h3>One invoice, not fifty receipts</h3>
+			<p>Every order across every team rolls into a single monthly statement your finance team can reconcile in minutes.</p>
+		</li>
+		<li class="benefit">
+			<h3>Budgets that hold</h3>
+			<p>Set per-person or per-team limits so spend stays predictable without anyone chasing approvals.</p>
+		</li>
+		<li class="benefit">
+			<h3>Scheduled in advance</h3>
+			<p>Lock in recurring team lunches and one-off catering ahead of time, with delivery windows that match your calendar.</p>
+		</li>
+		<li class="benefit">
+			<h3>Local kitchens</h3>
+			<p>The same approved restaurants on the consumer app, so quality and delivery times are already proven.</p>
+		</li>
+	</ul>
+
+	<section class="enquiry" id="enquiry">
+		<h2>Tell us about your team</h2>
+		<p class="enquiry-hint">
+			We will get back to you within one business day. Submitting opens a prefilled email to
+			{{ enquiryAddress }}.
+		</p>
+
+		<form (ngSubmit)="submit()" novalidate>
+			<div class="field-grid">
+				<label class="field">
+					<span>Company name</span>
+					<input type="text" name="company" autocomplete="organization"
+						[ngModel]="form().company"
+						(ngModelChange)="setField('company', $event)"
+						[attr.aria-invalid]="submitted() && errors().company ? 'true' : null"
+						aria-describedby="company-error" />
+					@if (submitted() && errors().company) {
+						<p class="field-error" id="company-error">{{ errors().company }}</p>
+					}
+				</label>
+
+				<label class="field">
+					<span>Contact name</span>
+					<input type="text" name="contactName" autocomplete="name"
+						[ngModel]="form().contactName"
+						(ngModelChange)="setField('contactName', $event)"
+						[attr.aria-invalid]="submitted() && errors().contactName ? 'true' : null"
+						aria-describedby="contact-error" />
+					@if (submitted() && errors().contactName) {
+						<p class="field-error" id="contact-error">{{ errors().contactName }}</p>
+					}
+				</label>
+
+				<label class="field">
+					<span>Work email</span>
+					<input type="email" name="email" autocomplete="email"
+						[ngModel]="form().email"
+						(ngModelChange)="setField('email', $event)"
+						[attr.aria-invalid]="submitted() && errors().email ? 'true' : null"
+						aria-describedby="email-error" />
+					@if (submitted() && errors().email) {
+						<p class="field-error" id="email-error">{{ errors().email }}</p>
+					}
+				</label>
+
+				<label class="field">
+					<span>Team size <span class="optional">(optional)</span></span>
+					<input type="text" name="teamSize" inputmode="numeric"
+						[ngModel]="form().teamSize"
+						(ngModelChange)="setField('teamSize', $event)" />
+				</label>
+
+				<label class="field field--full">
+					<span>What do you need? <span class="optional">(optional)</span></span>
+					<textarea name="message" rows="4"
+						[ngModel]="form().message"
+						(ngModelChange)="setField('message', $event)"></textarea>
+				</label>
+			</div>
+
+			<div class="form-actions">
+				<button type="submit" class="btn btn-primary">Send enquiry</button>
+				@if (sent()) {
+					<p class="form-status" role="status">Your email draft is ready. Send it and we will be in touch.</p>
+				}
+			</div>
+		</form>
+	</section>
+</div>
