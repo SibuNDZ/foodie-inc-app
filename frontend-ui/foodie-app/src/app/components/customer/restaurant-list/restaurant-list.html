@@ -1,24 +1,27 @@
 <div class="restaurant-list-container">
   <header class="hero-section">
-    <div class="hero-content">
-      <h1>Discover Delicious Food</h1>
-      <p>Order from the best restaurants in your area</p>
+    <div class="hero-split">
+      <div class="hero-panel hero-panel--search">
+        <app-hero-search />
+      </div>
 
-      <div class="search-box">
-        <input
-          type="text"
-          [(ngModel)]="searchQuery"
-          (keyup.enter)="onSearch()"
-          placeholder="Search restaurants or cuisines..."
-          class="search-input"
-        />
-        <button class="search-btn" (click)="onSearch()">Search</button>
-        @if (searchQuery) {
-          <button class="clear-btn" (click)="clearSearch()">Clear</button>
-        }
+      <div class="hero-panel hero-panel--carousel">
+        <app-category-carousel />
+
+        <div class="brand-lockup">
+          <app-logo-mark [size]="34" />
+          <span class="brand-lockup-wordmark">Foodie Inc</span>
+        </div>
       </div>
     </div>
   </header>
+
+  @if (searchQuery) {
+    <div class="active-filter">
+      <p>Showing results for “{{ searchQuery }}”</p>
+      <button type="button" class="clear-btn" (click)="clearSearch()">Clear</button>
+    </div>
+  }
 
   <main class="main-content">
     @if (isLoading()) {

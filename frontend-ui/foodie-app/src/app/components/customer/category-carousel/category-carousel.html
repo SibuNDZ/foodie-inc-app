@@ -1,0 +1,62 @@
+<section
+	class="carousel"
+	role="group"
+	aria-roledescription="carousel"
+	aria-label="Browse by dish category"
+	(mouseenter)="pause()"
+	(mouseleave)="resume()"
+	(focusin)="pause()"
+	(focusout)="resume()"
+	(keydown)="onKeydown($event)">
+
+	<div
+		class="viewport"
+		(touchstart)="onTouchStart($event)"
+		(touchend)="onTouchEnd($event)">
+
+		@for (slide of slides; track slide.query; let i = $index) {
+			<div
+				class="slide"
+				role="group"
+				aria-roledescription="slide"
+				[attr.aria-label]="slide.label + ' (' + (i + 1) + ' of ' + slides.length + ')'"
+				[class.active]="i === index()"
+				[attr.aria-hidden]="i === index() ? null : 'true'"
+				[attr.inert]="i === index() ? null : ''">
+				<button type="button" class="slide-btn" (click)="openCategory(slide)">
+					<img
+						class="slide-img"
+						[src]="slide.image"
+						[alt]="slide.alt"
+						width="400"
+						height="300"
+						[attr.loading]="i === 0 ? 'eager' : 'lazy'"
+						decoding="async" />
+					<span class="slide-label">{{ slide.label }}</span>
+				</button>
+			</div>
+		}
+	</div>
+
+	<button type="button" class="arrow arrow-prev" (click)="previous()" aria-label="Previous category">
+		<span aria-hidden="true">‹</span>
+	</button>
+	<button type="button" class="arrow arrow-next" (click)="next()" aria-label="Next category">
+		<span aria-hidden="true">›</span>
+	</button>
+
+	<div class="dots" role="tablist" aria-label="Choose a category">
+		@for (slide of slides; track slide.query; let i = $index) {
+			<button
+				type="button"
+				class="dot"
+				role="tab"
+				[class.active]="i === index()"
+				[attr.aria-selected]="i === index()"
+				[attr.aria-label]="slide.label"
+				(click)="goTo(i)"></button>
+		}
+	</div>
+
+	<p class="sr-only" aria-live="polite">{{ current().label }}</p>
+</section>

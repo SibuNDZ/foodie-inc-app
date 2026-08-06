@@ -1,0 +1,84 @@
+<div class="hero-search">
+	<h1>Discover Delicious Food</h1>
+	<p class="hero-sub">Order from the best restaurants in your area</p>
+
+	<div class="search-shell">
+		<div class="search-row">
+			<div class="combo">
+				<input
+					#searchInput
+					type="text"
+					class="search-input"
+					role="combobox"
+					aria-autocomplete="list"
+					aria-controls="restaurant-suggestions"
+					[attr.aria-expanded]="open()"
+					[attr.aria-activedescendant]="activeIndex() >= 0 ? 'suggestion-' + activeIndex() : null"
+					aria-label="Search restaurants or cuisines"
+					placeholder="Search restaurants or cuisines…"
+					autocomplete="off"
+					[ngModel]="query()"
+					(ngModelChange)="onQueryInput($event)"
+					(focus)="onFocus()"
+					(keydown)="onKeydown($event)" />
+
+				@if (open() && suggestions().length) {
+					<ul class="suggestions" id="restaurant-suggestions" role="listbox" aria-label="Restaurant suggestions">
+						@for (item of suggestions(); track item.id; let i = $index) {
+							<li
+								class="suggestion"
+								role="option"
+								[id]="'suggestion-' + i"
+								[class.active]="i === activeIndex()"
+								[attr.aria-selected]="i === activeIndex()"
+								(mousedown)="openRestaurant(item)">
+								<span class="suggestion-name">{{ item.name }}</span>
+								@if (item.cuisineType) {
+									<span class="suggestion-cuisine">{{ item.cuisineType }}</span>
+								}
+								@if (distanceLabel(item); as distance) {
+									<span class="distance-badge">{{ distance }}</span>
+								}
+							</li>
+						}
+					</ul>
+				}
+			</div>
+
+			<button type="button" class="search-btn" (click)="submit()">Search</button>
+		</div>
+
+		<p class="location-status" aria-live="polite">
+			@switch (locationState()) {
+				@case ('requesting') { <span>Finding your location…</span> }
+				@case ('granted') { <span>Showing nearest restaurants first.</span> }
+				@case ('unavailable') {
+					<span>
+						Location unavailable, so results are not sorted by distance.
+						<button type="button" class="link-btn" (click)="toggleManualLocation()">
+							Enter it manually
+						</button>
+					</span>
+				}
+			}
+		</p>
+
+		@if (showManualLocation()) {
+			<div class="manual-location">
+				<label class="manual-field">
+					<span>Latitude</span>
+					<input type="number" step="0.000001" min="-90" max="90"
+						[ngModel]="manualLat()" (ngModelChange)="manualLat.set($event)"
+						placeholder="-33.924900" />
+				</label>
+				<label class="manual-field">
+					<span>Longitude</span>
+					<input type="number" step="0.000001" min="-180" max="180"
+						[ngModel]="manualLng()" (ngModelChange)="manualLng.set($event)"
+						placeholder="18.424100" />
+				</label>
+				<button type="button" class="apply-btn" (click)="applyManualLocation()">Apply</button>
+			</div>
+		}
+	</div>
+</div>
