@@ -43,4 +43,10 @@ public class RestaurantDTO {
     private BigDecimal longitude;
     private String approvalStatus;
     private String rejectionReason;
+
+    /**
+     * Great-circle distance from the caller's coordinates, in kilometres.
+     * Null when the caller sent no coordinates or the restaurant has none.
+     */
+    private Double distanceKm;
 }

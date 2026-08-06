@@ -29,6 +29,8 @@ export interface Restaurant {
   };
   approvalStatus?: 'PENDING_REVIEW' | 'APPROVED' | 'REJECTED';
   rejectionReason?: string;
+  /** Distance from the caller, set only when the listing was requested with coordinates. */
+  distanceKm?: number;
 }
 
 export interface RestaurantRegistrationRequest {

@@ -9,12 +9,14 @@ import com.foodieinc.backend.exception.ResourceNotFoundException;
 import com.foodieinc.backend.exception.UserAlreadyExistsException;
 import com.foodieinc.backend.repository.RestaurantRepository;
 import com.foodieinc.backend.repository.UserRepository;
+import com.foodieinc.backend.util.GeoDistance;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,6 +34,44 @@ public class RestaurantService {
                 .stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Browse active restaurants, optionally filtered by a free-text query and
+     * ranked nearest-first from the caller's coordinates.
+     *
+     * <p>Both filters are optional so the plain {@code GET /restaurants} contract is
+     * unchanged. Coordinates outside the valid WGS-84 range are ignored rather than
+     * rejected, so a bad geolocation reading degrades to the default listing instead
+     * of breaking the browse page.
+     *
+     * @param query   name or cuisine substring; blank or null means "no filter"
+     * @param latitude  caller latitude, or null
+     * @param longitude caller longitude, or null
+     */
+    public List<RestaurantDTO> findRestaurants(String query, Double latitude, Double longitude) {
+        boolean hasQuery = query != null && !query.isBlank();
+
+        List<Restaurant> restaurants = hasQuery
+                ? restaurantRepository.searchRestaurants(query.trim())
+                : restaurantRepository.findByIsActiveTrue();
+
+        List<RestaurantDTO> results = restaurants.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+
+        if (!GeoDistance.isValidCoordinate(latitude, longitude)) {
+            return results;
+        }
+
+        results.forEach(dto -> dto.setDistanceKm(
+                GeoDistance.kilometresTo(latitude, longitude, dto.getLatitude(), dto.getLongitude())));
+
+        // Restaurants without usable coordinates have a null distance and sort last.
+        results.sort(Comparator.comparing(RestaurantDTO::getDistanceKm,
+                Comparator.nullsLast(Comparator.naturalOrder())));
+
+        return results;
     }
 
     public RestaurantDTO getRestaurantById(Long id) {

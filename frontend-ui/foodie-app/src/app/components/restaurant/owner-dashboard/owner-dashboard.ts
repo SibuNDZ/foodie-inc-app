@@ -107,6 +107,8 @@ export class OwnerDashboard implements OnInit {
       phone: r.phone,
       cuisineType: r.cuisineType,
       isOpen: r.isOpen,
+      latitude: r.latitude,
+      longitude: r.longitude,
     });
     this.isEditing.set(true);
   }
@@ -119,6 +121,10 @@ export class OwnerDashboard implements OnInit {
     const form = this.editForm();
     if (!form.name?.trim()) { this.toastr.error('Name is required.'); return; }
     if (!form.address?.trim()) { this.toastr.error('Address is required.'); return; }
+    if (!this.coordinatesAreValid(form)) {
+      this.toastr.error('Latitude must be between -90 and 90, longitude between -180 and 180.');
+      return;
+    }
     this.isSaving.set(true);
     this.ownerService.updateMyRestaurant(form)
       .pipe(finalize(() => this.isSaving.set(false)))
@@ -134,6 +140,24 @@ export class OwnerDashboard implements OnInit {
 
   setEditField<K extends keyof Restaurant>(key: K, value: any): void {
     this.editForm.update(f => ({ ...f, [key]: value }));
+  }
+
+  /** Coordinates are optional, so an empty input clears the value rather than sending NaN. */
+  setCoordinateField(key: 'latitude' | 'longitude', value: unknown): void {
+    const raw = typeof value === 'string' ? value.trim() : value;
+    if (raw === '' || raw === null || raw === undefined) {
+      this.editForm.update(f => ({ ...f, [key]: undefined }));
+      return;
+    }
+    const parsed = Number(raw);
+    this.editForm.update(f => ({ ...f, [key]: Number.isNaN(parsed) ? undefined : parsed }));
+  }
+
+  private coordinatesAreValid(form: Partial<Restaurant>): boolean {
+    const { latitude, longitude } = form;
+    if (latitude !== undefined && (latitude < -90 || latitude > 90)) return false;
+    if (longitude !== undefined && (longitude < -180 || longitude > 180)) return false;
+    return true;
   }
 
   approvalLabel(status?: string): string {

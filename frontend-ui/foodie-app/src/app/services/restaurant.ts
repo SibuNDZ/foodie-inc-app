@@ -1,9 +1,19 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Restaurant, CreateRestaurantRequest } from '../models';
 import { environment } from '../../environments/environment';
+
+/** Optional filters for the public restaurant listing. */
+export interface RestaurantBrowseOptions {
+  /** Name or cuisine substring. */
+  query?: string;
+  /** Caller latitude; must be paired with lng to take effect. */
+  lat?: number;
+  /** Caller longitude; must be paired with lat to take effect. */
+  lng?: number;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -30,9 +40,17 @@ export class RestaurantService {
     };
   }
 
-  getAllRestaurants(): Observable<Restaurant[]> {
+  getAllRestaurants(options?: RestaurantBrowseOptions): Observable<Restaurant[]> {
+    let params = new HttpParams();
+    if (options?.query?.trim()) {
+      params = params.set('query', options.query.trim());
+    }
+    if (options?.lat !== undefined && options?.lng !== undefined) {
+      params = params.set('lat', String(options.lat)).set('lng', String(options.lng));
+    }
+
     return this.http
-      .get<any[]>(this.API_URL)
+      .get<any[]>(this.API_URL, { params })
       .pipe(map(restaurants => restaurants.map(restaurant => this.toRestaurant(restaurant))));
   }
 

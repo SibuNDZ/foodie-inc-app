@@ -21,9 +21,20 @@ public class RestaurantController {
 
     private final RestaurantService restaurantService;
 
+    /**
+     * Browse active restaurants.
+     *
+     * <p>All parameters are optional. Without them the response is the full active
+     * listing exactly as before. With {@code lat} and {@code lng} each entry gains a
+     * {@code distanceKm} and the list is ranked nearest-first, with restaurants that
+     * have no coordinates last.
+     */
     @GetMapping
-    public ResponseEntity<List<RestaurantDTO>> getAllActiveRestaurants() {
-        return ResponseEntity.ok(restaurantService.getAllActiveRestaurants());
+    public ResponseEntity<List<RestaurantDTO>> getAllActiveRestaurants(
+            @RequestParam(required = false) Double lat,
+            @RequestParam(required = false) Double lng,
+            @RequestParam(required = false) String query) {
+        return ResponseEntity.ok(restaurantService.findRestaurants(query, lat, lng));
     }
 
     @GetMapping("/{id}")
