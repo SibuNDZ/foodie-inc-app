@@ -36,6 +36,11 @@ public class PushNotificationService {
 
     @PostConstruct
     public void init() throws Exception {
+        if (vapidPublicKey == null || vapidPublicKey.isBlank()
+                || vapidPrivateKey == null || vapidPrivateKey.isBlank()) {
+            log.warn("VAPID keys are not configured; web push notifications are disabled");
+            return;
+        }
         Security.addProvider(new BouncyCastleProvider());
         pushService = new PushService(vapidPublicKey, vapidPrivateKey, vapidSubject);
     }
