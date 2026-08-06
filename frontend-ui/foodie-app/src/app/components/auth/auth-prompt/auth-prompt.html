@@ -1,0 +1,31 @@
+@if (visible()) {
+	<div class="backdrop" (click)="dismiss()">
+		<div
+			#dialog
+			class="dialog"
+			role="dialog"
+			aria-modal="true"
+			aria-labelledby="auth-prompt-title"
+			aria-describedby="auth-prompt-body"
+			(click)="$event.stopPropagation()"
+			(keydown)="onKeydown($event)">
+
+			<button type="button" class="close" (click)="dismiss()" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+
+			<h2 id="auth-prompt-title">Hungry already?</h2>
+			<p id="auth-prompt-body">
+				Create an account or sign in to see the restaurants delivering near you, track your
+				order door to door, and reorder your usual in two taps.
+			</p>
+
+			<div class="actions">
+				<button type="button" class="btn btn-primary" (click)="signUp()">Create an account</button>
+				<button type="button" class="btn btn-secondary" (click)="signIn()">Sign in</button>
+			</div>
+
+			<button type="button" class="link-btn" (click)="dismiss()">Browse without an account</button>
+		</div>
+	</div>
+}

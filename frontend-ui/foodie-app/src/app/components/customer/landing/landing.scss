@@ -1,0 +1,50 @@
+:host { display: block; }
+
+.landing-page {
+	min-height: 100vh;
+	background: var(--color-bg-base);
+}
+
+.hero-section {
+	background:
+		radial-gradient(circle at 15% 20%, rgba(238, 49, 36, 0.22), transparent 42%),
+		linear-gradient(135deg, var(--color-bg-surface) 0%, var(--color-bg-base) 100%);
+	padding: 56px 20px;
+	color: #fff;
+}
+
+.hero-split {
+	max-width: 1180px;
+	margin: 0 auto;
+	display: grid;
+	grid-template-columns: 1.05fr 0.95fr;
+	align-items: center;
+	gap: 2.5rem;
+}
+
+.hero-panel--carousel {
+	display: flex;
+	flex-direction: column;
+	gap: 1.1rem;
+}
+
+.brand-lockup {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.6rem;
+}
+
+.brand-lockup-wordmark {
+	font-style: italic;
+	font-weight: 800;
+	font-size: 1.35rem;
+	color: var(--color-text-primary);
+}
+
+@media (max-width: 900px) {
+	.hero-split {
+		grid-template-columns: 1fr;
+		gap: 2rem;
+	}
+}

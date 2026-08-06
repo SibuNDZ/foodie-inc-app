@@ -7,16 +7,11 @@ import { RestaurantService } from '../../../services/restaurant';
 import { Restaurant } from '../../../models';
 import { HeroSearch } from '../hero-search/hero-search';
 import { CategoryCarousel } from '../category-carousel/category-carousel';
-import { HomePromo } from '../home-promo/home-promo';
-import { AppDownload } from '../app-download/app-download';
 import { LogoMark } from '../../layout/logo-mark/logo-mark';
 
 @Component({
   selector: 'app-restaurant-list',
-  imports: [
-    CommonModule, FormsModule, RouterLink,
-    HeroSearch, CategoryCarousel, HomePromo, AppDownload, LogoMark
-  ],
+  imports: [CommonModule, FormsModule, RouterLink, HeroSearch, CategoryCarousel, LogoMark],
   templateUrl: './restaurant-list.html',
   styleUrl: './restaurant-list.scss'
 })

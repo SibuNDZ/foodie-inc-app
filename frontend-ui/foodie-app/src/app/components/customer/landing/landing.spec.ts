@@ -1,0 +1,46 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+
+import { Landing } from './landing';
+
+describe('Landing', () => {
+  let component: Landing;
+  let fixture: ComponentFixture<Landing>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [Landing, HttpClientTestingModule, RouterTestingModule]
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(Landing);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  afterEach(() => TestBed.inject(HttpTestingController).verify());
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('renders the hero, promo and download sections', () => {
+    expect(fixture.nativeElement.querySelector('app-hero-search')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('app-category-carousel')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('app-home-promo')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('app-app-download')).toBeTruthy();
+  });
+
+  it('mounts the sign-up prompt', () => {
+    expect(fixture.nativeElement.querySelector('app-auth-prompt')).toBeTruthy();
+  });
+
+  it('does not render the restaurant listing, which lives at /restaurants', () => {
+    expect(fixture.nativeElement.querySelector('.restaurants-grid')).toBeNull();
+  });
+
+  it('shows the brand lockup below the carousel', () => {
+    expect(fixture.nativeElement.querySelector('.brand-lockup-wordmark').textContent.trim())
+      .toBe('Foodie Inc');
+  });
+});

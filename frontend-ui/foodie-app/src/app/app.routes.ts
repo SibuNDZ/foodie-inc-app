@@ -8,7 +8,7 @@ export const routes: Routes = [
   // Public routes
   {
     path: '',
-    loadComponent: () => import('./components/customer/restaurant-list/restaurant-list').then(m => m.RestaurantList)
+    loadComponent: () => import('./components/customer/landing/landing').then(m => m.Landing)
   },
   {
     path: 'login',

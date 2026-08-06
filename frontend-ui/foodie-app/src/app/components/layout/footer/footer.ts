@@ -8,18 +8,15 @@ export interface SocialLink {
   readonly url: string;
 }
 
-/**
- * PLACEHOLDERS: these point at each platform's home page, not at Foodie Inc
- * accounts, because the real handles are not known here. Replace each url with
- * the actual profile before launch rather than guessing a handle, which risks
- * sending customers to someone else's account.
- */
+/** Foodie Inc is @foodieincza on every platform. */
+export const SOCIAL_HANDLE = 'foodieincza';
+
 export const SOCIAL_LINKS: readonly SocialLink[] = [
-  { icon: 'fa-brands fa-instagram', label: 'Instagram', url: 'https://www.instagram.com/' },
-  { icon: 'fa-brands fa-facebook', label: 'Facebook', url: 'https://www.facebook.com/' },
-  { icon: 'fa-brands fa-x-twitter', label: 'X', url: 'https://x.com/' },
-  { icon: 'fa-brands fa-tiktok', label: 'TikTok', url: 'https://www.tiktok.com/' },
-  { icon: 'fa-brands fa-youtube', label: 'YouTube', url: 'https://www.youtube.com/' }
+  { icon: 'fa-brands fa-instagram', label: 'Instagram', url: `https://www.instagram.com/${SOCIAL_HANDLE}` },
+  { icon: 'fa-brands fa-facebook', label: 'Facebook', url: `https://www.facebook.com/${SOCIAL_HANDLE}` },
+  { icon: 'fa-brands fa-x-twitter', label: 'X', url: `https://x.com/${SOCIAL_HANDLE}` },
+  { icon: 'fa-brands fa-tiktok', label: 'TikTok', url: `https://www.tiktok.com/@${SOCIAL_HANDLE}` },
+  { icon: 'fa-brands fa-youtube', label: 'YouTube', url: `https://www.youtube.com/@${SOCIAL_HANDLE}` }
 ];
 
 @Component({
