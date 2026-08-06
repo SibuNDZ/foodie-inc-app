@@ -4,6 +4,7 @@ on:
   push:
     branches: ["**"]
   pull_request:
+  workflow_dispatch:
 
 jobs:
   backend:
@@ -20,6 +21,14 @@ jobs:
           distribution: temurin
           java-version: "25"
           cache: maven
+      - name: Assert Maven wrapper is executable
+        run: |
+          if [ ! -x mvnw ]; then
+            echo "backend-api/mvnw has lost its executable bit, so every backend job would fail with exit 126."
+            echo "Restore it with: git update-index --chmod=+x backend-api/mvnw"
+            exit 1
+          fi
+          echo "backend-api/mvnw is executable"
       - name: Run dispatch concurrency test (MySQL Testcontainers)
         run: ./mvnw -B -Dtest=DispatchConcurrencyIntegrationTest test
       - name: Assert dispatch concurrency test was executed
