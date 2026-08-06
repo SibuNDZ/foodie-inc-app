@@ -7,6 +7,7 @@ import com.foodieinc.backend.entity.*;
 import com.foodieinc.backend.exception.ResourceNotFoundException;
 import com.foodieinc.backend.repository.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -261,9 +263,17 @@ public class OrderService {
 
         DriverProfile driver = order.getDriver();
         int deleted = activeDriverAssignmentRepository.deleteByOrderId(order.getId());
-        if (deleted > 0 || !activeDriverAssignmentRepository.existsByDriverId(driver.getId())) {
-            driverProfileRepository.releaseDriver(driver.getId());
+
+        // Zero rows deleted means this order never held the driver. Only skip the release
+        // when the driver is demonstrably busy on a different order, otherwise a driver
+        // assigned before the ledger existed would stay unavailable forever.
+        if (deleted == 0 && activeDriverAssignmentRepository.existsByDriverId(driver.getId())) {
+            log.debug("Order {} held no assignment row and driver {} is busy elsewhere; not releasing",
+                    order.getId(), driver.getId());
+            return;
         }
+
+        driverProfileRepository.releaseDriver(driver.getId());
     }
 
     private void assertCanViewOrder(User user, Order order) {

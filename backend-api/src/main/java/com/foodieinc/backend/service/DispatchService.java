@@ -1,8 +1,10 @@
 package com.foodieinc.backend.service;
 
+import com.foodieinc.backend.entity.ActiveDriverAssignment;
 import com.foodieinc.backend.entity.DriverProfile;
 import com.foodieinc.backend.entity.Order;
 import com.foodieinc.backend.entity.Restaurant;
+import com.foodieinc.backend.repository.ActiveDriverAssignmentRepository;
 import com.foodieinc.backend.repository.DriverProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -23,6 +25,24 @@ public class DispatchService {
     private static final Logger logger = LoggerFactory.getLogger(DispatchService.class);
 
     private final DriverProfileRepository driverProfileRepository;
+    private final ActiveDriverAssignmentRepository activeDriverAssignmentRepository;
+
+    /**
+     * Records the driver/order pair in the active-assignment ledger.
+     *
+     * <p>The ledger is what lets {@code releaseDriverAssignment} tell "this order held
+     * the driver" apart from "the driver is busy on a different order", so it must be
+     * written on every assignment path. The table carries unique constraints on both
+     * driver and order, which is the database-level backstop against double-booking.
+     *
+     * <p>{@code createdAt} is populated by the entity's {@code @PrePersist} hook.
+     */
+    private void recordAssignment(Order order, DriverProfile driver) {
+        ActiveDriverAssignment assignment = new ActiveDriverAssignment();
+        assignment.setDriver(driver);
+        assignment.setOrder(order);
+        activeDriverAssignmentRepository.save(assignment);
+    }
 
     /**
      * Attempts to assign the nearest available driver to an order.
@@ -67,6 +87,7 @@ public class DispatchService {
 
             order.setDriver(candidate);
             order.setDeliveryStatus(Order.DeliveryStatus.ASSIGNED);
+            recordAssignment(order, candidate);
 
             logger.info("Dispatched driver {} (profile {}) to order {} — distance: {}",
                     candidate.getUser().getUsername(),
@@ -95,6 +116,7 @@ public class DispatchService {
         }
         order.setDriver(driver);
         order.setDeliveryStatus(Order.DeliveryStatus.ASSIGNED);
+        recordAssignment(order, driver);
         logger.info("Manually assigned driver {} (profile {}) to order {}",
                 driver.getUser().getUsername(), driver.getId(), order.getOrderNumber());
         return true;
