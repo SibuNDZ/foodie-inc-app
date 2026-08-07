@@ -72,4 +72,9 @@ describe('Footer', () => {
     expect(fixture.nativeElement.querySelector('.footer-legal .footer-wordmark').textContent.trim())
       .toBe('Foodie Inc');
   });
+
+  it('lightens the mark, which is maroon and would vanish on the dark band', () => {
+    const mark: SVGElement = fixture.nativeElement.querySelector('svg.logo-mark g');
+    expect(getComputedStyle(mark).fill).toBe('rgb(255, 255, 255)');
+  });
 });
