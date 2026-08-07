@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="41 8 175 218" role="img" aria-label="Foodie Inc">
+  <!-- Traced from src/assets/brand/foodie-logo.png. The cloche and the "F" are one
+       colour so the mark stays legible at favicon sizes; the highlight on the dome
+       is a hole in the fill rather than a white stroke, so the mark sits on any
+       background. -->
+  <g fill="#6C2219">
+    <circle cx="128" cy="28" r="8" />
+    <path
+      fill-rule="evenodd"
+      d="M70 85.5A58 53 0 0 1 186 85.5Z
+         M113 42.7A48.5 44.5 0 0 0 81.6 72L88.3 74A41.5 37.5 0 0 1 115.2 49.3Z" />
+    <rect x="53" y="93" width="152" height="15" rx="7.5" />
+    <rect x="71" y="93" width="40" height="121" />
+    <rect x="71" y="133" width="98" height="32" />
+  </g>
+</svg>

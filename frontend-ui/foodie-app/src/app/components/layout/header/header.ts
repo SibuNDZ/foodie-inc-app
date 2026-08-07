@@ -7,6 +7,11 @@ import { AuthService } from '../../../services/auth';
 import { CartService } from '../../../services/cart';
 import { LogoMark } from '../logo-mark/logo-mark';
 
+/** The landing route, ignoring any query string or fragment hanging off it. */
+function isHomeUrl(url: string): boolean {
+  return url.split(/[?#]/)[0].replace(/\/+$/, '') === '';
+}
+
 @Component({
   selector: 'app-header',
   imports: [RouterLink, RouterLinkActive, LogoMark],
@@ -19,6 +24,14 @@ export class Header {
   protected readonly UserRole = UserRole;
 
   private readonly host = inject(ElementRef<HTMLElement>);
+  private readonly router = inject(Router);
+
+  /**
+   * True on `/`, where the hero carries the marketing links as pills instead.
+   * Seeded from the current URL so the server renders the same header the
+   * browser will, then kept in step with navigation.
+   */
+  protected readonly onHome = signal(isHomeUrl(this.router.url));
 
   /** Drives the collapsed mobile menu. Always closed on the server. */
   protected readonly menuOpen = signal(false);
@@ -38,12 +51,15 @@ export class Header {
 
   constructor() {
     // A completed navigation should never leave a panel covering the page.
-    inject(Router)
-      .events.pipe(
-        filter(event => event instanceof NavigationEnd),
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
         takeUntilDestroyed()
       )
-      .subscribe(() => this.closeAll());
+      .subscribe(event => {
+        this.onHome.set(isHomeUrl(event.urlAfterRedirects));
+        this.closeAll();
+      });
   }
 
   /** Clicking anywhere outside the header dismisses the account dropdown. */

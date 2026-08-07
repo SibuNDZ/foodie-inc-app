@@ -25,7 +25,8 @@
   /* ── Brand ────────────────────────────────────────────────────────────── */
   --primary: #C2410C;       /* burnt orange; AA with white text */
   --primary-hover: #9A3412;
-  --accent: #F97316;        /* graphics, chips and the logo mark only */
+  --accent: #F97316;        /* graphics and chips only */
+  --brand-mark: #6C2219;    /* the maroon of the cloche-and-F logo */
 
   /* ── Lines and states ─────────────────────────────────────────────────── */
   --border: #EAE3DA;

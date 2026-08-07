@@ -26,6 +26,11 @@
                 "input": "public"
               },
               {
+                "glob": "**/*",
+                "input": "src/assets/brand",
+                "output": "/brand"
+              },
+              {
                 "glob": "sw.js",
                 "input": "src",
                 "output": "/"
@@ -107,6 +112,11 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets/brand",
+                "output": "/brand"
               }
             ],
             "styles": [
