@@ -19,15 +19,11 @@
 	color: var(--color-text-secondary);
 }
 
-/* The elevated white card that holds the whole search control. */
+/* No card. The controls sit straight on the page, so nothing draws a box
+   around the search field and its button. */
 .search-shell {
 	max-width: 720px;
 	margin: 0 auto;
-	padding: 0.75rem;
-	background: var(--surface);
-	border: 1px solid var(--border);
-	border-radius: var(--radius);
-	box-shadow: var(--shadow);
 	text-align: left;
 }
 
@@ -66,7 +62,8 @@
 	font-size: 1rem;
 	color: var(--color-text-primary);
 	background: var(--surface);
-	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+	/* Its own soft lift, now that there is no card behind it to sit on. */
+	box-shadow: var(--shadow);
 
 	&:focus-visible {
 		outline: 2px solid var(--color-secondary);

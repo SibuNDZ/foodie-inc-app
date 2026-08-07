@@ -1,7 +1,7 @@
 <div class="app-shell">
   <app-header></app-header>
 
-  <main class="content-area">
+  <main class="content-area" [class.content-area--full]="fullBleed()">
     <router-outlet></router-outlet>
   </main>
 

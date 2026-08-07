@@ -5,52 +5,57 @@
 	background: var(--bg);
 }
 
-/* Warm light backdrop with a soft diagonal peach wash behind the search card. */
+/* Bare white field. No wash and no accent shapes, so the hero is the same
+   surface as the header sitting above it, and only the pills and the search
+   card are left to look at. */
 .hero {
-	position: relative;
-	display: grid;
-	grid-template-columns: minmax(0, 1fr) minmax(0, 2.2fr) minmax(0, 1fr);
-	align-items: center;
-	gap: 2rem;
 	max-width: var(--container);
 	margin: 0 auto;
-	padding: 3.5rem 20px 3rem;
-	overflow: hidden;
+	padding: 2.5rem 20px 3.5rem;
+	background: var(--bg);
+}
 
-	&::before {
-		content: '';
-		position: absolute;
-		inset: 0;
-		background:
-			radial-gradient(ellipse at 50% 0%, var(--tint) 0%, transparent 62%),
-			linear-gradient(158deg, rgb(249 115 22 / 0.06) 0%, transparent 58%);
-		pointer-events: none;
+/* Sits where the slogan used to, a little higher up the field. */
+.hero-pills {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: 0.875rem;
+	margin: 0 auto 2.25rem;
+	max-width: 780px;
+}
+
+.hero-pill {
+	display: inline-flex;
+	align-items: center;
+	padding: 0.6rem 1.4rem;
+	border: 1px solid var(--primary);
+	border-radius: var(--radius-pill);
+	background: transparent;
+	color: var(--primary);
+	font-size: 0.95rem;
+	font-weight: 700;
+	line-height: 1.2;
+	text-decoration: none;
+	white-space: nowrap;
+	transition: background-color 0.16s ease, color 0.16s ease;
+
+	&:hover,
+	&:active,
+	&.active {
+		background: var(--tint);
+		color: var(--primary-hover);
+	}
+
+	&:focus-visible {
+		outline: 2px solid var(--primary);
+		outline-offset: 3px;
 	}
 }
 
 .hero-inner {
 	position: relative;
-	z-index: 1;
-}
-
-.hero-art {
-	position: relative;
-	z-index: 0;
-
-	/* Softened so the photography frames the search card without competing. */
-	app-smart-image {
-		border-radius: var(--radius);
-		overflow: hidden;
-		box-shadow: var(--shadow);
-	}
-}
-
-.hero-art--left {
-	transform: rotate(-3deg);
-}
-
-.hero-art--right {
-	transform: rotate(3deg);
 }
 
 .brand-lockup {
@@ -64,25 +69,28 @@
 .brand-lockup-wordmark {
 	font-style: italic;
 	font-weight: 800;
-	font-size: 1.35rem;
+	font-size: 1.6rem;
 	color: var(--ink);
 }
 
-/* Below the tablet breakpoint the flanking photography is noise, not framing. */
-@media (max-width: 1020px) {
+@media (max-width: 640px) {
 	.hero {
-		grid-template-columns: 1fr;
-		padding: 2.5rem 20px 2rem;
+		padding: 1.75rem 20px 2.5rem;
 	}
 
-	.hero-art {
-		display: none;
+	.hero-pills {
+		gap: 0.75rem;
+		margin-bottom: 1.75rem;
+	}
+
+	.hero-pill {
+		padding: 0.5rem 1.1rem;
+		font-size: 0.9rem;
 	}
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.hero-art--left,
-	.hero-art--right {
-		transform: none;
+	.hero-pill {
+		transition: none;
 	}
 }

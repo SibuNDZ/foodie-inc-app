@@ -1,6 +1,6 @@
 <header class="topbar">
 	<a class="brand" routerLink="/">
-		<app-logo-mark [size]="26" />
+		<app-logo-mark [size]="38" />
 		<span class="brand-wordmark">Foodie Inc</span>
 	</a>
 
@@ -18,13 +18,18 @@
 
 	<div class="collapsible" id="primary-navigation" [class.open]="menuOpen()">
 		<!-- Primary nav stays the same for everyone; role-specific links live in
-		     the account menu so this row does not grow with permissions. -->
-		<nav class="nav-links" aria-label="Primary">
-			<a routerLink="/restaurants" routerLinkActive="active-link" (click)="closeMenu()">Explore</a>
-			<a routerLink="/corporate-orders" routerLinkActive="active-link" (click)="closeMenu()">Corporate Orders</a>
-			<a routerLink="/become-a-driver" routerLinkActive="active-link" (click)="closeMenu()">Become a Driver</a>
-			<a routerLink="/partner-with-us" routerLinkActive="active-link" (click)="closeMenu()">Partner with Us</a>
-		</nav>
+		     the account menu so this row does not grow with permissions.
+		     The home hero renders these same four destinations as pill buttons, so
+		     showing them here too would state them twice on the one route where
+		     they are impossible to miss. Every other route keeps them. -->
+		@if (!onHome()) {
+			<nav class="nav-links" aria-label="Primary">
+				<a routerLink="/restaurants" routerLinkActive="active-link" (click)="closeMenu()">Explore</a>
+				<a routerLink="/corporate-orders" routerLinkActive="active-link" (click)="closeMenu()">Corporate Orders</a>
+				<a routerLink="/become-a-driver" routerLinkActive="active-link" (click)="closeMenu()">Become a Driver</a>
+				<a routerLink="/partner-with-us" routerLinkActive="active-link" (click)="closeMenu()">Partner with Us</a>
+			</nav>
+		}
 
 		<div class="auth-actions">
 			@if (authService.isAuthenticated()) {

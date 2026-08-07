@@ -18,3 +18,11 @@
 	width: 100%;
 	flex: 1;
 }
+
+/* Home runs the full width of the window and lets its own sections decide what
+   to centre, so the cuisine rail can sit hard against the left edge instead of
+   inside a 1200px column with empty gutters either side. */
+.content-area--full {
+	max-width: none;
+	padding-inline: 0;
+}

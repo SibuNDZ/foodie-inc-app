@@ -6,6 +6,7 @@ import { UserRole } from '../../../models';
 import { AuthService } from '../../../services/auth';
 import { CartService } from '../../../services/cart';
 import { LogoMark } from '../logo-mark/logo-mark';
+import { onHome } from '../../../shared/on-home';
 
 @Component({
   selector: 'app-header',
@@ -19,6 +20,10 @@ export class Header {
   protected readonly UserRole = UserRole;
 
   private readonly host = inject(ElementRef<HTMLElement>);
+  private readonly router = inject(Router);
+
+  /** On `/` the hero carries the marketing links as pills instead. */
+  protected readonly onHome = onHome();
 
   /** Drives the collapsed mobile menu. Always closed on the server. */
   protected readonly menuOpen = signal(false);
@@ -38,9 +43,9 @@ export class Header {
 
   constructor() {
     // A completed navigation should never leave a panel covering the page.
-    inject(Router)
-      .events.pipe(
-        filter(event => event instanceof NavigationEnd),
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
         takeUntilDestroyed()
       )
       .subscribe(() => this.closeAll());

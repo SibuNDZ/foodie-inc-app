@@ -7,6 +7,7 @@
     "build": "ng build",
     "verify": "npm run build && npm run test -- --watch=false --browsers=ChromeHeadless",
     "verify:images": "node scripts/verify-images.mjs",
+    "build:favicons": "node scripts/build-favicons.mjs",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:foodie-app": "node dist/foodie-app/server/server.mjs"

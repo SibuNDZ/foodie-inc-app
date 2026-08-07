@@ -5,9 +5,11 @@
   <title>FoodieApp</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico" sizes="16x16 32x32 48x48">
-  <link rel="icon" type="image/svg+xml" href="logo-mark.svg">
-  <link rel="apple-touch-icon" href="logo-mark.svg">
+  <!-- All three are the same mark: the SVG for browsers that take one, the .ico
+       for those that do not, and a composited PNG for iOS, which has no alpha. -->
+  <link rel="icon" type="image/x-icon" href="favicon.ico" sizes="16x16 32x32 48x48 64x64">
+  <link rel="icon" type="image/svg+xml" href="brand/foodie-logo.svg">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <meta name="description" content="Order food online from local restaurants with Foodie Inc. Browse menus, track your delivery in real time, and get fresh meals delivered fast.">
 
   <meta property="og:type" content="website">
@@ -22,7 +24,9 @@
   <meta name="twitter:description" content="Order food online from local restaurants. Browse menus, track your delivery in real time, and get fresh meals delivered fast.">
   <meta name="twitter:image" content="https://www.foodieapp.co.za/og-image.png">
 
-  <meta name="theme-color" content="#E5402E">
+  <!-- Matches the shell, so the browser chrome extends the page rather than
+       drawing a band above it. -->
+  <meta name="theme-color" content="#FFFFFF">
 </head>
 <body>
   <app-root></app-root>

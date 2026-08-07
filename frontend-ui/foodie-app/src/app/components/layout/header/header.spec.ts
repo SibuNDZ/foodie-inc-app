@@ -1,11 +1,22 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { Header } from './header';
 import { AuthService } from '../../../services/auth';
 import { UserRole } from '../../../models';
+
+@Component({ template: '' })
+class Blank {}
+
+/** Enough of a route table for the header to answer "am I on home?". */
+const ROUTES = [
+  { path: '', component: Blank },
+  { path: 'restaurants', component: Blank },
+  { path: 'corporate-orders', component: Blank }
+];
 
 describe('Header', () => {
   let fixture: ComponentFixture<Header>;
@@ -28,12 +39,16 @@ describe('Header', () => {
     fixture.detectChanges();
   };
 
-  const create = async (user: any = null) => {
+  /**
+   * Creates the header on `url`. The default is a route other than home, because
+   * home is the one place the marketing links move out of the header.
+   */
+  const create = async (user: any = null, url = '/restaurants') => {
     authenticated = signal(!!user);
     currentUser = signal(user);
 
     await TestBed.configureTestingModule({
-      imports: [Header, HttpClientTestingModule, RouterTestingModule]
+      imports: [Header, HttpClientTestingModule, RouterTestingModule.withRoutes(ROUTES)]
     }).compileComponents();
 
     const auth = TestBed.inject(AuthService);
@@ -41,6 +56,9 @@ describe('Header', () => {
     Object.defineProperty(auth, 'currentUser', { value: currentUser });
 
     fixture = TestBed.createComponent(Header);
+    fixture.detectChanges();
+
+    await TestBed.inject(Router).navigateByUrl(url);
     fixture.detectChanges();
   };
 
@@ -54,8 +72,49 @@ describe('Header', () => {
     expect(brand.querySelector('.brand-wordmark').textContent.trim()).toBe('Foodie Inc');
   });
 
+  it('renders the mark large enough to read as a logo', async () => {
+    await create();
+    const svg: SVGElement = fixture.nativeElement.querySelector('.brand svg.logo-mark');
+
+    expect(Number(svg.getAttribute('height'))).toBe(38);
+    // Width follows the artwork's aspect, so the cloche is never squashed.
+    expect(Number(svg.getAttribute('width'))).toBe(31);
+  });
+
   it('keeps the primary nav to the four marketing destinations', async () => {
     await create({ username: 'doc.ndz', role: UserRole.ADMIN });
+
+    expect(navHrefs()).toEqual([
+      '/restaurants', '/corporate-orders', '/become-a-driver', '/partner-with-us'
+    ]);
+  });
+
+  it('drops the marketing links on home, where the hero carries them as pills', async () => {
+    await create(null, '/');
+
+    expect(fixture.nativeElement.querySelector('.nav-links')).toBeNull();
+  });
+
+  it('ignores a query string when deciding whether it is on home', async () => {
+    await create(null, '/?ref=email');
+
+    expect(fixture.nativeElement.querySelector('.nav-links')).toBeNull();
+  });
+
+  it('keeps the auth controls on home', async () => {
+    await create(null, '/');
+
+    expect(Array.from(fixture.nativeElement.querySelectorAll('.auth-actions .btn'))
+      .map(a => (a as HTMLElement).textContent?.trim()))
+      .toEqual(['Log in', 'Sign up']);
+  });
+
+  it('puts the marketing links back when leaving home', async () => {
+    await create(null, '/');
+    expect(fixture.nativeElement.querySelector('.nav-links')).toBeNull();
+
+    await TestBed.inject(Router).navigateByUrl('/restaurants');
+    fixture.detectChanges();
 
     expect(navHrefs()).toEqual([
       '/restaurants', '/corporate-orders', '/become-a-driver', '/partner-with-us'

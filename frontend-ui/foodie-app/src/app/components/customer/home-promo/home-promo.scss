@@ -1,9 +1,9 @@
 :host { display: block; }
 
+/* Home runs full width, so this lines its heading up with the cuisine rail and
+   the header brand rather than starting somewhere of its own. */
 .promo {
-	max-width: 1180px;
-	margin: 0 auto;
-	padding: 3.5rem 20px 1rem;
+	padding: 3.5rem 24px 1rem;
 }
 
 .promo-heading {

@@ -50,9 +50,18 @@ describe('AppDownload', () => {
   });
 
   it('hides the brand glyphs from assistive tech, leaving the text to describe the link', () => {
-    fixture.nativeElement.querySelectorAll('.badge i').forEach((el: Element) => {
-      expect(el.getAttribute('aria-hidden')).toBe('true');
-    });
+    const glyphs = fixture.nativeElement.querySelectorAll('.badge-glyph');
+
+    expect(glyphs.length).toBe(2);
+    glyphs.forEach((el: Element) => expect(el.getAttribute('aria-hidden')).toBe('true'));
+  });
+
+  it('draws the Play mark in its four colours rather than one flat glyph', () => {
+    const fills = Array.from(fixture.nativeElement.querySelectorAll('.play-glyph path'))
+      .map(p => (p as SVGPathElement).getAttribute('fill'));
+
+    expect(fills.length).toBe(4);
+    expect(new Set(fills).size).toBe(4);
   });
 
   it('labels the section for assistive tech', () => {

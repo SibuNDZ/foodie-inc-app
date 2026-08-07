@@ -38,10 +38,30 @@ describe('Landing', () => {
     expect(fixture.nativeElement.querySelector('app-app-download')).toBeTruthy();
   });
 
-  it('frames the hero with decorative photography that screen readers skip', () => {
-    const art = Array.from(fixture.nativeElement.querySelectorAll('.hero-art'));
-    expect(art.length).toBe(2);
-    art.forEach(el => expect((el as HTMLElement).getAttribute('aria-hidden')).toBe('true'));
+  it('strips the hero down to the pills and the search card', () => {
+    expect(fixture.nativeElement.querySelector('.hero-art')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.hero h1')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.hero .hero-sub')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.hero .search-shell')).toBeTruthy();
+  });
+
+  it('offers the four marketing destinations as pills', () => {
+    const pills = Array.from(fixture.nativeElement.querySelectorAll('.hero-pill'));
+
+    expect(pills.map(a => (a as HTMLElement).textContent?.trim())).toEqual([
+      'Explore', 'Corporate Orders', 'Become a Driver', 'Partner with Us'
+    ]);
+    expect(pills.map(a => (a as HTMLAnchorElement).getAttribute('href'))).toEqual([
+      '/restaurants', '/corporate-orders', '/become-a-driver', '/partner-with-us'
+    ]);
+  });
+
+  it('places the pills above the search card', () => {
+    const hero = fixture.nativeElement.querySelector('.hero');
+    const order = Array.from(hero.querySelectorAll('.hero-pills, .search-shell'))
+      .map(el => (el as HTMLElement).className.split(' ')[0]);
+
+    expect(order).toEqual(['hero-pills', 'search-shell']);
   });
 
   it('mounts the sign-up prompt', () => {

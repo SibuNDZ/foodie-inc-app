@@ -1,4 +1,4 @@
-/* Foodie Inc design tokens — warm, appetizing light theme.
+/* Foodie Inc design tokens — crisp white light theme.
  *
  * Single source of truth for colour, radius and depth. Component stylesheets
  * must reference these rather than hard-coding hex values.
@@ -9,9 +9,12 @@
 
 :root {
   /* ── Surfaces ─────────────────────────────────────────────────────────── */
-  --bg: #FAF8F5;        /* page background, warm off-white */
+  /* Page, header and hero all share this, so the shell reads as one unbroken
+     white field with no seam where the header ends. Cards stay legible on it
+     through shadow and radius rather than a different fill. */
+  --bg: #FFFFFF;        /* page background, white as snow */
   --surface: #FFFFFF;   /* cards, header, footer */
-  --tint: #FFEDD5;      /* soft peach wash for hero and chips */
+  --tint: #FFEDD5;      /* soft peach wash for chips and hover states */
   --muted-surface: #F5F1EC;
 
   /* ── Text ─────────────────────────────────────────────────────────────── */
@@ -22,7 +25,8 @@
   /* ── Brand ────────────────────────────────────────────────────────────── */
   --primary: #C2410C;       /* burnt orange; AA with white text */
   --primary-hover: #9A3412;
-  --accent: #F97316;        /* graphics, chips and the logo mark only */
+  --accent: #F97316;        /* graphics and chips only */
+  --brand-mark: #6C2219;    /* the maroon of the cloche-and-F logo */
 
   /* ── Lines and states ─────────────────────────────────────────────────── */
   --border: #EAE3DA;
@@ -40,6 +44,15 @@
   --info-surface: #DBEAFE;
   --violet: #4C1D95;
   --violet-surface: #EDE9FE;
+
+  /* ── Footer ───────────────────────────────────────────────────────────── */
+  /* The one dark surface in the app, so it gets its own small ramp rather than
+     inverting the light one. --primary is too dark to read as a link here, so
+     the lighter --accent takes over: 6.0:1 on the footer, against 3.3:1. */
+  --footer-bg: #201C18;
+  --footer-ink: #FFFFFF;      /* 16.9:1 on --footer-bg */
+  --footer-muted: #C9C2B8;    /*  9.6:1 on --footer-bg */
+  --footer-border: rgb(255 255 255 / 0.14);
 
   /* ── Shape and depth ──────────────────────────────────────────────────── */
   --radius: 14px;

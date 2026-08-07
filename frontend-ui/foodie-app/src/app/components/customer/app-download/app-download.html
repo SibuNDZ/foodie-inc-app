@@ -19,7 +19,7 @@
 
 			<div class="badges">
 				<a class="badge" [href]="links.apple" target="_blank" rel="noopener noreferrer">
-					<i class="fa-brands fa-apple" aria-hidden="true"></i>
+					<i class="fa-brands fa-apple badge-glyph" aria-hidden="true"></i>
 					<span class="badge-text">
 						<span class="badge-small">Download on the</span>
 						<span class="badge-large">App Store</span>
@@ -27,7 +27,14 @@
 				</a>
 
 				<a class="badge" [href]="links.google" target="_blank" rel="noopener noreferrer">
-					<i class="fa-brands fa-google-play" aria-hidden="true"></i>
+					<!-- Drawn rather than taken from the icon font, because the Play mark
+					     is four colours and the font only has it as one. -->
+					<svg class="badge-glyph play-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+						<path fill="#00D2FF" d="M3.609 1.814 13.792 12 3.61 22.186a1 1 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92z" />
+						<path fill="#00F076" d="M3.609 1.814 16.793 8.986 13.793 12z" />
+						<path fill="#FFCE00" d="M16.793 15.014 13.793 12l3-3.014 3.502 2.001c.719.4.719 1.6 0 2z" />
+						<path fill="#FF3A44" d="M3.609 22.186 13.793 12l3 3.014z" />
+					</svg>
 					<span class="badge-text">
 						<span class="badge-small">Get it on</span>
 						<span class="badge-large">Google Play</span>

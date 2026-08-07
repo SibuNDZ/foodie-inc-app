@@ -1,16 +1,13 @@
 <div class="landing-page">
 	<header class="hero">
-		<!-- Decorative only: the hero is described by its heading and search control. -->
-		<div class="hero-art hero-art--left" aria-hidden="true">
-			<app-smart-image [src]="groceryPhoto" alt="" aspectRatio="3 / 4" [priority]="true" />
-		</div>
+		<nav class="hero-pills" aria-label="Primary">
+			@for (link of pills; track link.path) {
+				<a class="hero-pill" [routerLink]="link.path" routerLinkActive="active">{{ link.label }}</a>
+			}
+		</nav>
 
 		<div class="hero-inner">
-			<app-hero-search />
-		</div>
-
-		<div class="hero-art hero-art--right" aria-hidden="true">
-			<app-smart-image [src]="burgerPhoto" alt="" aspectRatio="3 / 4" [lazy]="false" />
+			<app-hero-search [showHeadings]="false" />
 		</div>
 	</header>
 
@@ -19,7 +16,7 @@
 	<app-home-promo />
 
 	<div class="brand-lockup">
-		<app-logo-mark [size]="34" />
+		<app-logo-mark [size]="44" />
 		<span class="brand-lockup-wordmark">Foodie Inc</span>
 	</div>
 

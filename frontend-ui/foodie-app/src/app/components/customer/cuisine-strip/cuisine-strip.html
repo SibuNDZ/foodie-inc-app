@@ -1,18 +1,77 @@
-<section class="strip-section" aria-labelledby="cuisine-strip-heading">
+<section class="mood-section" aria-labelledby="cuisine-strip-heading">
 	<h2 class="strip-heading" id="cuisine-strip-heading">What are you in the mood for?</h2>
 
-	<ul class="strip" tabindex="0" role="list" aria-label="Browse by cuisine">
-		@for (tile of tiles; track tile.key) {
-			<li class="tile">
-				<a class="tile-link" [routerLink]="['/restaurants']" [queryParams]="{ query: tile.query }">
-					<app-smart-image
-						class="tile-image"
-						[src]="tile.image"
-						[alt]="tile.alt"
-						aspectRatio="1 / 1" />
-					<span class="tile-label">{{ tile.label }}</span>
-				</a>
-			</li>
-		}
-	</ul>
+	<div class="mood-layout">
+		<nav class="category-list" aria-label="All cuisines">
+			<ul>
+				@for (tile of tiles; track tile.key) {
+					<li>
+						<a
+							class="category-link"
+							[routerLink]="['/restaurants']"
+							[queryParams]="{ query: tile.query }">{{ tile.label }}</a>
+					</li>
+				}
+			</ul>
+		</nav>
+
+		<div
+			class="carousel"
+			role="group"
+			aria-roledescription="carousel"
+			aria-label="Cuisines"
+			(mouseenter)="pause()"
+			(mouseleave)="resume()"
+			(focusin)="pause()"
+			(focusout)="resume()"
+			(keydown)="onKeydown($event)">
+
+			<div
+				class="viewport"
+				#viewport
+				(pointerdown)="onPointerDown($event)"
+				(pointerup)="onPointerUp($event)">
+
+				<ul class="track" [style.transform]="trackShift()">
+					@for (tile of tiles; track tile.key; let i = $index) {
+						<li class="tile">
+							<a
+								class="tile-link"
+								[routerLink]="['/restaurants']"
+								[queryParams]="{ query: tile.query }"
+								(focus)="onTileFocus(i)">
+								<app-smart-image
+									class="tile-image"
+									[src]="tile.image"
+									[alt]="tile.alt"
+									aspectRatio="4 / 5"
+									[rounded]="false"
+									[lazy]="i > 2" />
+								<span class="tile-label">{{ tile.label }}</span>
+							</a>
+						</li>
+					}
+				</ul>
+			</div>
+
+			<button type="button" class="arrow arrow-prev" (click)="previous()" aria-label="Previous cuisines">
+				<span aria-hidden="true">‹</span>
+			</button>
+			<button type="button" class="arrow arrow-next" (click)="next()" aria-label="Next cuisines">
+				<span aria-hidden="true">›</span>
+			</button>
+
+			<div class="dots">
+				@for (dot of dots(); track dot) {
+					<button
+						type="button"
+						class="dot"
+						[class.active]="dot === currentDot()"
+						[attr.aria-current]="dot === currentDot() ? 'true' : null"
+						[attr.aria-label]="'Show cuisines, page ' + (dot + 1) + ' of ' + dots().length"
+						(click)="goToPage(dot)"></button>
+				}
+			</div>
+		</div>
+	</div>
 </section>
