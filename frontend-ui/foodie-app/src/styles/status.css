@@ -1,0 +1,60 @@
+/* Shared dashboard vocabulary: status pills, data tables and stat tiles.
+ *
+ * These lived duplicated across five component stylesheets, each setting only a
+ * background and inheriting whatever text colour the surrounding card used. On
+ * the light theme that left several pills below AA contrast. Each variant now
+ * pairs its tint with a matching dark ink, and lives in one place.
+ */
+
+/* ── Status pills ───────────────────────────────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-pill);
+  padding: 0.28rem 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  background: #F1F0EE;
+  color: #3F3A34;
+}
+
+.badge-pending,
+.badge-neutral   { background: #F1F0EE; color: #3F3A34; }
+.badge-confirmed { background: #DCFCE7; color: #14532D; }  /* success tint */
+.badge-preparing { background: #FEF3C7; color: #78350F; }  /* warning tint */
+.badge-ready     { background: #DBEAFE; color: #1E3A8A; }  /* blue tint */
+.badge-dispatch  { background: #EDE9FE; color: #4C1D95; }
+.badge-delivered { background: #DCFCE7; color: #14532D; }
+.badge-cancelled { background: #FEE2E2; color: #7F1D1D; }
+.badge-refunded  { background: #FAE8FF; color: #701A75; }
+
+/* Delivery-leg statuses reuse the same ink pairings. */
+.badge-assigned   { background: #DBEAFE; color: #1E3A8A; }
+.badge-picked-up  { background: #EDE9FE; color: #4C1D95; }
+.badge-in-transit { background: #FEF3C7; color: #78350F; }
+
+/* Approval statuses on the admin queues. */
+.status-approved { background: #DCFCE7; color: #14532D; }
+.status-pending  { background: #FEF3C7; color: #78350F; }
+.status-rejected { background: #FEE2E2; color: #7F1D1D; }
+
+/* ── Data tables ────────────────────────────────────────────────────────────── */
+.data-table tbody tr:nth-child(even) td {
+  background: #FCFBFA;
+}
+
+.data-table tbody tr:hover td {
+  background: var(--tint);
+}
+
+/* ── Stat tiles ─────────────────────────────────────────────────────────────── */
+.stat-card,
+.stat-tile {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}

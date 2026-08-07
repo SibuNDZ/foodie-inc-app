@@ -124,9 +124,6 @@
   letter-spacing: 0.05em;
 }
 
-.status-approved { background: #dcfce7; color: #166534; }
-.status-pending  { background: #fef9c3; color: #854d0e; }
-.status-rejected { background: #fee2e2; color: #991b1b; }
 
 // ── Form ──────────────────────────────────────────────────────────────────────
 .form-grid {
@@ -323,27 +320,6 @@
   &--off { background: #d1d5db; }
 }
 
-// ── Order status badges ───────────────────────────────────────────────────────
-.badge {
-  display: inline-block;
-  padding: 0.2rem 0.55rem;
-  border-radius: 9999px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  white-space: nowrap;
-}
-
-.badge-pending    { background: #fef9c3; color: #854d0e; }
-.badge-confirmed  { background: #dbeafe; color: #1d4ed8; }
-.badge-preparing  { background: #ede9fe; color: #6d28d9; }
-.badge-ready      { background: #d1fae5; color: #065f46; }
-.badge-dispatch   { background: #ffedd5; color: #9a3412; }
-.badge-delivered  { background: #dcfce7; color: #166534; }
-.badge-cancelled  { background: #fee2e2; color: #991b1b; }
-.badge-refunded   { background: #f1f5f9; color: var(--color-text-body); }
-.badge-neutral    { background: #f1f5f9; color: var(--color-text-body); }
 
 // ── Confirm-delete inline row ─────────────────────────────────────────────────
 .confirm-row {

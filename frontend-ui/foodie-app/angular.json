@@ -36,6 +36,7 @@
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
               "node_modules/ngx-toastr/toastr.css",
               "src/styles/tokens.css",
+              "src/styles/status.css",
               "src/styles.scss"
             ],
             "scripts": [
@@ -110,6 +111,7 @@
             ],
             "styles": [
               "src/styles/tokens.css",
+              "src/styles/status.css",
               "src/styles.scss"
             ]
           }

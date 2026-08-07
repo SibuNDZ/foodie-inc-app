@@ -137,31 +137,7 @@
 	background: #2563eb;
 }
 
-.badge {
-	display: inline-flex;
-	align-items: center;
-	border-radius: 999px;
-	padding: 0.28rem 0.7rem;
-	font-size: 0.78rem;
-	font-weight: 700;
-	text-transform: uppercase;
-	letter-spacing: 0.03em;
-	background: #e2e8f0;
-	color: var(--color-text-primary);
-}
 
-.badge-pending,
-.badge-neutral { background: #f1f5f9; }
-.badge-confirmed { background: #dbeafe; }
-.badge-preparing { background: #fef3c7; }
-.badge-ready { background: #e0f2fe; }
-.badge-dispatch { background: #ede9fe; }
-.badge-delivered { background: #dcfce7; }
-.badge-cancelled { background: #fee2e2; }
-.badge-refunded { background: #fae8ff; }
-.badge-assigned { background: #ede9fe; }
-.badge-picked-up { background: #dbeafe; }
-.badge-in-transit { background: #e0f2fe; }
 
 .items {
 	display: grid;
