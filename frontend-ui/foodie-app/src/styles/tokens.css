@@ -1,4 +1,4 @@
-/* Foodie Inc design tokens — warm, appetizing light theme.
+/* Foodie Inc design tokens — crisp white light theme.
  *
  * Single source of truth for colour, radius and depth. Component stylesheets
  * must reference these rather than hard-coding hex values.
@@ -9,9 +9,12 @@
 
 :root {
   /* ── Surfaces ─────────────────────────────────────────────────────────── */
-  --bg: #FAF8F5;        /* page background, warm off-white */
+  /* Page, header and hero all share this, so the shell reads as one unbroken
+     white field with no seam where the header ends. Cards stay legible on it
+     through shadow and radius rather than a different fill. */
+  --bg: #FFFFFF;        /* page background, white as snow */
   --surface: #FFFFFF;   /* cards, header, footer */
-  --tint: #FFEDD5;      /* soft peach wash for hero and chips */
+  --tint: #FFEDD5;      /* soft peach wash for chips and hover states */
   --muted-surface: #F5F1EC;
 
   /* ── Text ─────────────────────────────────────────────────────────────── */
