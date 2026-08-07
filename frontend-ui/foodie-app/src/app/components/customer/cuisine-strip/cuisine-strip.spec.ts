@@ -47,8 +47,25 @@ describe('CuisineStrip', () => {
     const hrefs = Array.from(fixture.nativeElement.querySelectorAll('.tile-link'))
       .map(a => (a as HTMLAnchorElement).getAttribute('href'));
 
-    expect(hrefs[0]).toContain('/restaurants');
-    expect(hrefs[0]).toContain('query=burger');
+    expect(hrefs.length).toBe(CUISINE_TILES.length);
+    hrefs.forEach(href => expect(href).toContain('/restaurants'));
+    expect(hrefs[0]).toContain('query=' + CUISINE_TILES[0].query);
+  });
+
+  it('carries the whole menu, not a handful of headline cuisines', () => {
+    const labels = CUISINE_TILES.map(t => t.label);
+
+    expect(labels.length).toBeGreaterThan(30);
+    expect(labels).toContain('Halal');
+    expect(labels).toContain('Bubble tea');
+    expect(labels).toContain('Caribbean');
+    // Every label appears once, so no cuisine is listed twice under two keys.
+    expect(new Set(labels).size).toBe(labels.length);
+  });
+
+  it('gives every cuisine its own photo', () => {
+    const images = CUISINE_TILES.map(t => t.image);
+    expect(new Set(images).size).toBe(images.length);
   });
 
   it('uses real photography, not the retired vector tiles', () => {
@@ -133,11 +150,13 @@ describe('CuisineStrip', () => {
       expect(transform()).toBe('translateX(calc(-1 * (var(--tile-w) + var(--tile-gap))))');
     });
 
+    /** Three visible, so the track stops with the last three cards on screen. */
+    const lastIndex = () => CUISINE_TILES.length - 3;
+
     it('stops revealing empty space at the end and wraps instead', () => {
-      // Eight cards, three visible, so the last reachable position is five.
-      component.goTo(5);
+      component.goTo(lastIndex());
       fixture.detectChanges();
-      expect(component.index()).toBe(5);
+      expect(component.index()).toBe(lastIndex());
 
       fixture.nativeElement.querySelector('.arrow-next').click();
       fixture.detectChanges();
@@ -148,12 +167,12 @@ describe('CuisineStrip', () => {
       fixture.nativeElement.querySelector('.arrow-prev').click();
       fixture.detectChanges();
 
-      expect(component.index()).toBe(5);
+      expect(component.index()).toBe(lastIndex());
     });
 
     it('clamps a request past the end', () => {
-      component.goTo(99);
-      expect(component.index()).toBe(5);
+      component.goTo(999);
+      expect(component.index()).toBe(lastIndex());
     });
 
     it('moves with the left and right arrow keys', () => {
@@ -176,16 +195,34 @@ describe('CuisineStrip', () => {
       expect(component.index()).toBe(0);
     });
 
-    it('gives one dot per reachable position and marks the current one', () => {
-      expect(dots().length).toBe(6);
+    it('gives one dot per screenful rather than per card', () => {
+      expect(dots().length).toBe(Math.ceil(CUISINE_TILES.length / 3));
+      expect(dots().length).toBeLessThan(CUISINE_TILES.length);
       expect(dots()[0].getAttribute('aria-current')).toBe('true');
+    });
 
-      dots()[4].click();
+    it('jumps a whole screenful when a dot is clicked', () => {
+      dots()[2].click();
       fixture.detectChanges();
 
-      expect(component.index()).toBe(4);
-      expect(dots()[4].getAttribute('aria-current')).toBe('true');
+      expect(component.index()).toBe(6);
+      expect(dots()[2].getAttribute('aria-current')).toBe('true');
       expect(dots()[0].getAttribute('aria-current')).toBeNull();
+    });
+
+    it('marks the dot for the screenful the track is showing', () => {
+      component.goTo(4);
+      fixture.detectChanges();
+
+      expect(dots()[1].getAttribute('aria-current')).toBe('true');
+    });
+
+    it('keeps the last dot selectable even though the track stops short', () => {
+      dots().at(-1)!.click();
+      fixture.detectChanges();
+
+      expect(component.index()).toBe(CUISINE_TILES.length - 3);
+      expect(dots().at(-1)!.getAttribute('aria-current')).toBe('true');
     });
 
     it('collapses to a single position when every card already fits', () => {
@@ -258,8 +295,8 @@ describe('CuisineStrip', () => {
     beforeEach(() => withPerView(3));
 
     it('slides a card that is tabbed to from offscreen into view', () => {
-      component.onTileFocus(5);
-      expect(component.index()).toBe(3);
+      component.onTileFocus(9);
+      expect(component.index()).toBe(7);
     });
 
     it('slides back for a card behind the current position', () => {

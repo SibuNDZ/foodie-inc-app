@@ -14,6 +14,9 @@
 }
 
 .mood-layout {
+	--tile-w: 360px;
+	--tile-gap: 20px;
+
 	display: grid;
 	grid-template-columns: 176px minmax(0, 1fr);
 	gap: 1.5rem;
@@ -31,6 +34,17 @@
 }
 
 /* ── Every cuisine, as plain links ───────────────────────────────────────── */
+/* Thirty-odd links would run far past the deck beside them, so the rail is
+   capped to the deck's height and scrolls. Every category stays one click
+   away, and the section keeps its proportions. */
+.category-list {
+	max-height: calc(var(--tile-w) * 1.25 + 3.4rem);
+	overflow-y: auto;
+	scrollbar-width: thin;
+	scrollbar-color: var(--border-strong) transparent;
+	overscroll-behavior: contain;
+}
+
 .category-list ul {
 	display: flex;
 	flex-direction: column;
@@ -56,9 +70,6 @@
 
 /* ── Sliding carousel ────────────────────────────────────────────────────── */
 .carousel {
-	--tile-w: 360px;
-	--tile-gap: 20px;
-
 	position: relative;
 	min-width: 0;
 }
@@ -177,7 +188,7 @@
 }
 
 @media (max-width: 1180px) {
-	.carousel { --tile-w: 320px; }
+	.mood-layout { --tile-w: 320px; }
 }
 
 /* No left column to sit in, so the list becomes a row of chips above the deck. */
@@ -185,6 +196,12 @@
 	.mood-layout {
 		grid-template-columns: minmax(0, 1fr);
 		gap: 1.25rem;
+	}
+
+	/* Wrapped, a full menu of chips would push the deck most of a screen down,
+	   so the cloud keeps a few rows and scrolls for the rest. */
+	.category-list {
+		max-height: 8.5rem;
 	}
 
 	.category-list ul {
@@ -200,11 +217,11 @@
 		font-size: 0.9rem;
 	}
 
-	.carousel { --tile-w: 300px; }
+	.mood-layout { --tile-w: 300px; }
 }
 
 @media (max-width: 640px) {
-	.carousel { --tile-w: min(76vw, 300px); }
+	.mood-layout { --tile-w: min(76vw, 300px); }
 
 	.arrow {
 		width: 38px;

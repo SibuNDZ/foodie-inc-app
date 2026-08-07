@@ -15,14 +15,39 @@ export interface CuisineTile {
 }
 
 const CUISINES: ReadonlyArray<{ key: ImageKey; label: string; query: string }> = [
-  { key: 'burgers', label: 'Burgers', query: 'burger' },
+  { key: 'grocery', label: 'Grocery', query: 'grocery' },
   { key: 'pizza', label: 'Pizza', query: 'pizza' },
+  { key: 'fastFood', label: 'Fast food', query: 'fast food' },
+  { key: 'iceCream', label: 'Ice cream', query: 'ice cream' },
   { key: 'sushi', label: 'Sushi', query: 'sushi' },
-  { key: 'thai', label: 'Thai', query: 'thai' },
+  { key: 'wings', label: 'Wings', query: 'wings' },
+  { key: 'burgers', label: 'Burgers', query: 'burger' },
+  { key: 'healthy', label: 'Healthy', query: 'healthy' },
+  { key: 'indian', label: 'Indian', query: 'indian' },
+  { key: 'mexican', label: 'Mexican', query: 'mexican' },
+  { key: 'gifts', label: 'Gifts', query: 'gifts' },
   { key: 'chinese', label: 'Chinese', query: 'chinese' },
-  { key: 'brunch', label: 'Brunch', query: 'brunch' },
-  { key: 'dessert', label: 'Dessert', query: 'dessert' },
-  { key: 'grocery', label: 'Groceries', query: 'grocery' }
+  { key: 'thai', label: 'Thai', query: 'thai' },
+  { key: 'brunch', label: 'Breakfast', query: 'breakfast' },
+  { key: 'greek', label: 'Greek', query: 'greek' },
+  { key: 'coffee', label: 'Coffee', query: 'coffee' },
+  { key: 'bubbleTea', label: 'Bubble tea', query: 'bubble tea' },
+  { key: 'korean', label: 'Korean', query: 'korean' },
+  { key: 'smoothies', label: 'Smoothies', query: 'smoothies' },
+  { key: 'asian', label: 'Asian', query: 'asian' },
+  { key: 'poke', label: 'Poke', query: 'poke' },
+  { key: 'halal', label: 'Halal', query: 'halal' },
+  { key: 'vietnamese', label: 'Vietnamese', query: 'vietnamese' },
+  { key: 'italian', label: 'Italian', query: 'italian' },
+  { key: 'seafood', label: 'Seafood', query: 'seafood' },
+  { key: 'soup', label: 'Soup', query: 'soup' },
+  { key: 'comfortFood', label: 'Comfort food', query: 'comfort food' },
+  { key: 'bbq', label: 'BBQ', query: 'bbq' },
+  { key: 'vegan', label: 'Vegan', query: 'vegan' },
+  { key: 'streetFood', label: 'Street food', query: 'street food' },
+  { key: 'japanese', label: 'Japanese', query: 'japanese' },
+  { key: 'sandwiches', label: 'Sandwiches', query: 'sandwiches' },
+  { key: 'caribbean', label: 'Caribbean', query: 'caribbean' }
 ];
 
 export const CUISINE_TILES: readonly CuisineTile[] = CUISINES.map(c => {
@@ -82,9 +107,16 @@ export class CuisineStrip {
   protected readonly maxIndex = computed(() =>
     Math.max(0, this.tiles.length - this.perView()));
 
-  /** One dot per reachable position. */
+  /**
+   * Dots count pages, not positions. With this many cuisines a dot per position
+   * would be thirty-odd targets nobody can aim at; a dot per screenful is a
+   * readable "you are here" and still reaches every card.
+   */
   protected readonly dots = computed(() =>
-    Array.from({ length: this.maxIndex() + 1 }, (_, i) => i));
+    Array.from({ length: Math.ceil(this.tiles.length / this.perView()) }, (_, i) => i));
+
+  protected readonly currentDot = computed(() =>
+    Math.min(this.dots().length - 1, Math.floor(this.index() / this.perView())));
 
   /**
    * Card width and gap are CSS, so the shift is expressed in the same terms.
@@ -148,6 +180,11 @@ export class CuisineStrip {
 
   protected goTo(i: number): void {
     this.index.set(Math.min(Math.max(i, 0), this.maxIndex()));
+  }
+
+  /** Jumps a whole screenful, which is what the dots address. */
+  protected goToPage(page: number): void {
+    this.goTo(page * this.perView());
   }
 
   protected pause(): void {

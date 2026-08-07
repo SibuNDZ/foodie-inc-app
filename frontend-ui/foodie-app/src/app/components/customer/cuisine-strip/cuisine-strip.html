@@ -66,10 +66,10 @@
 					<button
 						type="button"
 						class="dot"
-						[class.active]="dot === index()"
-						[attr.aria-current]="dot === index() ? 'true' : null"
-						[attr.aria-label]="'Show cuisines from position ' + (dot + 1)"
-						(click)="goTo(dot)"></button>
+						[class.active]="dot === currentDot()"
+						[attr.aria-current]="dot === currentDot() ? 'true' : null"
+						[attr.aria-label]="'Show cuisines, page ' + (dot + 1) + ' of ' + dots().length"
+						(click)="goToPage(dot)"></button>
 				}
 			</div>
 		</div>
