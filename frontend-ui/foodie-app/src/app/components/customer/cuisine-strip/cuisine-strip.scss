@@ -1,11 +1,9 @@
 :host { display: block; }
 
-/* Runs wider than the page container: at --container the category list would
-   eat a card and leave two per view. */
+/* Spans the window. The rail sits at the left edge and the deck takes whatever
+   is left, which is what puts three or more cards in view at full size. */
 .mood-section {
-	max-width: 1400px;
-	margin: 0 auto;
-	padding: 3.5rem 20px 0;
+	padding: 3.5rem 24px 0;
 }
 
 .strip-heading {
@@ -21,16 +19,6 @@
 	grid-template-columns: 176px minmax(0, 1fr);
 	gap: 1.5rem;
 	align-items: start;
-}
-
-/* The app shell centres every route in 1200px, which leaves the deck 928px once
-   the category list has taken its column: two cards and a sliver of a third. On
-   a screen wide enough to spare it, the section takes back some of the margin
-   the shell gave away and three full cards fit. */
-@media (min-width: 1440px) {
-	.mood-section {
-		margin-inline: -110px;
-	}
 }
 
 /* ── Every cuisine, as plain links ───────────────────────────────────────── */

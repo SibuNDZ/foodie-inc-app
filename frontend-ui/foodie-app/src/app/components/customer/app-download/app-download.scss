@@ -2,14 +2,14 @@
 
 .download {
 	margin-top: 3.5rem;
-	padding: 3.5rem 20px;
+	padding: 3.5rem 24px;
 	background: var(--bg);
 	border-top: 1px solid var(--border);
 }
 
+/* Left edge lines up with the cuisine rail and the header brand; the copy
+   column is what takes up the extra width on a wide screen. */
 .download-inner {
-	max-width: 1180px;
-	margin: 0 auto;
 	display: grid;
 	grid-template-columns: 0.85fr 1.15fr;
 	align-items: center;

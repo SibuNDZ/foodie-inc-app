@@ -6,11 +6,7 @@ import { UserRole } from '../../../models';
 import { AuthService } from '../../../services/auth';
 import { CartService } from '../../../services/cart';
 import { LogoMark } from '../logo-mark/logo-mark';
-
-/** The landing route, ignoring any query string or fragment hanging off it. */
-function isHomeUrl(url: string): boolean {
-  return url.split(/[?#]/)[0].replace(/\/+$/, '') === '';
-}
+import { onHome } from '../../../shared/on-home';
 
 @Component({
   selector: 'app-header',
@@ -26,12 +22,8 @@ export class Header {
   private readonly host = inject(ElementRef<HTMLElement>);
   private readonly router = inject(Router);
 
-  /**
-   * True on `/`, where the hero carries the marketing links as pills instead.
-   * Seeded from the current URL so the server renders the same header the
-   * browser will, then kept in step with navigation.
-   */
-  protected readonly onHome = signal(isHomeUrl(this.router.url));
+  /** On `/` the hero carries the marketing links as pills instead. */
+  protected readonly onHome = onHome();
 
   /** Drives the collapsed mobile menu. Always closed on the server. */
   protected readonly menuOpen = signal(false);
@@ -56,10 +48,7 @@ export class Header {
         filter((event): event is NavigationEnd => event instanceof NavigationEnd),
         takeUntilDestroyed()
       )
-      .subscribe(event => {
-        this.onHome.set(isHomeUrl(event.urlAfterRedirects));
-        this.closeAll();
-      });
+      .subscribe(() => this.closeAll());
   }
 
   /** Clicking anywhere outside the header dismisses the account dropdown. */
