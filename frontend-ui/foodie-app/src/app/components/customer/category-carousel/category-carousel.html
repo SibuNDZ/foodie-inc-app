@@ -24,15 +24,15 @@
 				[attr.aria-hidden]="i === index() ? null : 'true'"
 				[attr.inert]="i === index() ? null : ''">
 				<button type="button" class="slide-btn" (click)="openSlide(slide)">
-					<img
+					<app-smart-image
 						class="slide-img"
 						[src]="slide.image"
 						[alt]="slide.alt"
-						width="400"
-						height="300"
-						[attr.loading]="i === 0 ? 'eager' : 'lazy'"
-						decoding="async"
-						(error)="onImageError(slide)" />
+						aspectRatio="4 / 3"
+						[priority]="i === 0"
+						[lazy]="i !== 0"
+						[rounded]="false"
+						(loadFailed)="onImageFailed(slide)" />
 					<span class="slide-caption">
 						<span class="slide-label">{{ slide.label }}</span>
 						@if (slide.caption) {

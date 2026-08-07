@@ -1,0 +1,34 @@
+:host {
+	display: block;
+}
+
+/* The frame owns the space. Whatever happens to the source, the box is the same
+   size, so nothing below it moves. */
+.frame {
+	position: relative;
+	width: 100%;
+	overflow: hidden;
+	background: var(--muted-surface);
+
+	&--rounded {
+		border-radius: var(--radius);
+	}
+}
+
+.photo {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.fallback {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+	background:
+		radial-gradient(circle at 30% 25%, rgb(255 255 255 / 0.35), transparent 55%),
+		linear-gradient(135deg, var(--tint) 0%, var(--accent) 100%);
+}

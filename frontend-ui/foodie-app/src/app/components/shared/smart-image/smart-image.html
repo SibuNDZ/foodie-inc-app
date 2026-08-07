@@ -1,0 +1,20 @@
+<div class="frame" [class.frame--rounded]="rounded()" [style.aspect-ratio]="aspectRatio()">
+	@if (failed()) {
+		<div
+			class="fallback"
+			[attr.role]="decorative() ? null : 'img'"
+			[attr.aria-label]="decorative() ? null : alt()"
+			[attr.aria-hidden]="decorative() ? 'true' : null">
+			<app-logo-mark [size]="44" />
+		</div>
+	} @else {
+		<img
+			class="photo"
+			[src]="src()"
+			[alt]="alt()"
+			[attr.loading]="loadingAttr()"
+			[attr.fetchpriority]="fetchPriorityAttr()"
+			decoding="async"
+			(error)="onError()" />
+	}
+</div>

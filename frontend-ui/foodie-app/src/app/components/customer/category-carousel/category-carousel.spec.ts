@@ -64,14 +64,14 @@ describe('CategoryCarousel', () => {
 
   it('renders the fallback tiles until real photos arrive', () => {
     expect(fixture.nativeElement.querySelectorAll('.slide').length).toBe(FALLBACK_SLIDES.length);
-    expect(activeLabel()).toBe('Pizza');
+    expect(activeLabel()).toBe('Burgers');
     respond([]);
   });
 
   it('keeps the fallback tiles when no dish has a photo yet', () => {
     respond([]);
     expect(fixture.nativeElement.querySelectorAll('.slide').length).toBe(FALLBACK_SLIDES.length);
-    expect(activeLabel()).toBe('Pizza');
+    expect(activeLabel()).toBe('Burgers');
   });
 
   it('keeps the fallback tiles when the showcase call fails', () => {
@@ -100,7 +100,7 @@ describe('CategoryCarousel', () => {
 
   it('describes each photo with the dish and its restaurant', () => {
     respond([dish(1, 'Bunny Chow')]);
-    expect(fixture.nativeElement.querySelector('.slide-img').getAttribute('alt'))
+    expect(fixture.nativeElement.querySelector('.photo').getAttribute('alt'))
       .toBe("Bunny Chow from Doc's Kitchen");
   });
 
@@ -128,13 +128,13 @@ describe('CategoryCarousel', () => {
 
     click('.slide.active .slide-btn');
 
-    expect(spy).toHaveBeenCalledWith(['/restaurants'], { queryParams: { query: 'pizza' } });
+    expect(spy).toHaveBeenCalledWith(['/restaurants'], { queryParams: { query: 'burger' } });
   });
 
   it('drops a photo whose image fails to load rather than showing a broken tile', () => {
     respond([dish(1, 'Bunny Chow'), dish(2, 'Shisanyama')]);
 
-    const firstImg = fixture.nativeElement.querySelector('.slide-img');
+    const firstImg = fixture.nativeElement.querySelector('.photo');
     firstImg.dispatchEvent(new Event('error'));
     fixture.detectChanges();
 
@@ -147,7 +147,7 @@ describe('CategoryCarousel', () => {
   it('falls back to the tiles when every real photo fails to load', () => {
     respond([dish(1, 'Bunny Chow')]);
 
-    fixture.nativeElement.querySelector('.slide-img').dispatchEvent(new Event('error'));
+    fixture.nativeElement.querySelector('.photo').dispatchEvent(new Event('error'));
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelectorAll('.slide').length).toBe(FALLBACK_SLIDES.length);
@@ -188,18 +188,17 @@ describe('CategoryCarousel', () => {
   it('lazy-loads every slide except the first', () => {
     respond([dish(1, 'A'), dish(2, 'B'), dish(3, 'C')]);
 
-    const images = Array.from(fixture.nativeElement.querySelectorAll('.slide-img'));
+    const images = Array.from(fixture.nativeElement.querySelectorAll('.photo'));
     expect((images[0] as HTMLImageElement).getAttribute('loading')).toBe('eager');
     images.slice(1).forEach(img =>
       expect((img as HTMLImageElement).getAttribute('loading')).toBe('lazy'));
   });
 
-  it('gives every slide image intrinsic dimensions so the box never shifts', () => {
+  it('reserves a fixed aspect-ratio box so the slot never shifts', () => {
     respond([dish(1, 'A')]);
 
-    const img = fixture.nativeElement.querySelector('.slide-img');
-    expect(img.getAttribute('width')).toBe('400');
-    expect(img.getAttribute('height')).toBe('300');
+    const frame = fixture.nativeElement.querySelector('.frame');
+    expect(frame.style.aspectRatio).toBe('4 / 3');
   });
 
   it('hides inactive slides from assistive tech', () => {

@@ -10,6 +10,8 @@ import {
 import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { DishService } from '../../../services/dish';
+import { SmartImage } from '../../shared/smart-image/smart-image';
+import { ImageKey, imageUrl, primaryImage } from '../../../../assets/images/manifest';
 
 export interface CarouselSlide {
   /** Stable key for tracking. */
@@ -24,19 +26,32 @@ export interface CarouselSlide {
   readonly caption?: string;
 }
 
-/**
- * Fallback tiles, used until real dish photos load and whenever no restaurant has
- * uploaded a dish image yet. Keeps the carousel from rendering empty on a cold
- * catalogue.
- */
-export const FALLBACK_SLIDES: readonly CarouselSlide[] = [
-  { key: 'pizza', label: 'Pizza', image: '/categories/pizza.svg', alt: 'Wood-fired pizza', link: ['/restaurants'], queryParams: { query: 'pizza' } },
-  { key: 'burger', label: 'Burgers', image: '/categories/burgers.svg', alt: 'Stacked beef burger', link: ['/restaurants'], queryParams: { query: 'burger' } },
-  { key: 'sushi', label: 'Sushi', image: '/categories/sushi.svg', alt: 'Plate of nigiri sushi', link: ['/restaurants'], queryParams: { query: 'sushi' } },
-  { key: 'thai', label: 'Thai', image: '/categories/thai.svg', alt: 'Bowl of Thai noodles', link: ['/restaurants'], queryParams: { query: 'thai' } },
-  { key: 'chinese', label: 'Chinese', image: '/categories/chinese.svg', alt: 'Chinese takeaway box', link: ['/restaurants'], queryParams: { query: 'chinese' } },
-  { key: 'brunch', label: 'Brunch', image: '/categories/brunch.svg', alt: 'Stack of pancakes', link: ['/restaurants'], queryParams: { query: 'brunch' } }
+/** Cuisine keys shown when the catalogue has no dish photography of its own. */
+const CUISINE_SLIDES: ReadonlyArray<{ key: ImageKey; label: string; query: string }> = [
+  { key: 'burgers', label: 'Burgers', query: 'burger' },
+  { key: 'pizza', label: 'Pizza', query: 'pizza' },
+  { key: 'sushi', label: 'Sushi', query: 'sushi' },
+  { key: 'thai', label: 'Thai', query: 'thai' },
+  { key: 'chinese', label: 'Chinese', query: 'chinese' },
+  { key: 'brunch', label: 'Brunch', query: 'brunch' }
 ];
+
+/**
+ * Curated cuisine photography, shown until real dish photos load and whenever no
+ * restaurant has uploaded a dish image yet. Keeps the carousel appetizing on a
+ * cold catalogue rather than empty.
+ */
+export const FALLBACK_SLIDES: readonly CarouselSlide[] = CUISINE_SLIDES.map(c => {
+  const photo = primaryImage(c.key);
+  return {
+    key: c.key,
+    label: c.label,
+    image: imageUrl(photo, 900),
+    alt: photo.alt,
+    link: ['/restaurants'],
+    queryParams: { query: c.query }
+  };
+});
 
 const ADVANCE_INTERVAL_MS = 5000;
 const SWIPE_THRESHOLD_PX = 40;
@@ -44,6 +59,7 @@ const SHOWCASE_LIMIT = 8;
 
 @Component({
   selector: 'app-category-carousel',
+  imports: [SmartImage],
   templateUrl: './category-carousel.html',
   styleUrl: './category-carousel.scss'
 })
@@ -110,10 +126,19 @@ export class CategoryCarousel {
     });
   }
 
-  /** Dropped image, e.g. a dead external URL: fall back rather than show a broken tile. */
-  protected onImageError(slide: CarouselSlide): void {
-    const remaining = this.dishSlides().filter(s => s.key !== slide.key);
-    this.dishSlides.set(remaining);
+  /**
+   * A restaurant's photo URL is arbitrary and can rot. Drop that slide so the
+   * carousel shows food that actually loads, rather than branded artwork
+   * captioned with a dish name.
+   *
+   * Curated cuisine slides are left alone: there is nothing better to fall back
+   * to, and SmartImage is already showing the branded frame.
+   */
+  protected onImageFailed(slide: CarouselSlide): void {
+    if (!this.dishSlides().some(s => s.key === slide.key)) {
+      return;
+    }
+    this.dishSlides.set(this.dishSlides().filter(s => s.key !== slide.key));
     this.index.set(0);
   }
 
