@@ -1,10 +1,13 @@
-import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { CommonModule, CurrencyPipe, DatePipe, DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { Component, DestroyRef, OnInit, PLATFORM_ID, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { finalize } from 'rxjs';
+import { EMPTY, finalize } from 'rxjs';
+import { catchError, switchMap } from 'rxjs/operators';
 import { Dish, DishCategory, Order, OrderStatus, Restaurant } from '../../../models';
 import { OwnerService } from '../../../services/owner';
+import { ORDER_POLL_INTERVAL_MS, whileVisible } from '../../../shared/live-poll';
 import {
   getNextRestaurantOrderStatus,
   getOrderStatusBadgeClass,
@@ -22,6 +25,9 @@ type Tab = 'restaurant' | 'menu' | 'orders';
 export class OwnerDashboard implements OnInit {
   private readonly ownerService = inject(OwnerService);
   private readonly toastr = inject(ToastrService);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly document = inject(DOCUMENT);
+  private readonly destroyRef = inject(DestroyRef);
 
   // ── Tab ─────────────────────────────────────────────────────────────────────
   readonly activeTab = signal<Tab>('restaurant');
@@ -52,6 +58,15 @@ export class OwnerDashboard implements OnInit {
   readonly ordersLoading = signal(false);
   readonly updatingOrderId = signal<number | null>(null);
 
+  /** When the order list was last refreshed, for the live indicator. */
+  readonly ordersUpdatedAt = signal<Date | null>(null);
+  /** True while polling is running, i.e. browser and tab visible. */
+  readonly liveUpdates = signal(false);
+
+  /** Active order ids from the previous poll, used to spot arrivals. */
+  private knownActiveOrderIds = new Set<number>();
+  private hasLoadedOrdersOnce = false;
+
   readonly activeOrders = computed(() =>
     this.orders().filter(o =>
       o.status === OrderStatus.PENDING ||
@@ -76,6 +91,68 @@ export class OwnerDashboard implements OnInit {
     this.ownerService.getCategories().subscribe({
       next: cats => this.categories.set(cats),
     });
+    this.startOrderPolling();
+  }
+
+  /**
+   * Keeps the order queue current without anyone pressing Refresh.
+   *
+   * Polling rather than SSE: EventSource cannot send the Authorization header the
+   * app's interceptor relies on, and server-held emitters would not survive a
+   * second backend replica without a broker.
+   *
+   * Runs regardless of the active tab so a new order still raises a toast while
+   * the owner is editing their menu.
+   */
+  private startOrderPolling(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
+    whileVisible(ORDER_POLL_INTERVAL_MS, this.document)
+      .pipe(
+        // switchMap drops any still-in-flight request, so a slow response can
+        // never be applied on top of a newer one.
+        switchMap(() => {
+          this.liveUpdates.set(true);
+          return this.ownerService.getMyOrders().pipe(
+            catchError(() => {
+              // A failed poll is not worth a toast every 15 seconds; the stale
+              // timestamp in the header is the signal that something is wrong.
+              this.liveUpdates.set(false);
+              return EMPTY;
+            })
+          );
+        }),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(orders => this.applyPolledOrders(orders));
+  }
+
+  private applyPolledOrders(orders: Order[]): void {
+    this.liveUpdates.set(true);
+    this.ordersUpdatedAt.set(new Date());
+
+    // Never overwrite the list while the owner is advancing an order, or the
+    // in-flight PATCH result would be clobbered by a stale poll.
+    if (this.updatingOrderId() !== null) {
+      return;
+    }
+
+    this.orders.set(orders);
+
+    const activeIds = new Set(this.activeOrders().map(o => o.id));
+    if (this.hasLoadedOrdersOnce) {
+      const arrivals = [...activeIds].filter(id => !this.knownActiveOrderIds.has(id));
+      if (arrivals.length === 1) {
+        this.toastr.info('New order received.', '', { timeOut: 8000 });
+      } else if (arrivals.length > 1) {
+        this.toastr.info(`${arrivals.length} new orders received.`, '', { timeOut: 8000 });
+      }
+    }
+
+    this.knownActiveOrderIds = activeIds;
+    this.hasLoadedOrdersOnce = true;
   }
 
   // ── Tab control ─────────────────────────────────────────────────────────────
@@ -254,8 +331,11 @@ export class OwnerDashboard implements OnInit {
     this.ownerService.getMyOrders()
       .pipe(finalize(() => this.ordersLoading.set(false)))
       .subscribe({
-        next: o => this.orders.set(o),
-        error: () => this.toastr.error('Could not load orders.'),
+        next: o => this.applyPolledOrders(o),
+        error: () => {
+          this.liveUpdates.set(false);
+          this.toastr.error('Could not load orders.');
+        },
       });
   }
 

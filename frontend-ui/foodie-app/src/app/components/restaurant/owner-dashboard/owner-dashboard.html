@@ -331,9 +331,24 @@
       <div class="card">
         <div class="card-row card-row--between">
           <h2>Incoming Orders</h2>
-          <button type="button" class="btn btn-secondary" [disabled]="ordersLoading()" (click)="loadOrders()">
-            {{ ordersLoading() ? 'Refreshing…' : 'Refresh' }}
-          </button>
+          <div class="orders-toolbar">
+            <p class="live-status" aria-live="polite">
+              @if (liveUpdates()) {
+                <span class="live-dot" aria-hidden="true"></span>
+                <span>Live</span>
+              } @else {
+                <span class="live-dot live-dot--off" aria-hidden="true"></span>
+                <span>Paused</span>
+              }
+              @if (ordersUpdatedAt(); as updated) {
+                <span class="live-sep" aria-hidden="true">·</span>
+                <span>Updated {{ updated | date: 'HH:mm:ss' }}</span>
+              }
+            </p>
+            <button type="button" class="btn btn-secondary" [disabled]="ordersLoading()" (click)="loadOrders()">
+              {{ ordersLoading() ? 'Refreshing…' : 'Refresh' }}
+            </button>
+          </div>
         </div>
 
         @if (ordersLoading() && orders().length === 0) {
