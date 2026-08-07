@@ -36,7 +36,19 @@ public class OrderService {
     private final DispatchService dispatchService;
     private final PushNotificationService pushNotificationService;
 
-    private static final BigDecimal TAX_RATE = new BigDecimal("0.08");
+    /**
+     * South African VAT.
+     *
+     * <p>Applied on top of the subtotal, so it assumes restaurant menu prices are
+     * entered VAT-exclusive. If owners are capturing VAT-inclusive prices, which is
+     * what the VAT Act requires them to advertise to consumers, this line is
+     * charging customers VAT twice and the calculation needs inverting rather than
+     * re-rating.
+     *
+     * <p>Delivery fee is deliberately outside the VAT base, matching the previous
+     * behaviour; only the rate has changed here.
+     */
+    private static final BigDecimal TAX_RATE = new BigDecimal("0.15");
 
     public OrderDTO createOrder(Long userId, CreateOrderRequest request) {
         User user = userRepository.findById(userId)
