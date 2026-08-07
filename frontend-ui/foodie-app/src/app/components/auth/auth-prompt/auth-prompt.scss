@@ -6,7 +6,7 @@
 	align-items: center;
 	justify-content: center;
 	padding: 1.25rem;
-	background: rgba(18, 11, 30, 0.72);
+	background: rgba(0, 0, 0, 0.40);
 	backdrop-filter: blur(3px);
 	animation: fade 0.18s ease-out;
 }
@@ -18,8 +18,8 @@
 	padding: 2.25rem 2rem 1.75rem;
 	border-radius: 1.15rem;
 	background: var(--color-bg-surface);
-	border: 1px solid rgba(184, 168, 204, 0.3);
-	box-shadow: 0 28px 60px rgba(0, 0, 0, 0.5);
+	border: 1px solid var(--color-border);
+	box-shadow: var(--shadow-lg);
 	text-align: center;
 	animation: rise 0.2s ease-out;
 

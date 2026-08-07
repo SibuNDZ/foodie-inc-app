@@ -1,0 +1,72 @@
+/* Foodie Inc design tokens — warm, appetizing light theme.
+ *
+ * Single source of truth for colour, radius and depth. Component stylesheets
+ * must reference these rather than hard-coding hex values.
+ *
+ * The --color-* names below are aliases kept so existing component styles keep
+ * resolving; new work should use the canonical names.
+ */
+
+:root {
+  /* ── Surfaces ─────────────────────────────────────────────────────────── */
+  --bg: #FAF8F5;        /* page background, warm off-white */
+  --surface: #FFFFFF;   /* cards, header, footer */
+  --tint: #FFEDD5;      /* soft peach wash for hero and chips */
+  --muted-surface: #F5F1EC;
+
+  /* ── Text ─────────────────────────────────────────────────────────────── */
+  --ink: #26221D;       /* headings, warm charcoal */
+  --muted: #6E665E;     /* body and meta copy */
+  --on-primary: #FFFFFF;
+
+  /* ── Brand ────────────────────────────────────────────────────────────── */
+  --primary: #C2410C;       /* burnt orange; AA with white text */
+  --primary-hover: #9A3412;
+  --accent: #F97316;        /* graphics, chips and the logo mark only */
+
+  /* ── Lines and states ─────────────────────────────────────────────────── */
+  --border: #EAE3DA;
+  --border-strong: #D8CEC1;
+  --success: #15803D;
+  --warning: #B45309;
+  --danger: #B91C1C;
+  --danger-surface: #FEF2F2;
+
+  /* ── Shape and depth ──────────────────────────────────────────────────── */
+  --radius: 14px;
+  --radius-sm: 10px;
+  --radius-pill: 999px;
+  --shadow: 0 8px 24px rgb(31 23 14 / 0.08);
+  --shadow-sm: 0 1px 2px rgb(31 23 14 / 0.06), 0 1px 3px rgb(31 23 14 / 0.08);
+  --shadow-lg: 0 16px 40px rgb(31 23 14 / 0.12);
+
+  /* ── Layout ───────────────────────────────────────────────────────────── */
+  --container: 1200px;
+
+  /* ── Aliases for existing component styles ────────────────────────────── */
+  --color-bg-base: var(--bg);
+  --color-bg-surface: var(--surface);
+  --color-bg-card: var(--surface);
+  --color-bg-muted: var(--muted-surface);
+  --color-bg-tint: var(--tint);
+
+  --color-text-primary: var(--ink);
+  --color-text-body: var(--muted);
+  --color-text-secondary: var(--muted);
+  --color-text-inverse: var(--on-primary);
+
+  --color-primary: var(--primary);
+  --color-primary-dark: var(--primary-hover);
+  --color-secondary: var(--accent);
+  --color-secondary-light: #FDBA74;
+
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+
+  --radius-md: var(--radius);
+  --radius-lg: var(--radius);
+  --shadow-md: var(--shadow);
+}

@@ -93,7 +93,7 @@ h1 {
   margin-top: 0.9rem;
   width: 100%;
   padding: 0.55rem 0.7rem;
-  background: #0f766e;
+  background: var(--color-primary);
   color: #fff;
 }
 
@@ -159,21 +159,21 @@ td {
 }
 
 th {
-  background: #f8fafc;
+  background: var(--color-bg-surface);
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #475569;
+  color: var(--color-text-body);
 }
 
 // ── White-surface contrast ────────────────────────────────────────────────────
 h1 {
-  color: #0f172a;
+  color: var(--color-text-primary);
 }
 
 .delivery-card,
 .table-wrap {
-  color: #0f172a;
+  color: var(--color-text-primary);
 }
 
 @media (max-width: 720px) {

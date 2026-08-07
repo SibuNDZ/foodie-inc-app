@@ -35,7 +35,7 @@
 	border: none;
 	border-radius: 0.75rem;
 	font-size: 1rem;
-	color: #0f172a;
+	color: var(--color-text-primary);
 	background: #fff;
 	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 
@@ -87,7 +87,7 @@
 	padding: 0.65rem 0.75rem;
 	border-radius: 0.5rem;
 	cursor: pointer;
-	color: #0f172a;
+	color: var(--color-text-primary);
 
 	&:hover,
 	&.active {
@@ -101,7 +101,7 @@
 
 .suggestion-cuisine {
 	font-size: 0.82rem;
-	color: #64748b;
+	color: var(--color-text-secondary);
 }
 
 .distance-badge {
@@ -109,7 +109,7 @@
 	padding: 0.15rem 0.55rem;
 	border-radius: 999px;
 	background: var(--color-secondary);
-	color: #2A1B40;
+	color: var(--color-bg-surface);
 	font-size: 0.76rem;
 	font-weight: 700;
 	white-space: nowrap;
@@ -140,8 +140,8 @@
 	margin-top: 0.75rem;
 	padding: 0.9rem;
 	border-radius: 0.75rem;
-	background: rgba(42, 27, 64, 0.75);
-	border: 1px solid rgba(184, 168, 204, 0.3);
+	background: var(--color-bg-muted);
+	border: 1px solid var(--color-border);
 }
 
 .manual-field {
@@ -154,10 +154,10 @@
 	input {
 		width: 140px;
 		padding: 0.45rem 0.55rem;
-		border: 1px solid rgba(184, 168, 204, 0.4);
+		border: 1px solid var(--color-border);
 		border-radius: 0.45rem;
-		background: #f8fafc;
-		color: #0f172a;
+		background: var(--color-bg-surface);
+		color: var(--color-text-primary);
 		font-size: 0.9rem;
 	}
 }
@@ -167,7 +167,7 @@
 	border: 0;
 	border-radius: 0.5rem;
 	background: var(--color-secondary);
-	color: #2A1B40;
+	color: var(--color-bg-surface);
 	font-weight: 700;
 	cursor: pointer;
 }

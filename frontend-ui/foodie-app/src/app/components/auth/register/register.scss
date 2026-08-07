@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(160deg, var(--color-bg-tint) 0%, var(--color-bg-base) 60%);
   padding: 40px 20px;
 }
 
@@ -61,7 +61,7 @@
 
     &:focus {
       outline: none;
-      border-color: #667eea;
+      border-color: var(--color-primary);
     }
 
     &::placeholder {
@@ -85,7 +85,7 @@
   transition: all 0.2s;
 
   &.btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--color-primary);
     color: white;
 
     &:hover:not(:disabled) {
@@ -128,7 +128,7 @@
   }
 
   a {
-    color: #667eea;
+    color: var(--color-primary-dark);
     text-decoration: none;
     font-weight: 600;
 

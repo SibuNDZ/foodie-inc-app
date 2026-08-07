@@ -6,7 +6,7 @@
 	background:
 		radial-gradient(circle at 85% 25%, rgba(245, 140, 36, 0.18), transparent 45%),
 		linear-gradient(135deg, var(--color-bg-surface) 0%, var(--color-bg-base) 100%);
-	border-top: 1px solid rgba(184, 168, 204, 0.2);
+	border-top: 1px solid var(--color-border);
 }
 
 .download-inner {
@@ -86,7 +86,7 @@
 	&:hover {
 		transform: translateY(-3px);
 		border-color: var(--color-secondary);
-		background: rgba(42, 27, 64, 0.95);
+		background: var(--color-bg-muted);
 	}
 
 	&:focus-visible {

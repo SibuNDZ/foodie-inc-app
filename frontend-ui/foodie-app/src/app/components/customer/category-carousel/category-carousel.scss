@@ -17,7 +17,7 @@
 	border-radius: 1.1rem;
 	overflow: hidden;
 	background: var(--color-bg-surface);
-	border: 1px solid rgba(184, 168, 204, 0.25);
+	border: 1px solid var(--color-border);
 }
 
 /* Fixed 4:3 box so the slot never collapses or shifts while an image loads. */

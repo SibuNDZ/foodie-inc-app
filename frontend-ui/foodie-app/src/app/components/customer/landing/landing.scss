@@ -7,10 +7,11 @@
 
 .hero-section {
 	background:
-		radial-gradient(circle at 15% 20%, rgba(238, 49, 36, 0.22), transparent 42%),
-		linear-gradient(135deg, var(--color-bg-surface) 0%, var(--color-bg-base) 100%);
+		radial-gradient(circle at 12% 18%, rgba(255, 90, 31, 0.10), transparent 46%),
+		linear-gradient(160deg, var(--color-bg-tint) 0%, var(--color-bg-base) 62%);
 	padding: 56px 20px;
-	color: #fff;
+	color: var(--color-text-body);
+	border-bottom: 1px solid var(--color-border);
 }
 
 .hero-split {

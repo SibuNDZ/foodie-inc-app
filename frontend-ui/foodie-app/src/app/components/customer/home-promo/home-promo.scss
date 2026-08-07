@@ -29,7 +29,7 @@
 	padding: 1.75rem 1.5rem;
 	border-radius: 1rem;
 	background: var(--color-bg-surface);
-	border: 1px solid rgba(184, 168, 204, 0.22);
+	border: 1px solid var(--color-border);
 	transition: transform 0.2s ease, border-color 0.2s ease;
 
 	&:hover {

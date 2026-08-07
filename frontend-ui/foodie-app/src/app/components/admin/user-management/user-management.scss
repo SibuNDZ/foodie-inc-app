@@ -11,8 +11,8 @@
 .hero,
 .filters,
 .table-wrap {
-	background: #2A1B40;
-	border: 1px solid rgba(255, 255, 255, 0.08);
+	background: var(--color-bg-surface);
+	border: 1px solid var(--color-border);
 	border-radius: 0.9rem;
 	padding: 1rem;
 	margin-bottom: 1rem;
@@ -27,19 +27,19 @@
 
 .eyebrow {
 	margin: 0 0 0.2rem;
-	color: #B8A8CC;
+	color: var(--color-text-secondary);
 	font-weight: 700;
 	text-transform: uppercase;
 	font-size: 0.78rem;
 }
 
 h1, h2 {
-	color: #F5F0FA;
+	color: var(--color-text-primary);
 }
 
 .subtitle,
 .meta {
-	color: #B8A8CC;
+	color: var(--color-text-secondary);
 }
 
 .refresh-btn,
@@ -52,8 +52,8 @@ h1, h2 {
 }
 
 .refresh-btn {
-	background: rgba(255, 255, 255, 0.08);
-	color: #F5F0FA;
+	background: var(--color-border);
+	color: var(--color-text-primary);
 }
 
 .danger {
@@ -71,7 +71,7 @@ h1, h2 {
 .filters label {
 	display: grid;
 	gap: 0.35rem;
-	color: #B8A8CC;
+	color: var(--color-text-secondary);
 }
 
 .filters input,
@@ -80,8 +80,8 @@ table select {
 	border: 1px solid rgba(255, 255, 255, 0.15);
 	border-radius: 0.6rem;
 	padding: 0.55rem 0.7rem;
-	background: #1E1330;
-	color: #F5F0FA;
+	background: var(--color-bg-base);
+	color: var(--color-text-primary);
 }
 
 .table-wrap {
@@ -96,14 +96,14 @@ table {
 th,
 td {
 	padding: 0.65rem 0.5rem;
-	border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+	border-bottom: 1px solid var(--color-border);
 	text-align: left;
 	vertical-align: middle;
-	color: #B8A8CC;
+	color: var(--color-text-secondary);
 }
 
 th {
-	color: #F5F0FA;
+	color: var(--color-text-primary);
 }
 
 .toggle {

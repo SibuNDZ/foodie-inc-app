@@ -6,23 +6,23 @@
 	max-width: 1200px;
 	margin: 0 auto;
 	padding: 1rem;
-	background: #2A1B40;
-	color: #F5F0FA;
+	background: var(--color-bg-surface);
+	color: var(--color-text-primary);
 }
 
 .hero,
 .summary-grid,
 .quick-links,
 .panel {
-	background: #2A1B40;
-	border: 1px solid rgba(255, 255, 255, 0.08);
+	background: var(--color-bg-surface);
+	border: 1px solid var(--color-border);
 	border-radius: 0.9rem;
 	padding: 1rem;
 	margin-bottom: 1rem;
 }
 
 .panel {
-	background: #1E1330;
+	background: var(--color-bg-base);
 }
 
 .hero {
@@ -34,7 +34,7 @@
 
 .eyebrow {
 	margin: 0 0 0.2rem;
-	color: #B8A8CC;
+	color: var(--color-text-secondary);
 	font-weight: 700;
 	text-transform: uppercase;
 	font-size: 0.78rem;
@@ -42,12 +42,12 @@
 
 h1,
 h2 {
-	color: #F5F0FA;
+	color: var(--color-text-primary);
 }
 
 .subtitle,
 .placeholder {
-	color: #B8A8CC;
+	color: var(--color-text-secondary);
 }
 
 .refresh-btn {
@@ -56,8 +56,8 @@ h2 {
 	padding: 0.55rem 0.8rem;
 	font-weight: 700;
 	cursor: pointer;
-	background: rgba(255, 255, 255, 0.08);
-	color: #F5F0FA;
+	background: var(--color-border);
+	color: var(--color-text-primary);
 }
 
 .summary-grid {
@@ -67,8 +67,8 @@ h2 {
 }
 
 .summary-card {
-	background: #2A1B40;
-	border: 1px solid rgba(255, 255, 255, 0.08);
+	background: var(--color-bg-surface);
+	border: 1px solid var(--color-border);
 	border-radius: 0.8rem;
 	padding: 1rem;
 	display: grid;
@@ -78,11 +78,11 @@ h2 {
 .summary-value {
 	font-size: 1.7rem;
 	font-weight: 800;
-	color: #F5F0FA;
+	color: var(--color-text-primary);
 }
 
 .summary-label {
-	color: #B8A8CC;
+	color: var(--color-text-secondary);
 }
 
 .quick-links {
@@ -92,12 +92,12 @@ h2 {
 }
 
 .quick-link-card {
-	background: #2A1B40;
-	border: 1px solid rgba(255, 255, 255, 0.08);
+	background: var(--color-bg-surface);
+	border: 1px solid var(--color-border);
 	border-radius: 0.8rem;
 	padding: 1rem;
 	text-decoration: none;
-	color: #F5F0FA;
+	color: var(--color-text-primary);
 	display: grid;
 	gap: 0.35rem;
 }
@@ -105,12 +105,12 @@ h2 {
 .quick-link-card h2 {
 	margin: 0;
 	font-size: 1.05rem;
-	color: #F5F0FA;
+	color: var(--color-text-primary);
 }
 
 .quick-link-card p {
 	margin: 0;
-	color: #B8A8CC;
+	color: var(--color-text-secondary);
 }
 
 .table-wrap {
@@ -126,12 +126,12 @@ th,
 td {
 	text-align: left;
 	padding: 0.65rem 0.5rem;
-	border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-	color: #B8A8CC;
+	border-bottom: 1px solid var(--color-border);
+	color: var(--color-text-secondary);
 }
 
 th {
-	color: #F5F0FA;
+	color: var(--color-text-primary);
 }
 
 @media (max-width: 720px) {

@@ -6,20 +6,20 @@
 
 .page-header {
   margin-bottom: 1rem;
-  background: #2A1B40;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
   border-radius: 0.9rem;
   padding: 1rem;
 
   h1 {
     font-size: 26px;
     font-weight: 700;
-    color: #F5F0FA;
+    color: var(--color-text-primary);
     margin: 0 0 6px;
   }
 
   .subtitle {
-    color: #B8A8CC;
+    color: var(--color-text-secondary);
     font-size: 15px;
     margin: 0;
   }
@@ -27,7 +27,7 @@
 
 .results-count {
   font-size: 14px;
-  color: #B8A8CC;
+  color: var(--color-text-secondary);
   margin-bottom: 12px;
 }
 
@@ -138,14 +138,14 @@
 .loading-state {
   text-align: center;
   padding: 60px;
-  color: #B8A8CC;
+  color: var(--color-text-secondary);
   font-size: 15px;
 }
 
 .empty-state {
   text-align: center;
   padding: 64px 24px;
-  color: #B8A8CC;
+  color: var(--color-text-secondary);
 
   .empty-icon {
     font-size: 52px;
@@ -155,7 +155,7 @@
   h3 {
     font-size: 20px;
     font-weight: 600;
-    color: #F5F0FA;
+    color: var(--color-text-primary);
     margin: 0 0 8px;
   }
 
@@ -231,7 +231,7 @@
 
   &:focus {
     outline: none;
-    border-color: #764ba2;
+    border-color: var(--color-primary);
   }
 }
 

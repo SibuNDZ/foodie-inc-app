@@ -9,11 +9,11 @@
 }
 
 .empty {
-	color: #64748b;
+	color: var(--color-text-secondary);
 }
 
 .primary-link {
-	color: #0f766e;
+	color: var(--color-primary-dark);
 	font-weight: 600;
 	text-decoration: none;
 }
@@ -44,7 +44,7 @@
 
 .cart-item p {
 	margin: 0.25rem 0 0;
-	color: #64748b;
+	color: var(--color-text-secondary);
 }
 
 .qty-controls {
@@ -106,7 +106,7 @@
 }
 
 .actions a {
-	background: #0f766e;
+	background: var(--color-primary);
 	color: #fff;
 }
 
@@ -118,12 +118,12 @@
 // ── White-surface contrast ────────────────────────────────────────────────────
 .cart-item,
 .totals {
-	color: #0f172a;
+	color: var(--color-text-primary);
 }
 
 .cart-page h1,
 .cart-page h2 {
-	color: #0f172a;
+	color: var(--color-text-primary);
 }
 
 @media (max-width: 760px) {
