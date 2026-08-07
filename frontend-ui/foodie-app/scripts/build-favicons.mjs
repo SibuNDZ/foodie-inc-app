@@ -1,5 +1,7 @@
 /**
- * Renders the brand mark to the raster icons browsers still insist on.
+ * Renders the brand mark to the raster icons browsers and platforms insist on:
+ * the tab favicon, the iOS home-screen icon, and the two push-notification
+ * images src/sw.js points at.
  *
  * The geometry here is the same geometry as src/assets/brand/foodie-logo.svg,
  * rasterised analytically with supersampling rather than resampled from the
@@ -10,16 +12,22 @@
  * Run with `npm run build:favicons` after changing the mark.
  */
 import { deflateSync } from 'node:zlib';
-import { writeFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
+import { dirname, join, relative } from 'node:path';
 
 const PUBLIC_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'public');
 
 const MARK = [0x6c, 0x22, 0x19];
 
-/** Square source region, centred on the mark with about 12% margin. */
-const REGION = { x: 3.5, y: -8, size: 250 };
+/** Centre of the artwork in the SVG's coordinate space. */
+const CENTRE = { x: 128.5, y: 117 };
+
+/**
+ * Side of the square crop taken around that centre. The mark is 175x218, so
+ * 250 leaves roughly 12% margin; a larger number means a smaller mark.
+ */
+const CROP = 250;
 
 /** Samples per axis inside each output pixel. */
 const SS = 4;
@@ -48,35 +56,58 @@ function inMark(x, y) {
   return false;
 }
 
-/** RGBA pixels for one square icon. `background` null means transparent. */
-function render(size, background) {
-  const out = Buffer.alloc(size * size * 4);
-  const scale = REGION.size / size;
-
+/** Supersampled 0..1 coverage per pixel, for any predicate in icon space. */
+function coverage(size, inside) {
+  const out = new Float32Array(size * size);
   for (let py = 0; py < size; py++) {
     for (let px = 0; px < size; px++) {
       let hits = 0;
       for (let sy = 0; sy < SS; sy++) {
         for (let sx = 0; sx < SS; sx++) {
-          const x = REGION.x + (px + (sx + 0.5) / SS) * scale;
-          const y = REGION.y + (py + (sy + 0.5) / SS) * scale;
-          if (inMark(x, y)) hits++;
+          if (inside(px + (sx + 0.5) / SS, py + (sy + 0.5) / SS)) hits++;
         }
       }
-
-      const coverage = hits / (SS * SS);
-      const i = (py * size + px) * 4;
-      if (background) {
-        // Composited, because Apple's touch icon has no alpha to speak of.
-        for (let c = 0; c < 3; c++) {
-          out[i + c] = Math.round(MARK[c] * coverage + background[c] * (1 - coverage));
-        }
-        out[i + 3] = 255;
-      } else {
-        out[i] = MARK[0]; out[i + 1] = MARK[1]; out[i + 2] = MARK[2];
-        out[i + 3] = Math.round(coverage * 255);
-      }
+      out[py * size + px] = hits / (SS * SS);
     }
+  }
+  return out;
+}
+
+/** Coverage of the mark itself, cropped to `crop` around its centre. */
+function markCoverage(size, crop = CROP) {
+  const scale = crop / size;
+  const originX = CENTRE.x - crop / 2;
+  const originY = CENTRE.y - crop / 2;
+  return coverage(size, (x, y) => inMark(originX + x * scale, originY + y * scale));
+}
+
+/** Coverage of a rounded square filling the icon, for app-icon style plates. */
+function plateCoverage(size, radiusRatio) {
+  const r = size * radiusRatio;
+  return coverage(size, (x, y) => {
+    const dx = Math.min(x, size - x), dy = Math.min(y, size - y);
+    if (dx < 0 || dy < 0) return false;
+    if (dx >= r || dy >= r) return true;
+    return (r - dx) ** 2 + (r - dy) ** 2 <= r * r;
+  });
+}
+
+/**
+ * Paints the mark in `ink` over `plate`, which may be null for transparency.
+ * Alpha comes from the plate where there is one, so the corners stay smooth.
+ */
+function compose(size, mark, ink, plate, plateColour) {
+  const out = Buffer.alloc(size * size * 4);
+  for (let p = 0; p < size * size; p++) {
+    const m = mark[p];
+    const a = plate ? plate[p] : m;
+    const i = p * 4;
+    for (let c = 0; c < 3; c++) {
+      out[i + c] = plate
+        ? Math.round(ink[c] * m + plateColour[c] * (1 - m))
+        : ink[c];
+    }
+    out[i + 3] = Math.round(a * 255);
   }
   return out;
 }
@@ -146,13 +177,50 @@ function encodeIco(entries) {
   return Buffer.concat([header, ...directory, ...entries.map(e => e.png)]);
 }
 
-const ico = encodeIco([16, 32, 48, 64].map(size => ({
-  size,
-  png: encodePng(size, render(size, null))
-})));
-writeFileSync(join(PUBLIC_DIR, 'favicon.ico'), ico);
-console.log(`favicon.ico       ${ico.length} bytes (16, 32, 48, 64)`);
+const write = (path, bytes, note) => {
+  mkdirSync(dirname(path), { recursive: true });
+  writeFileSync(path, bytes);
+  console.log(`${relative(PUBLIC_DIR, path).padEnd(30)} ${String(bytes.length).padStart(6)} bytes  ${note}`);
+};
 
-const touch = encodePng(180, render(180, [255, 255, 255]));
-writeFileSync(join(PUBLIC_DIR, 'apple-touch-icon.png'), touch);
-console.log(`apple-touch-icon.png ${touch.length} bytes (180, on white)`);
+const WHITE = [255, 255, 255];
+
+// Browser tab. Transparent, so it sits on light and dark chrome alike.
+write(
+  join(PUBLIC_DIR, 'favicon.ico'),
+  encodeIco([16, 32, 48, 64].map(size => ({
+    size,
+    png: encodePng(size, compose(size, markCoverage(size), MARK, null))
+  }))),
+  '16, 32, 48, 64'
+);
+
+// iOS home screen. Composited, because apple-touch-icon has no usable alpha
+// and would otherwise land on black.
+write(
+  join(PUBLIC_DIR, 'apple-touch-icon.png'),
+  encodePng(180, compose(180, markCoverage(180), MARK, plateCoverage(180, 0), WHITE)),
+  '180, on white'
+);
+
+/* Push notifications, both referenced by src/sw.js.
+ *
+ * The two are not the same picture. `icon` is shown in full colour, at whatever
+ * size the platform picks, against a notification shade that may be light or
+ * dark: a bare maroon mark would disappear on one of them, so it gets the brand
+ * plate and a white mark, the way an app icon would.
+ *
+ * `badge` is the opposite. Android throws the colour away and renders the alpha
+ * channel as a flat silhouette in the status bar, so only the shape matters,
+ * and it needs extra margin because the system crops to a circle. */
+write(
+  join(PUBLIC_DIR, 'assets', 'icons', 'icon-192x192.png'),
+  encodePng(192, compose(192, markCoverage(192, 330), WHITE, plateCoverage(192, 0.22), MARK)),
+  '192, white mark on the brand plate'
+);
+
+write(
+  join(PUBLIC_DIR, 'assets', 'icons', 'badge-72x72.png'),
+  encodePng(72, compose(72, markCoverage(72, 300), WHITE, null)),
+  '72, alpha-only silhouette'
+);
