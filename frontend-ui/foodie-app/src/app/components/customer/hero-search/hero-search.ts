@@ -89,6 +89,16 @@ export class HeroSearch {
     this.requestLocation();
   }
 
+  /**
+   * The explicit "use my location" control. Unlike the automatic request on
+   * focus, this retries even after a previous denial, because the user has just
+   * asked for it.
+   */
+  protected useMyLocation(): void {
+    this.locationState.set('idle');
+    this.requestLocation();
+  }
+
   protected requestLocation(): void {
     if (this.locationState() !== 'idle') {
       return;

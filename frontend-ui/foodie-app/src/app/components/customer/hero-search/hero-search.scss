@@ -1,7 +1,7 @@
 :host { display: block; }
 
 .hero-search {
-	text-align: left;
+	text-align: center;
 
 	h1 {
 		margin: 0 0 0.6rem;
@@ -13,15 +13,44 @@
 }
 
 .hero-sub {
-	margin: 0 0 1.75rem;
+	margin: 0 auto 1.75rem;
+	max-width: 46ch;
 	font-size: 1.1rem;
 	color: var(--color-text-secondary);
 }
 
+/* The elevated white card that holds the whole search control. */
+.search-shell {
+	max-width: 720px;
+	margin: 0 auto;
+	padding: 0.75rem;
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	box-shadow: var(--shadow);
+	text-align: left;
+}
+
 .search-row {
 	display: flex;
-	gap: 0.75rem;
-	align-items: flex-start;
+	gap: 0.6rem;
+	align-items: stretch;
+}
+
+.locate-btn {
+	flex: 0 0 auto;
+	width: 52px;
+	border: 1px solid var(--border);
+	border-radius: var(--radius-sm);
+	background: var(--surface);
+	color: var(--primary);
+	font-size: 1.05rem;
+	cursor: pointer;
+
+	&:hover {
+		background: var(--tint);
+		border-color: var(--primary);
+	}
 }
 
 .combo {

@@ -1,10 +1,12 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { HeroSearch } from '../hero-search/hero-search';
-import { CategoryCarousel } from '../category-carousel/category-carousel';
+import { CuisineStrip } from '../cuisine-strip/cuisine-strip';
 import { HomePromo } from '../home-promo/home-promo';
 import { AppDownload } from '../app-download/app-download';
 import { LogoMark } from '../../layout/logo-mark/logo-mark';
+import { SmartImage } from '../../shared/smart-image/smart-image';
 import { AuthPrompt } from '../../auth/auth-prompt/auth-prompt';
+import { imageUrl, primaryImage } from '../../../../assets/images/manifest';
 
 /**
  * Marketing landing page at `/`.
@@ -16,9 +18,16 @@ import { AuthPrompt } from '../../auth/auth-prompt/auth-prompt';
  */
 @Component({
   selector: 'app-landing',
-  imports: [HeroSearch, CategoryCarousel, HomePromo, AppDownload, LogoMark, AuthPrompt],
+  imports: [
+    HeroSearch, CuisineStrip, HomePromo, AppDownload,
+    LogoMark, SmartImage, AuthPrompt
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './landing.html',
   styleUrl: './landing.scss'
 })
-export class Landing {}
+export class Landing {
+  /** Flanking hero artwork. Decorative, so both render with empty alt. */
+  protected readonly groceryPhoto = imageUrl(primaryImage('grocery'), 600);
+  protected readonly burgerPhoto = imageUrl(primaryImage('burgers'), 600);
+}

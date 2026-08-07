@@ -31,11 +31,17 @@ describe('Landing', () => {
     expect(component).toBeTruthy();
   });
 
-  it('renders the hero, promo and download sections', () => {
+  it('renders the hero, cuisine strip, promo and download sections', () => {
     expect(fixture.nativeElement.querySelector('app-hero-search')).toBeTruthy();
-    expect(fixture.nativeElement.querySelector('app-category-carousel')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('app-cuisine-strip')).toBeTruthy();
     expect(fixture.nativeElement.querySelector('app-home-promo')).toBeTruthy();
     expect(fixture.nativeElement.querySelector('app-app-download')).toBeTruthy();
+  });
+
+  it('frames the hero with decorative photography that screen readers skip', () => {
+    const art = Array.from(fixture.nativeElement.querySelectorAll('.hero-art'));
+    expect(art.length).toBe(2);
+    art.forEach(el => expect((el as HTMLElement).getAttribute('aria-hidden')).toBe('true'));
   });
 
   it('mounts the sign-up prompt', () => {

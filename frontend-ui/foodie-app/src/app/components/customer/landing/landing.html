@@ -1,22 +1,27 @@
 <div class="landing-page">
-	<header class="hero-section">
-		<div class="hero-split">
-			<div class="hero-panel hero-panel--search">
-				<app-hero-search />
-			</div>
+	<header class="hero">
+		<!-- Decorative only: the hero is described by its heading and search control. -->
+		<div class="hero-art hero-art--left" aria-hidden="true">
+			<app-smart-image [src]="groceryPhoto" alt="" aspectRatio="3 / 4" [priority]="true" />
+		</div>
 
-			<div class="hero-panel hero-panel--carousel">
-				<app-category-carousel />
+		<div class="hero-inner">
+			<app-hero-search />
+		</div>
 
-				<div class="brand-lockup">
-					<app-logo-mark [size]="34" />
-					<span class="brand-lockup-wordmark">Foodie Inc</span>
-				</div>
-			</div>
+		<div class="hero-art hero-art--right" aria-hidden="true">
+			<app-smart-image [src]="burgerPhoto" alt="" aspectRatio="3 / 4" [lazy]="false" />
 		</div>
 	</header>
 
+	<app-cuisine-strip />
+
 	<app-home-promo />
+
+	<div class="brand-lockup">
+		<app-logo-mark [size]="34" />
+		<span class="brand-lockup-wordmark">Foodie Inc</span>
+	</div>
 
 	<app-app-download />
 </div>

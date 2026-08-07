@@ -1,0 +1,18 @@
+<section class="strip-section" aria-labelledby="cuisine-strip-heading">
+	<h2 class="strip-heading" id="cuisine-strip-heading">What are you in the mood for?</h2>
+
+	<ul class="strip" tabindex="0" role="list" aria-label="Browse by cuisine">
+		@for (tile of tiles; track tile.key) {
+			<li class="tile">
+				<a class="tile-link" [routerLink]="['/restaurants']" [queryParams]="{ query: tile.query }">
+					<app-smart-image
+						class="tile-image"
+						[src]="tile.image"
+						[alt]="tile.alt"
+						aspectRatio="1 / 1" />
+					<span class="tile-label">{{ tile.label }}</span>
+				</a>
+			</li>
+		}
+	</ul>
+</section>

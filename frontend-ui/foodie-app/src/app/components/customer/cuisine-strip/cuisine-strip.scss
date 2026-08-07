@@ -1,0 +1,82 @@
+:host { display: block; }
+
+.strip-section {
+	max-width: var(--container);
+	margin: 0 auto;
+	padding: 3rem 20px 0;
+}
+
+.strip-heading {
+	margin: 0 0 1.25rem;
+	font-size: 1.5rem;
+}
+
+/* A plain scroll container: keyboard, trackpad and touch all work without JS. */
+.strip {
+	display: flex;
+	gap: 1rem;
+	margin: 0;
+	padding: 0.25rem 0.25rem 1rem;
+	list-style: none;
+	overflow-x: auto;
+	scroll-snap-type: x mandatory;
+	scrollbar-width: thin;
+
+	&:focus-visible {
+		outline: 2px solid var(--primary);
+		outline-offset: 4px;
+		border-radius: var(--radius);
+	}
+}
+
+.tile {
+	flex: 0 0 auto;
+	width: 156px;
+	scroll-snap-align: start;
+}
+
+.tile-link {
+	display: block;
+	text-decoration: none;
+	border-radius: var(--radius);
+	background: var(--surface);
+	border: 1px solid var(--border);
+	box-shadow: var(--shadow-sm);
+	overflow: hidden;
+	transition: transform 0.18s ease, box-shadow 0.18s ease;
+
+	&:hover {
+		transform: translateY(-3px);
+		box-shadow: var(--shadow);
+	}
+
+	&:focus-visible {
+		outline: 2px solid var(--primary);
+		outline-offset: 3px;
+	}
+}
+
+.tile-image {
+	display: block;
+}
+
+.tile-label {
+	display: block;
+	padding: 0.65rem 0.75rem;
+	font-size: 0.92rem;
+	font-weight: 700;
+	color: var(--ink);
+	text-align: center;
+}
+
+@media (max-width: 640px) {
+	.tile { width: 132px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.tile-link {
+		transition: none;
+
+		&:hover { transform: none; }
+	}
+}
