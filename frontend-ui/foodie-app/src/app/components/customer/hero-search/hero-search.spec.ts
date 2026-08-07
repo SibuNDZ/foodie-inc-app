@@ -72,6 +72,15 @@ describe('HeroSearch', () => {
     expect(fixture.nativeElement.querySelector('.search-btn')).toBeTruthy();
   });
 
+  it('leaves the field and its button unboxed, with no card drawn around them', () => {
+    const shell: HTMLElement = fixture.nativeElement.querySelector('.search-shell');
+    const style = getComputedStyle(shell);
+
+    expect(style.borderTopWidth).toBe('0px');
+    expect(style.boxShadow).toBe('none');
+    expect(['rgba(0, 0, 0, 0)', 'transparent']).toContain(style.backgroundColor);
+  });
+
   it('exposes the combobox pattern to assistive tech', () => {
     expect(input().getAttribute('role')).toBe('combobox');
     expect(input().getAttribute('aria-expanded')).toBe('false');
