@@ -1,64 +1,147 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 600" width="300" height="600" role="presentation">
   <defs>
-    <linearGradient id="screen" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#2A1B40"/>
-      <stop offset="100%" stop-color="#1E1330"/>
+    <linearGradient id="chassis" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4A4A50"/>
+      <stop offset="18%" stop-color="#8E8E96"/>
+      <stop offset="50%" stop-color="#2E2E34"/>
+      <stop offset="82%" stop-color="#8E8E96"/>
+      <stop offset="100%" stop-color="#3A3A40"/>
     </linearGradient>
-    <linearGradient id="hero" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#F58C24"/>
-      <stop offset="100%" stop-color="#EE3124"/>
+    <linearGradient id="promo" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#C2410C"/>
+      <stop offset="100%" stop-color="#F97316"/>
     </linearGradient>
+    <linearGradient id="thumbA" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F59E0B"/><stop offset="100%" stop-color="#B45309"/>
+    </linearGradient>
+    <linearGradient id="thumbB" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#EF4444"/><stop offset="100%" stop-color="#991B1B"/>
+    </linearGradient>
+    <linearGradient id="thumbC" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#84CC16"/><stop offset="100%" stop-color="#3F6212"/>
+    </linearGradient>
+    <linearGradient id="glare" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.16"/>
+      <stop offset="42%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <clipPath id="screenClip">
+      <rect x="17" y="15" width="266" height="570" rx="36"/>
+    </clipPath>
   </defs>
 
-  <!-- device body -->
-  <rect x="8" y="8" width="284" height="584" rx="42" fill="#120B1E"/>
-  <rect x="16" y="16" width="268" height="568" rx="36" fill="url(#screen)"/>
-
-  <!-- notch -->
-  <rect x="112" y="26" width="76" height="12" rx="6" fill="#120B1E"/>
-
-  <!-- app bar with the cloche mark -->
-  <g transform="translate(40 62) scale(0.85)">
-    <circle cx="16" cy="6.4" r="2.2" fill="#F8BF73"/>
-    <path d="M4.5 21.4a11.5 11.5 0 0 1 23 0Z" fill="#F58C24"/>
-    <path d="M13 14.6v4.4M16 13.7v5.3M19 14.6v4.4" stroke="#2A1B40" stroke-width="1.4" stroke-linecap="round"/>
-    <rect x="1.8" y="22.1" width="28.4" height="3.4" rx="1.7" fill="#EE3124"/>
-  </g>
-  <rect x="76" y="70" width="78" height="11" rx="5.5" fill="#F5F0FA" fill-opacity="0.9"/>
-
-  <!-- search field -->
-  <rect x="38" y="104" width="224" height="34" rx="10" fill="#FFFFFF" fill-opacity="0.95"/>
-  <circle cx="58" cy="121" r="6" fill="none" stroke="#64748B" stroke-width="2"/>
-  <path d="M62.5 125.5 L68 131" stroke="#64748B" stroke-width="2" stroke-linecap="round"/>
-  <rect x="76" y="116" width="104" height="9" rx="4.5" fill="#CBD5E1"/>
-
-  <!-- featured card -->
-  <rect x="38" y="154" width="224" height="118" rx="14" fill="url(#hero)"/>
-  <circle cx="232" cy="182" r="34" fill="#FFFFFF" fill-opacity="0.12"/>
-  <rect x="54" y="238" width="72" height="18" rx="9" fill="#1E1330" fill-opacity="0.8"/>
-
-  <!-- restaurant rows -->
-  <g fill="#FFFFFF" fill-opacity="0.08">
-    <rect x="38" y="290" width="224" height="66" rx="12"/>
-    <rect x="38" y="368" width="224" height="66" rx="12"/>
-    <rect x="38" y="446" width="224" height="66" rx="12"/>
-  </g>
-  <g fill="#F58C24" fill-opacity="0.85">
-    <rect x="50" y="302" width="42" height="42" rx="10"/>
-    <rect x="50" y="380" width="42" height="42" rx="10"/>
-    <rect x="50" y="458" width="42" height="42" rx="10"/>
-  </g>
-  <g fill="#F5F0FA" fill-opacity="0.75">
-    <rect x="104" y="308" width="104" height="9" rx="4.5"/>
-    <rect x="104" y="386" width="118" height="9" rx="4.5"/>
-    <rect x="104" y="464" width="96" height="9" rx="4.5"/>
-  </g>
-  <g fill="#B8A8CC" fill-opacity="0.6">
-    <rect x="104" y="326" width="64" height="7" rx="3.5"/>
-    <rect x="104" y="404" width="78" height="7" rx="3.5"/>
-    <rect x="104" y="482" width="56" height="7" rx="3.5"/>
+  <!-- ── Device ──────────────────────────────────────────────────────────── -->
+  <!-- Side buttons sit under the chassis so only their outer edge shows. -->
+  <g fill="#5A5A62">
+    <rect x="2" y="132" width="5" height="26" rx="2.5"/>
+    <rect x="2" y="176" width="5" height="46" rx="2.5"/>
+    <rect x="2" y="234" width="5" height="46" rx="2.5"/>
+    <rect x="293" y="196" width="5" height="70" rx="2.5"/>
   </g>
 
-  <!-- home indicator -->
-  <rect x="118" y="562" width="64" height="5" rx="2.5" fill="#F5F0FA" fill-opacity="0.35"/>
+  <rect x="6" y="4" width="288" height="592" rx="48" fill="url(#chassis)"/>
+  <rect x="11" y="9" width="278" height="582" rx="43" fill="#0B0B0F"/>
+  <rect x="17" y="15" width="266" height="570" rx="36" fill="#FFFFFF"/>
+
+  <g clip-path="url(#screenClip)">
+    <!-- Status bar -->
+    <text x="45" y="42" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif"
+          font-size="13" font-weight="600" fill="#26221D">12:30</text>
+    <g fill="#26221D">
+      <rect x="215" y="34" width="3" height="5" rx="1"/>
+      <rect x="220" y="31" width="3" height="8" rx="1"/>
+      <rect x="225" y="28" width="3" height="11" rx="1"/>
+      <rect x="230" y="25" width="3" height="14" rx="1"/>
+      <path d="M241 28.5a11 11 0 0 1 13 0l-6.5 8z"/>
+      <rect x="259" y="28" width="17" height="10" rx="3" fill="none" stroke="#26221D" stroke-width="1.4"/>
+      <rect x="261" y="30" width="12" height="6" rx="1.5"/>
+    </g>
+
+    <!-- App bar: the mark, the wordmark, an avatar -->
+    <g transform="translate(38 62) scale(0.128)" fill="#6C2219">
+      <circle cx="128" cy="28" r="8"/>
+      <path fill-rule="evenodd" d="M70 85.5A58 53 0 0 1 186 85.5Z
+        M113 42.7A48.5 44.5 0 0 0 81.6 72L88.3 74A41.5 37.5 0 0 1 115.2 49.3Z"/>
+      <rect x="53" y="93" width="152" height="15" rx="7.5"/>
+      <rect x="71" y="93" width="40" height="121"/>
+      <rect x="71" y="133" width="98" height="32"/>
+    </g>
+    <text x="62" y="82" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif"
+          font-size="15" font-weight="800" font-style="italic" fill="#26221D">Foodie Inc</text>
+    <circle cx="254" cy="76" r="14" fill="#C2410C"/>
+    <text x="254" y="81" text-anchor="middle" font-family="system-ui, sans-serif"
+          font-size="11" font-weight="800" fill="#FFFFFF">DN</text>
+
+    <!-- Search -->
+    <rect x="32" y="104" width="236" height="38" rx="19" fill="#F5F1EC" stroke="#EAE3DA"/>
+    <circle cx="54" cy="123" r="6" fill="none" stroke="#6E665E" stroke-width="2"/>
+    <path d="M58.5 127.5 63 132" stroke="#6E665E" stroke-width="2" stroke-linecap="round"/>
+    <text x="74" y="128" font-family="system-ui, sans-serif" font-size="12.5" fill="#6E665E">
+      Search restaurants
+    </text>
+
+    <!-- Promo card -->
+    <rect x="32" y="156" width="236" height="104" rx="18" fill="url(#promo)"/>
+    <circle cx="244" cy="182" r="42" fill="#FFFFFF" fill-opacity="0.12"/>
+    <text x="50" y="196" font-family="system-ui, sans-serif" font-size="16" font-weight="800" fill="#FFFFFF">
+      Free delivery
+    </text>
+    <text x="50" y="214" font-family="system-ui, sans-serif" font-size="11.5" fill="#FFFFFF" fill-opacity="0.9">
+      On your first three orders
+    </text>
+    <rect x="50" y="226" width="82" height="24" rx="12" fill="#FFFFFF"/>
+    <text x="91" y="242" text-anchor="middle" font-family="system-ui, sans-serif"
+          font-size="11" font-weight="700" fill="#C2410C">Order now</text>
+
+    <!-- Category chips -->
+    <g font-family="system-ui, sans-serif" font-size="11" font-weight="600">
+      <rect x="32" y="276" width="62" height="26" rx="13" fill="#FFEDD5"/>
+      <text x="63" y="293" text-anchor="middle" fill="#9A3412">Burgers</text>
+      <rect x="100" y="276" width="52" height="26" rx="13" fill="#F5F1EC"/>
+      <text x="126" y="293" text-anchor="middle" fill="#6E665E">Pizza</text>
+      <rect x="158" y="276" width="52" height="26" rx="13" fill="#F5F1EC"/>
+      <text x="184" y="293" text-anchor="middle" fill="#6E665E">Sushi</text>
+      <rect x="216" y="276" width="52" height="26" rx="13" fill="#F5F1EC"/>
+      <text x="242" y="293" text-anchor="middle" fill="#6E665E">Thai</text>
+    </g>
+
+    <!-- Restaurant rows -->
+    <g font-family="system-ui, sans-serif">
+      <g>
+        <rect x="32" y="318" width="236" height="72" rx="16" fill="#FFFFFF" stroke="#EAE3DA"/>
+        <rect x="44" y="330" width="48" height="48" rx="12" fill="url(#thumbA)"/>
+        <text x="104" y="348" font-size="13" font-weight="700" fill="#26221D">Bunny Chow Bar</text>
+        <text x="104" y="366" font-size="11" fill="#6E665E">★ 4.8  ·  25 min  ·  R25</text>
+      </g>
+      <g>
+        <rect x="32" y="400" width="236" height="72" rx="16" fill="#FFFFFF" stroke="#EAE3DA"/>
+        <rect x="44" y="412" width="48" height="48" rx="12" fill="url(#thumbB)"/>
+        <text x="104" y="430" font-size="13" font-weight="700" fill="#26221D">Napoli Wood Fire</text>
+        <text x="104" y="448" font-size="11" fill="#6E665E">★ 4.6  ·  30 min  ·  R20</text>
+      </g>
+      <g>
+        <rect x="32" y="482" width="236" height="72" rx="16" fill="#FFFFFF" stroke="#EAE3DA"/>
+        <rect x="44" y="494" width="48" height="48" rx="12" fill="url(#thumbC)"/>
+        <text x="104" y="512" font-size="13" font-weight="700" fill="#26221D">Green Bowl Co</text>
+        <text x="104" y="530" font-size="11" fill="#6E665E">★ 4.9  ·  20 min  ·  Free</text>
+      </g>
+    </g>
+
+    <!-- Tab bar -->
+    <rect x="17" y="556" width="266" height="29" fill="#FFFFFF"/>
+    <line x1="17" y1="556" x2="283" y2="556" stroke="#EAE3DA"/>
+    <g fill="#C9C2B8">
+      <circle cx="112" cy="570" r="7"/>
+      <circle cx="188" cy="570" r="7"/>
+      <circle cx="244" cy="570" r="7"/>
+    </g>
+    <circle cx="56" cy="570" r="7" fill="#C2410C"/>
+
+    <!-- Dynamic island, over the app but under nothing -->
+    <rect x="118" y="27" width="64" height="19" rx="9.5" fill="#0B0B0F"/>
+    <circle cx="172" cy="36.5" r="4.5" fill="#1C1C22"/>
+  </g>
+
+  <!-- Home indicator and the glass highlight sit on top of everything. -->
+  <rect x="118" y="574" width="64" height="4.5" rx="2.25" fill="#26221D" fill-opacity="0.35"/>
+  <rect x="17" y="15" width="266" height="570" rx="36" fill="url(#glare)"/>
 </svg>

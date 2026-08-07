@@ -15,9 +15,19 @@
 
 .mood-layout {
 	display: grid;
-	grid-template-columns: 180px minmax(0, 1fr);
-	gap: 1.75rem;
+	grid-template-columns: 176px minmax(0, 1fr);
+	gap: 1.5rem;
 	align-items: start;
+}
+
+/* The app shell centres every route in 1200px, which leaves the deck 928px once
+   the category list has taken its column: two cards and a sliver of a third. On
+   a screen wide enough to spare it, the section takes back some of the margin
+   the shell gave away and three full cards fit. */
+@media (min-width: 1440px) {
+	.mood-section {
+		margin-inline: -110px;
+	}
 }
 
 /* ── Every cuisine, as plain links ───────────────────────────────────────── */
