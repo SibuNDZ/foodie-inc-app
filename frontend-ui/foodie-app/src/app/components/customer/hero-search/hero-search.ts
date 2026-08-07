@@ -1,4 +1,4 @@
-import { Component, PLATFORM_ID, inject, signal } from '@angular/core';
+import { Component, PLATFORM_ID, inject, input, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -20,6 +20,13 @@ type LocationState = 'idle' | 'requesting' | 'granted' | 'unavailable';
   styleUrl: './hero-search.scss'
 })
 export class HeroSearch {
+  /**
+   * The listing page leads with this control, so it needs the heading and
+   * slogan. The home hero does not: there the search card stands alone under
+   * the pill row, and a headline above it would only crowd the white field.
+   */
+  readonly showHeadings = input(true);
+
   private readonly platformId = inject(PLATFORM_ID);
   private readonly router = inject(Router);
   private readonly restaurantService = inject(RestaurantService);

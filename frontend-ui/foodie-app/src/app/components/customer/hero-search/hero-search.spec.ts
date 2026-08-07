@@ -59,6 +59,19 @@ describe('HeroSearch', () => {
     expect(input().getAttribute('placeholder')).toBe('Search restaurants or cuisines…');
   });
 
+  it('drops the heading and slogan when the host asks for the card alone', () => {
+    fixture.componentRef.setInput('showHeadings', false);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('h1')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.hero-sub')).toBeNull();
+    // The search control itself is untouched.
+    expect(fixture.nativeElement.querySelector('.search-shell')).toBeTruthy();
+    expect(input()).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('.locate-btn')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('.search-btn')).toBeTruthy();
+  });
+
   it('exposes the combobox pattern to assistive tech', () => {
     expect(input().getAttribute('role')).toBe('combobox');
     expect(input().getAttribute('aria-expanded')).toBe('false');

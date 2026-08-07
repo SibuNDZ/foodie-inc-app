@@ -1,12 +1,22 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { HeroSearch } from '../hero-search/hero-search';
 import { CuisineStrip } from '../cuisine-strip/cuisine-strip';
 import { HomePromo } from '../home-promo/home-promo';
 import { AppDownload } from '../app-download/app-download';
 import { LogoMark } from '../../layout/logo-mark/logo-mark';
-import { SmartImage } from '../../shared/smart-image/smart-image';
 import { AuthPrompt } from '../../auth/auth-prompt/auth-prompt';
-import { imageUrl, primaryImage } from '../../../../assets/images/manifest';
+
+/**
+ * The marketing destinations, which live in the hero on this route and in the
+ * header everywhere else. Same four links, same order, one place each.
+ */
+export const HERO_PILLS: ReadonlyArray<{ path: string; label: string }> = [
+  { path: '/restaurants', label: 'Explore' },
+  { path: '/corporate-orders', label: 'Corporate Orders' },
+  { path: '/become-a-driver', label: 'Become a Driver' },
+  { path: '/partner-with-us', label: 'Partner with Us' }
+];
 
 /**
  * Marketing landing page at `/`.
@@ -19,15 +29,13 @@ import { imageUrl, primaryImage } from '../../../../assets/images/manifest';
 @Component({
   selector: 'app-landing',
   imports: [
-    HeroSearch, CuisineStrip, HomePromo, AppDownload,
-    LogoMark, SmartImage, AuthPrompt
+    RouterLink, RouterLinkActive,
+    HeroSearch, CuisineStrip, HomePromo, AppDownload, LogoMark, AuthPrompt
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './landing.html',
   styleUrl: './landing.scss'
 })
 export class Landing {
-  /** Flanking hero artwork. Decorative, so both render with empty alt. */
-  protected readonly groceryPhoto = imageUrl(primaryImage('grocery'), 600);
-  protected readonly burgerPhoto = imageUrl(primaryImage('burgers'), 600);
+  protected readonly pills = HERO_PILLS;
 }
