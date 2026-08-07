@@ -40,10 +40,10 @@
 .applications-table {
   width: 100%;
   border-collapse: collapse;
-  background: white;
+  background: var(--surface);
 
   thead tr {
-    background: #f5f3ff;
+    background: var(--violet-surface);
   }
 
   th {
@@ -51,22 +51,22 @@
     padding: 14px 16px;
     font-size: 13px;
     font-weight: 600;
-    color: #555;
+    color: var(--muted);
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    border-bottom: 2px solid #e8e0f0;
+    border-bottom: 2px solid var(--border);
   }
 
   td {
     padding: 14px 16px;
     font-size: 14px;
-    color: #333;
-    border-bottom: 1px solid #f0f0f0;
+    color: var(--ink);
+    border-bottom: 1px solid var(--muted-surface);
     vertical-align: middle;
   }
 
   tbody tr:hover {
-    background: #faf8ff;
+    background: var(--violet-surface);
   }
 
   tbody tr:last-child td {
@@ -76,16 +76,16 @@
 
 .restaurant-name {
   font-weight: 600;
-  color: #222;
+  color: var(--ink);
 }
 
 .address-cell {
-  color: #555;
+  color: var(--muted);
   max-width: 220px;
 }
 
 .owner-cell {
-  color: #777;
+  color: var(--muted);
   font-size: 13px;
 }
 
@@ -120,18 +120,18 @@
 }
 
 .btn-approve {
-  background: #27ae60;
-  color: white;
+  background: var(--success);
+  color: var(--on-primary);
 }
 
 .btn-reject {
-  background: #e74c3c;
-  color: white;
+  background: var(--danger);
+  color: var(--on-primary);
 }
 
 .btn-secondary {
-  background: #ccc;
-  color: #333;
+  background: var(--border-strong);
+  color: var(--ink);
 }
 
 /* States */
@@ -166,9 +166,9 @@
 }
 
 .alert-danger {
-  background: #fff0f0;
-  border: 1px solid #ffcccc;
-  color: #c0392b;
+  background: var(--danger-surface);
+  border: 1px solid var(--border);
+  color: var(--danger);
   padding: 14px 18px;
   border-radius: 8px;
   font-size: 14px;
@@ -186,7 +186,7 @@
 }
 
 .modal {
-  background: white;
+  background: var(--surface);
   border-radius: 14px;
   padding: 28px;
   width: 100%;
@@ -196,12 +196,12 @@
   h3 {
     margin: 0 0 8px;
     font-size: 20px;
-    color: #222;
+    color: var(--ink);
   }
 
   p {
     font-size: 14px;
-    color: #666;
+    color: var(--muted);
     margin: 0 0 20px;
   }
 }
@@ -214,14 +214,14 @@
     margin-bottom: 6px;
     font-weight: 500;
     font-size: 14px;
-    color: #333;
+    color: var(--ink);
   }
 }
 
 .form-control {
   width: 100%;
   padding: 10px 14px;
-  border: 2px solid #e0e0e0;
+  border: 2px solid var(--border);
   border-radius: 8px;
   font-size: 14px;
   font-family: inherit;
@@ -240,3 +240,5 @@
   gap: 12px;
   justify-content: flex-end;
 }
+
+.empty-icon--success { font-size: 3rem; color: var(--success); line-height: 1; }

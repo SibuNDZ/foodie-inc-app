@@ -32,6 +32,15 @@
   --danger: #B91C1C;
   --danger-surface: #FEF2F2;
 
+  /* Status tints. Dashboards and order tracking need more than one "good" and
+     one "bad", so each state gets a surface plus an ink that clears AA on it. */
+  --success-surface: #DCFCE7;
+  --warning-surface: #FEF3C7;
+  --info: #1E3A8A;
+  --info-surface: #DBEAFE;
+  --violet: #4C1D95;
+  --violet-surface: #EDE9FE;
+
   /* ── Shape and depth ──────────────────────────────────────────────────── */
   --radius: 14px;
   --radius-sm: 10px;

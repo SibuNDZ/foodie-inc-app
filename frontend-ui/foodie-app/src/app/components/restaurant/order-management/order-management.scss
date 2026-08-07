@@ -11,8 +11,8 @@
 .hero,
 .toolbar,
 .order-section {
-	background: #fff;
-	border: 1px solid #e2e8f0;
+	background: var(--surface);
+	border: 1px solid var(--border);
 	border-radius: 0.9rem;
 	padding: 1rem;
 	margin-bottom: 1rem;
@@ -41,7 +41,7 @@
 }
 
 .state-error {
-	color: #b91c1c;
+	color: var(--danger);
 }
 
 .link-btn,
@@ -57,12 +57,12 @@
 .link-btn,
 .advance-btn {
 	background: var(--color-primary);
-	color: #fff;
+	color: var(--on-primary);
 	text-decoration: none;
 }
 
 .refresh-btn {
-	background: #e2e8f0;
+	background: var(--border);
 	color: var(--color-text-primary);
 }
 
@@ -94,8 +94,8 @@
 }
 
 .summary-card {
-	background: linear-gradient(135deg, var(--color-bg-surface), #ffffff);
-	border: 1px solid #e2e8f0;
+	background: linear-gradient(135deg, var(--color-bg-surface), var(--surface));
+	border: 1px solid var(--border);
 	border-radius: 0.9rem;
 	padding: 1rem;
 	display: grid;
@@ -119,7 +119,7 @@
 }
 
 .order-card {
-	border: 1px solid #e2e8f0;
+	border: 1px solid var(--border);
 	border-radius: 0.9rem;
 	padding: 1rem;
 	background: var(--color-bg-surface);
@@ -142,8 +142,8 @@
 	margin: 0.5rem 0 0;
 	padding: 0.7rem 0.8rem;
 	border-radius: 0.6rem;
-	background: #eff6ff;
-	color: #1e3a8a;
+	background: var(--tint);
+	color: var(--info);
 	font-size: 0.92rem;
 }
 
@@ -171,7 +171,7 @@ th,
 td {
 	text-align: left;
 	padding: 0.65rem 0.5rem;
-	border-bottom: 1px solid #e2e8f0;
+	border-bottom: 1px solid var(--border);
 }
 // ── White-surface contrast ────────────────────────────────────────────────────
 .hero,

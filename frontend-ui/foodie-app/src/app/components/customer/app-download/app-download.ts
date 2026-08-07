@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { SmartImage } from '../../shared/smart-image/smart-image';
 
 /**
  * Store listing URLs.
@@ -15,6 +16,7 @@ export const APP_STORE_LINKS = {
 
 @Component({
   selector: 'app-app-download',
+  imports: [SmartImage],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './app-download.html',
   styleUrl: './app-download.scss'

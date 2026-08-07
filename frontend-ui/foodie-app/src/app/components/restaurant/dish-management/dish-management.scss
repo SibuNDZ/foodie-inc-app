@@ -17,8 +17,8 @@
 
 .dish-form,
 .dish-list {
-	background: #fff;
-	border: 1px solid #e2e8f0;
+	background: var(--surface);
+	border: 1px solid var(--border);
 	border-radius: 0.8rem;
 	padding: 1rem;
 }
@@ -60,25 +60,25 @@ button {
 	border: 0;
 	border-radius: 0.55rem;
 	background: var(--color-primary);
-	color: #fff;
+	color: var(--on-primary);
 	padding: 0.5rem 0.75rem;
 	cursor: pointer;
 	font-weight: 600;
 }
 
 button.secondary {
-	background: #334155;
+	background: var(--ink);
 }
 
 button.danger {
-	background: #b91c1c;
+	background: var(--danger);
 }
 
 .dish-item {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	border: 1px solid #e2e8f0;
+	border: 1px solid var(--border);
 	border-radius: 0.65rem;
 	padding: 0.7rem;
 	margin-top: 0.6rem;

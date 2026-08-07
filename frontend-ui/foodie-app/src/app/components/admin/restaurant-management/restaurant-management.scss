@@ -61,11 +61,11 @@ h1, h2 {
 .save-btn,
 .actions button {
 	background: var(--color-primary);
-	color: #fff;
+	color: var(--on-primary);
 }
 
 .actions .danger {
-	background: #dc2626;
+	background: var(--danger);
 }
 
 .form-grid {

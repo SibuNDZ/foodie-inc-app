@@ -3,8 +3,8 @@
 
     @if (successResponse()) {
       <div class="success-panel">
-        <div class="success-icon">🎉</div>
-        <h2>Application Submitted!</h2>
+        <div class="success-icon success-icon--celebrate" aria-hidden="true"><i class="fa-solid fa-champagne-glasses"></i></div>
+        <h1>Application Submitted!</h1>
         <p class="success-msg">
           {{ successResponse()!.message }}
         </p>
@@ -19,7 +19,7 @@
         </p>
       </div>
     } @else {
-      <h2>Register as a Restaurant Owner</h2>
+      <h1>Register as a Restaurant Owner</h1>
       <p class="subtitle">Submit your details and we'll review your application</p>
 
       @if (errorMessage()) {
@@ -30,7 +30,7 @@
 
         <!-- ACCOUNT DETAILS -->
         <div class="form-section">
-          <h3 class="section-title">Account Details</h3>
+          <h2 class="section-title">Account Details</h2>
 
           <div class="form-row">
             <div class="form-group">
@@ -78,7 +78,7 @@
 
         <!-- RESTAURANT DETAILS -->
         <div class="form-section">
-          <h3 class="section-title">Restaurant Details</h3>
+          <h2 class="section-title">Restaurant Details</h2>
 
           <div class="form-group">
             <label for="restaurantName">Restaurant Name *</label>

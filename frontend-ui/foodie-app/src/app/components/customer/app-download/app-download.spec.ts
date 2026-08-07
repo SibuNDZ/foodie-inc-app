@@ -40,12 +40,13 @@ describe('AppDownload', () => {
     });
   });
 
-  it('gives the phone illustration alt text and intrinsic dimensions', () => {
-    const phone: HTMLImageElement = fixture.nativeElement.querySelector('.phone');
-    expect(phone.getAttribute('alt')).toContain('smartphone');
-    expect(phone.getAttribute('width')).toBe('300');
-    expect(phone.getAttribute('height')).toBe('600');
-    expect(phone.getAttribute('loading')).toBe('lazy');
+  it('renders the phone illustration in a reserved, lazy frame', () => {
+    const img: HTMLImageElement = fixture.nativeElement.querySelector('.phone .photo');
+    expect(img.getAttribute('alt')).toContain('smartphone');
+    expect(img.getAttribute('loading')).toBe('lazy');
+
+    const frame: HTMLElement = fixture.nativeElement.querySelector('.phone .frame');
+    expect(frame.style.aspectRatio).toBe('1 / 2');
   });
 
   it('hides the brand glyphs from assistive tech, leaving the text to describe the link', () => {

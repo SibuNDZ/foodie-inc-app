@@ -20,7 +20,7 @@
 
 .restaurant-name {
 	margin-top: 0;
-	color: #1e293b;
+	color: var(--ink);
 }
 
 .cart-items {
@@ -32,8 +32,8 @@
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	background: #fff;
-	border: 1px solid #e2e8f0;
+	background: var(--surface);
+	border: 1px solid var(--border);
 	border-radius: 0.7rem;
 	padding: 0.8rem;
 }
@@ -56,20 +56,20 @@
 .qty-controls button {
 	border: 0;
 	border-radius: 0.35rem;
-	background: #e2e8f0;
+	background: var(--border);
 	padding: 0.25rem 0.5rem;
 	cursor: pointer;
 }
 
 .qty-controls .remove-btn {
-	background: #fee2e2;
-	color: #b91c1c;
+	background: var(--danger-surface);
+	color: var(--danger);
 }
 
 .totals {
 	margin-top: 1rem;
-	background: #fff;
-	border: 1px solid #e2e8f0;
+	background: var(--surface);
+	border: 1px solid var(--border);
 	border-radius: 0.7rem;
 	padding: 0.8rem;
 }
@@ -102,12 +102,12 @@
 }
 
 .clear-btn {
-	background: #f1f5f9;
+	background: var(--muted-surface);
 }
 
 .actions a {
 	background: var(--color-primary);
-	color: #fff;
+	color: var(--on-primary);
 }
 
 .actions a.disabled {

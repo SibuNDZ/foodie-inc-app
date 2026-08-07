@@ -35,7 +35,7 @@
 .tab-nav {
   display: flex;
   gap: 0.25rem;
-  background: #f1f5f9;
+  background: var(--muted-surface);
   border-radius: 0.6rem;
   padding: 0.2rem;
 
@@ -50,15 +50,15 @@
     cursor: pointer;
     transition: background 0.15s, color 0.15s;
 
-    &:hover { background: #e2e8f0; color: var(--color-text-primary); }
-    &.tab--active { background: #ffffff; color: var(--color-text-primary); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    &:hover { background: var(--border); color: var(--color-text-primary); }
+    &.tab--active { background: var(--surface); color: var(--color-text-primary); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
   }
 }
 
 // ── Card ──────────────────────────────────────────────────────────────────────
 .card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 0.875rem;
   padding: 1.25rem;
   margin-bottom: 1rem;
@@ -80,7 +80,7 @@
   gap: 0.5rem;
   margin-top: 1.25rem;
   padding-top: 1rem;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid var(--border);
 }
 
 // ── Restaurant detail view ────────────────────────────────────────────────────
@@ -154,7 +154,7 @@
     background: var(--color-bg-surface);
     transition: border-color 0.15s;
 
-    &:focus { outline: none; border-color: var(--color-primary-dark); background: #fff; }
+    &:focus { outline: none; border-color: var(--color-primary-dark); background: var(--surface); }
   }
 
   textarea { resize: vertical; }
@@ -207,11 +207,11 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #16a34a;
+  background: var(--success);
   animation: live-pulse 2s ease-in-out infinite;
 
   &--off {
-    background: #94a3b8;
+    background: var(--muted);
     animation: none;
   }
 }
@@ -231,13 +231,13 @@
   gap: 0.35rem;
   margin-right: 1.25rem;
   font-size: 0.875rem;
-  color: #334155;
+  color: var(--ink);
   cursor: pointer;
 
   input { cursor: pointer; }
 }
 
-.req { color: #dc2626; }
+.req { color: var(--danger); }
 
 // ── Buttons ───────────────────────────────────────────────────────────────────
 .btn {
@@ -259,9 +259,9 @@
 }
 
 .btn-primary   { background: var(--color-primary); color: var(--color-text-inverse); }
-.btn-secondary { background: #e2e8f0; color: var(--color-text-primary); }
-.btn-danger    { background: #dc2626; color: #fff; }
-.btn-advance   { background: #1d4ed8; color: #fff; }
+.btn-secondary { background: var(--border); color: var(--color-text-primary); }
+.btn-danger    { background: var(--danger); color: var(--on-primary); }
+.btn-advance   { background: var(--info); color: var(--on-primary); }
 
 .btn-sm { padding: 0.3rem 0.65rem; font-size: 0.8rem; }
 
@@ -284,13 +284,13 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: var(--color-text-secondary);
-    border-bottom: 2px solid #e2e8f0;
+    border-bottom: 2px solid var(--border);
     white-space: nowrap;
   }
 
   td {
     padding: 0.65rem 0.75rem;
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid var(--border);
     color: var(--color-text-primary);
     vertical-align: middle;
   }
@@ -316,8 +316,8 @@
   width: 10px; height: 10px;
   border-radius: 50%;
 
-  &--on  { background: #16a34a; }
-  &--off { background: #d1d5db; }
+  &--on  { background: var(--success); }
+  &--off { background: var(--border-strong); }
 }
 
 
@@ -327,7 +327,7 @@
   align-items: center;
   gap: 0.4rem;
   font-size: 0.82rem;
-  color: #dc2626;
+  color: var(--danger);
   font-weight: 600;
 }
 
@@ -349,7 +349,7 @@
   font-size: 0.9rem;
 }
 
-.state-error { color: #b91c1c; }
+.state-error { color: var(--danger); }
 
 .tab-panel { animation: fade-in 0.15s ease; }
 

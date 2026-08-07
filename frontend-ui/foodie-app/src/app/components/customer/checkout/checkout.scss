@@ -31,8 +31,8 @@
 
 .checkout-form,
 .summary {
-	background: #fff;
-	border: 1px solid #e2e8f0;
+	background: var(--surface);
+	border: 1px solid var(--border);
 	border-radius: 0.8rem;
 	padding: 1rem;
 }
@@ -72,7 +72,7 @@ button {
 	border: 0;
 	border-radius: 0.6rem;
 	background: var(--color-primary);
-	color: #fff;
+	color: var(--on-primary);
 	padding: 0.6rem 0.9rem;
 	font-weight: 700;
 	cursor: pointer;
@@ -92,7 +92,7 @@ button:disabled {
 .restaurant {
 	margin: 0;
 	font-weight: 700;
-	color: #334155;
+	color: var(--ink);
 }
 
 .line-item {
@@ -114,7 +114,7 @@ button:disabled {
 	align-items: center;
 	gap: 0.5rem;
 	padding: 0.45rem 0;
-	border-bottom: 1px solid #f1f5f9;
+	border-bottom: 1px solid var(--border);
 
 	.item-name {
 		flex: 1;
@@ -142,16 +142,16 @@ button:disabled {
 	gap: 0.4rem;
 
 	.qty-btn {
-		background: #f1f5f9;
+		background: var(--muted-surface);
 		color: var(--color-text-primary);
-		border: 1px solid #e2e8f0;
+		border: 1px solid var(--border);
 		border-radius: 0.35rem;
 		padding: 0.2rem 0.55rem;
 		font-size: 1rem;
 		font-weight: 700;
 		line-height: 1;
 		cursor: pointer;
-		&:hover { background: #e2e8f0; }
+		&:hover { background: var(--border); }
 	}
 
 	.qty-val {
@@ -178,7 +178,7 @@ button:disabled {
 
 hr {
 	border: 0;
-	border-top: 1px solid #e2e8f0;
+	border-top: 1px solid var(--border);
 	margin: 0.75rem 0;
 }
 

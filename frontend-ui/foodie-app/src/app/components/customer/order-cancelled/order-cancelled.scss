@@ -37,10 +37,12 @@
 
 .btn-primary {
 	background: var(--color-primary);
-	color: #fff;
+	color: var(--on-primary);
 }
 
 .btn-secondary {
 	background: var(--color-border);
 	color: var(--color-text-primary);
 }
+
+.icon--danger { font-size: 3.5rem; color: var(--danger); line-height: 1; }

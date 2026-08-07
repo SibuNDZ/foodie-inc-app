@@ -10,7 +10,7 @@
     <div class="alert alert-danger">{{ errorMessage() }}</div>
   } @else if (restaurants().length === 0) {
     <div class="empty-state">
-      <div class="empty-icon">✅</div>
+      <div class="empty-icon empty-icon--success" aria-hidden="true"><i class="fa-solid fa-circle-check"></i></div>
       <h3>All caught up</h3>
       <p>No pending restaurant applications at the moment.</p>
     </div>
