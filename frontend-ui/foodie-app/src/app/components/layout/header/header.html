@@ -17,26 +17,10 @@
 	</button>
 
 	<div class="collapsible" id="primary-navigation" [class.open]="menuOpen()">
+		<!-- Primary nav stays the same for everyone; role-specific links live in
+		     the account menu so this row does not grow with permissions. -->
 		<nav class="nav-links" aria-label="Primary">
 			<a routerLink="/restaurants" routerLinkActive="active-link" (click)="closeMenu()">Explore</a>
-
-			@if (authService.isAuthenticated()) {
-				<a routerLink="/orders" routerLinkActive="active-link" (click)="closeMenu()">My Orders</a>
-
-				@if (authService.currentUser()?.role === UserRole.DELIVERY_PERSON) {
-					<a routerLink="/driver/deliveries" routerLinkActive="active-link" (click)="closeMenu()">Driver Deliveries</a>
-				}
-
-				@if (authService.currentUser()?.role === UserRole.RESTAURANT_OWNER) {
-					<a routerLink="/owner/dashboard" routerLinkActive="active-link" (click)="closeMenu()">My Restaurant</a>
-				}
-
-				@if (authService.currentUser()?.role === UserRole.ADMIN) {
-					<a routerLink="/admin" routerLinkActive="active-link" (click)="closeMenu()">Admin</a>
-					<a routerLink="/admin/restaurants/pending" routerLinkActive="active-link" (click)="closeMenu()">Pending</a>
-				}
-			}
-
 			<a routerLink="/corporate-orders" routerLinkActive="active-link" (click)="closeMenu()">Corporate Orders</a>
 			<a routerLink="/become-a-driver" routerLinkActive="active-link" (click)="closeMenu()">Become a Driver</a>
 			<a routerLink="/partner-with-us" routerLinkActive="active-link" (click)="closeMenu()">Partner with Us</a>
@@ -49,11 +33,44 @@
 						🛒 <span class="cart-count">{{ cartService.itemCount() }}</span>
 					</a>
 				}
-				<span class="welcome">{{ authService.currentUser()?.username }}</span>
-				<button type="button" class="logout-btn" (click)="logout()">Logout</button>
+
+				<div class="account">
+					<button
+						type="button"
+						class="avatar-btn"
+						[attr.aria-expanded]="userMenuOpen()"
+						aria-haspopup="menu"
+						aria-controls="account-menu"
+						(click)="toggleUserMenu()">
+						<span class="avatar" aria-hidden="true">{{ initials() }}</span>
+						<span class="avatar-name">{{ authService.currentUser()?.username }}</span>
+						<span class="avatar-caret" aria-hidden="true">▾</span>
+					</button>
+
+					@if (userMenuOpen()) {
+						<div class="account-menu" id="account-menu" role="menu">
+							<a role="menuitem" routerLink="/orders" (click)="closeAll()">My Orders</a>
+
+							@if (authService.currentUser()?.role === UserRole.DELIVERY_PERSON) {
+								<a role="menuitem" routerLink="/driver/deliveries" (click)="closeAll()">Driver Deliveries</a>
+							}
+
+							@if (authService.currentUser()?.role === UserRole.RESTAURANT_OWNER) {
+								<a role="menuitem" routerLink="/owner/dashboard" (click)="closeAll()">My Restaurant</a>
+							}
+
+							@if (authService.currentUser()?.role === UserRole.ADMIN) {
+								<a role="menuitem" routerLink="/admin" (click)="closeAll()">Admin</a>
+								<a role="menuitem" routerLink="/admin/restaurants/pending" (click)="closeAll()">Pending</a>
+							}
+
+							<button type="button" role="menuitem" class="menu-logout" (click)="logout()">Log out</button>
+						</div>
+					}
+				</div>
 			} @else {
-				<a routerLink="/login" routerLinkActive="active-link" (click)="closeMenu()">Login</a>
-				<a routerLink="/register" routerLinkActive="active-link" (click)="closeMenu()">Register</a>
+				<a class="btn btn-ghost" routerLink="/login" (click)="closeMenu()">Log in</a>
+				<a class="btn btn-solid" routerLink="/register" (click)="closeMenu()">Sign up</a>
 			}
 		</div>
 	</div>

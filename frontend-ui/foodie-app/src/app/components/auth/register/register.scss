@@ -8,7 +8,7 @@
 }
 
 .register-card {
-  background: white;
+  background: var(--surface);
   border-radius: 16px;
   padding: 40px;
   width: 100%;
@@ -110,9 +110,10 @@
   margin-bottom: 20px;
 
   &.alert-danger {
-    background: #fee2e2;
-    color: #dc2626;
-    border: 1px solid #fecaca;
+    background: var(--danger-surface);
+    color: var(--danger);
+    border: 1px solid #FECACA;
+    font-weight: 600;
   }
 }
 
