@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { SmartImage } from '../../shared/smart-image/smart-image';
+import { imageUrl, primaryImage } from '../../../../assets/images/manifest';
 
 /**
  * Restaurant pitch page. The CTA drops into the existing self-registration flow
@@ -8,8 +10,12 @@ import { RouterLink } from '@angular/router';
  */
 @Component({
   selector: 'app-partner-with-us',
-  imports: [RouterLink],
+  imports: [RouterLink, SmartImage],
   templateUrl: './partner-with-us.html',
   styleUrl: './partner-with-us.scss'
 })
-export class PartnerWithUs {}
+export class PartnerWithUs {
+  private static readonly HERO = primaryImage('chef');
+  protected readonly heroPhoto = imageUrl(PartnerWithUs.HERO, 900);
+  protected readonly heroAlt = PartnerWithUs.HERO.alt;
+}

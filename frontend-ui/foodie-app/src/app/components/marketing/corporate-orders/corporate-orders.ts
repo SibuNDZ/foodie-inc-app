@@ -2,6 +2,8 @@ import { Component, computed, inject, signal, PLATFORM_ID } from '@angular/core'
 import { isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { SmartImage } from '../../shared/smart-image/smart-image';
+import { imageUrl, primaryImage } from '../../../../assets/images/manifest';
 
 interface EnquiryForm {
   company: string;
@@ -18,11 +20,15 @@ export const CORPORATE_ENQUIRY_ADDRESS = 'corporate@foodieapp.co.za';
 
 @Component({
   selector: 'app-corporate-orders',
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, SmartImage],
   templateUrl: './corporate-orders.html',
   styleUrl: './corporate-orders.scss'
 })
 export class CorporateOrders {
+  private static readonly HERO = primaryImage('office');
+  protected readonly heroPhoto = imageUrl(CorporateOrders.HERO, 900);
+  protected readonly heroAlt = CorporateOrders.HERO.alt;
+
   private readonly platformId = inject(PLATFORM_ID);
 
   protected readonly enquiryAddress = CORPORATE_ENQUIRY_ADDRESS;

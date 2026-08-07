@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { SmartImage } from '../../shared/smart-image/smart-image';
+import { imageUrl, primaryImage } from '../../../../assets/images/manifest';
 
 /**
  * Courier pitch page.
@@ -11,8 +13,12 @@ import { RouterLink } from '@angular/router';
  */
 @Component({
   selector: 'app-become-a-driver',
-  imports: [RouterLink],
+  imports: [RouterLink, SmartImage],
   templateUrl: './become-a-driver.html',
   styleUrl: './become-a-driver.scss'
 })
-export class BecomeADriver {}
+export class BecomeADriver {
+  private static readonly HERO = primaryImage('courier');
+  protected readonly heroPhoto = imageUrl(BecomeADriver.HERO, 900);
+  protected readonly heroAlt = BecomeADriver.HERO.alt;
+}

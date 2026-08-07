@@ -1,32 +1,46 @@
 <div class="landing">
 	<section class="landing-hero">
-		<p class="eyebrow">Corporate Orders</p>
-		<h1>Feed the whole office, without the admin</h1>
-		<p class="lede">
-			Team lunches, client meetings and late-night sprints, all on one account with a single
-			monthly invoice. Order from the same local kitchens your team already loves.
-		</p>
-		<div class="hero-actions">
-			<a class="btn btn-primary" href="#enquiry">Talk to our team</a>
-			<a class="btn btn-secondary" routerLink="/restaurants">Browse restaurants</a>
+		<div class="landing-hero-copy">
+			<p class="eyebrow">Corporate Orders</p>
+			<h1>Feed the whole office, without the admin</h1>
+			<p class="lede">
+				Team lunches, client meetings and late-night sprints, all on one account with a single
+				monthly invoice. Order from the same local kitchens your team already loves.
+			</p>
+			<div class="hero-actions">
+				<a class="btn btn-primary" href="#enquiry">Talk to our team</a>
+				<a class="btn btn-secondary" routerLink="/restaurants">Browse restaurants</a>
+			</div>
+		</div>
+
+		<div class="landing-hero-art">
+			<app-smart-image [src]="heroPhoto" [alt]="heroAlt" aspectRatio="4 / 3" [priority]="true" [rounded]="false" />
 		</div>
 	</section>
 
 	<h2 class="section-title">Why teams use Foodie Inc</h2>
 	<ul class="benefit-grid">
 		<li class="benefit">
+			<span class="benefit-icon" aria-hidden="true"><i class="fa-solid fa-file-invoice"></i></span>
+
 			<h3>One invoice, not fifty receipts</h3>
 			<p>Every order across every team rolls into a single monthly statement your finance team can reconcile in minutes.</p>
 		</li>
 		<li class="benefit">
+			<span class="benefit-icon" aria-hidden="true"><i class="fa-solid fa-wallet"></i></span>
+
 			<h3>Budgets that hold</h3>
 			<p>Set per-person or per-team limits so spend stays predictable without anyone chasing approvals.</p>
 		</li>
 		<li class="benefit">
+			<span class="benefit-icon" aria-hidden="true"><i class="fa-solid fa-calendar-check"></i></span>
+
 			<h3>Scheduled in advance</h3>
 			<p>Lock in recurring team lunches and one-off catering ahead of time, with delivery windows that match your calendar.</p>
 		</li>
 		<li class="benefit">
+			<span class="benefit-icon" aria-hidden="true"><i class="fa-solid fa-utensils"></i></span>
+
 			<h3>Local kitchens</h3>
 			<p>The same approved restaurants on the consumer app, so quality and delivery times are already proven.</p>
 		</li>

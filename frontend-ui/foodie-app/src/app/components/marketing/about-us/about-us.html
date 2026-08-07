@@ -1,29 +1,43 @@
 <div class="landing">
 	<section class="landing-hero">
-		<p class="eyebrow">About Us</p>
-		<h1>Good food, from the kitchens around the corner</h1>
-		<p class="lede">
-			Foodie Inc connects people with the restaurants already in their neighbourhood, and gets
-			the food to them while it is still worth eating. We started in Cape Town and we are
-			building outwards.
-		</p>
+		<div class="landing-hero-copy">
+			<p class="eyebrow">About Us</p>
+			<h1>Good food, from the kitchens around the corner</h1>
+			<p class="lede">
+				Foodie Inc connects people with the restaurants already in their neighbourhood, and gets
+				the food to them while it is still worth eating. We started in Cape Town and we are
+				building outwards.
+			</p>
+		</div>
+
+		<div class="landing-hero-art">
+			<app-smart-image [src]="heroPhoto" [alt]="heroAlt" aspectRatio="4 / 3" [priority]="true" [rounded]="false" />
+		</div>
 	</section>
 
 	<h2 class="section-title">What we care about</h2>
 	<ul class="benefit-grid">
 		<li class="benefit">
+			<span class="benefit-icon" aria-hidden="true"><i class="fa-solid fa-location-dot"></i></span>
+
 			<h3>Local first</h3>
 			<p>Independent kitchens sit alongside the big names, and both are found the same way: by what is near you and open now.</p>
 		</li>
 		<li class="benefit">
+			<span class="benefit-icon" aria-hidden="true"><i class="fa-solid fa-heart"></i></span>
+
 			<h3>Fair to couriers</h3>
 			<p>Drivers choose their own hours, are never double-booked, and keep their tips in full.</p>
 		</li>
 		<li class="benefit">
+			<span class="benefit-icon" aria-hidden="true"><i class="fa-solid fa-handshake"></i></span>
+
 			<h3>Honest with restaurants</h3>
 			<p>Owners control their own menu, prices and hours. Orders are paid before they reach the kitchen.</p>
 		</li>
 		<li class="benefit">
+			<span class="benefit-icon" aria-hidden="true"><i class="fa-solid fa-circle-check"></i></span>
+
 			<h3>Straightforward for customers</h3>
 			<p>Clear delivery fees, live order tracking, and a notification when the driver is close.</p>
 		</li>

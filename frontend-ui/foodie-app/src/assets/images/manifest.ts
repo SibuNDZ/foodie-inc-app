@@ -46,24 +46,24 @@ export const IMAGES: Readonly<Record<ImageKey, readonly CuratedImage[]>> = {
     { id: 'photo-1565299624946-b28f40a0ae38', alt: 'Wood-fired pizza topped with herbs on a serving board' },
   ],
   sushi: [
-    { id: 'photo-1579871494447-9811cf80d66c', alt: 'Platter of assorted sushi rolls and nigiri' },
-    { id: 'photo-1553621042-f6e147245754', alt: 'Salmon and avocado sushi rolls on a dark wooden board' },
+    { id: 'photo-1579871494447-9811cf80d66c', alt: 'Salmon and avocado sushi rolls on a dark wooden board' },
+    { id: 'photo-1553621042-f6e147245754', alt: 'Platter of assorted sushi rolls and nigiri' },
   ],
   thai: [
     { id: 'photo-1455619452474-d2be8b1e70cd', alt: 'Thai red curry with basil and chilli in a white bowl' },
     { id: 'photo-1562565652-a0d8f0c59eb4', alt: 'Thai spread of papaya salad, soup and grilled meat' },
   ],
   chinese: [
-    { id: 'photo-1585032226651-759b368d7246', alt: 'Steamed dumplings in a bamboo basket' },
-    { id: 'photo-1563245372-f21724e3856d', alt: 'Stir-fried noodles on a wooden plate with chopsticks' },
+    { id: 'photo-1585032226651-759b368d7246', alt: 'Stir-fried noodles on a wooden plate with chopsticks' },
+    { id: 'photo-1563245372-f21724e3856d', alt: 'Steamed dumplings in a bamboo basket' },
   ],
   brunch: [
-    { id: 'photo-1533089860892-a7c6f0a88666', alt: 'Fried egg on toast with avocado' },
-    { id: 'photo-1525351484163-7529414344d8', alt: 'Fried eggs, bacon and toast on a white plate' },
+    { id: 'photo-1533089860892-a7c6f0a88666', alt: 'Fried eggs, bacon and toast on a white plate' },
+    { id: 'photo-1525351484163-7529414344d8', alt: 'Fried egg on avocado toast' },
   ],
   dessert: [
-    { id: 'photo-1551024506-0bccd828d307', alt: 'Strawberry panna cotta in small glass jars' },
-    { id: 'photo-1488477181946-6428a0291777', alt: 'Brownie sundae with ice cream and caramel sauce' },
+    { id: 'photo-1551024506-0bccd828d307', alt: 'Brownie sundae with ice cream and caramel sauce' },
+    { id: 'photo-1488477181946-6428a0291777', alt: 'Strawberry panna cotta in small glass jars' },
   ],
   grocery: [
     { id: 'photo-1542838132-92c53300491e', alt: 'Fresh produce shelves in a grocery store' },
@@ -74,7 +74,7 @@ export const IMAGES: Readonly<Record<ImageKey, readonly CuratedImage[]>> = {
     { id: 'photo-1556910103-1c02745aae4d', alt: 'Two cooks preparing food together in an open kitchen' },
   ],
   courier: [
-    { id: 'photo-1591768575198-88dac53fbd0a', alt: 'Cycle courier with an insulated delivery backpack on a city street' },
+    { id: 'photo-1526367790999-0150786686a2', alt: 'Cycle courier with an insulated delivery backpack on a city street' },
   ],
   office: [
     { id: 'photo-1543269865-cbf427effbad', alt: 'Colleagues sitting around a table with coffee' },
