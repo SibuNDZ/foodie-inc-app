@@ -19,9 +19,24 @@ Frontend:
 
 The default API base URL for development is `http://localhost:8080/api`.
 
+Dev seed (non-prod, when the restaurants table is empty) creates three Cape Town
+restaurants plus:
+
+| Username | Role | Password |
+| --- | --- | --- |
+| `admin` | ADMIN | `Password123!` |
+| `mama.thandi` | RESTAURANT_OWNER | `Password123!` |
+| `dispatch.driver` | DELIVERY_PERSON | `Password123!` |
+
+The admin user is also created on later restarts if it is missing, so an existing
+local database can still reach `/admin`.
+
 Stripe and web push are optional locally. `stripe.*` and `vapid.*` default to blank,
 so the app boots without them; web push simply stays disabled. Set `STRIPE_SECRET_KEY`,
 `STRIPE_WEBHOOK_SECRET` and the `VAPID_*` variables to exercise those paths.
+Set `FRONTEND_BASE_URL` so Stripe return URLs and push notification links match
+the frontend origin. Dish and restaurant photos upload to `UPLOAD_DIR` (default
+`uploads/`) and are served at `/api/uploads/**`.
 
 ## Public routes
 
@@ -85,6 +100,8 @@ Backend (recommended env vars):
 - `DB_PASSWORD=...`
 - `JWT_SECRET=...` (minimum 32 bytes recommended)
 - `CORS_ALLOWED_ORIGINS=https://your-frontend-domain.com`
+- `FRONTEND_BASE_URL=https://your-frontend-domain.com`
+- `UPLOAD_DIR=/var/data/uploads` (persistent volume; Hibernate `ddl-auto` is `validate` in prod)
 
 Frontend:
 - Build with `npm run build`

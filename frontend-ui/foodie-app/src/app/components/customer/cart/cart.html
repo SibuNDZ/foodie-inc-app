@@ -30,7 +30,7 @@
 				<p><span>Items:</span><span>{{ itemCount() }}</span></p>
 				<p><span>Subtotal:</span><span>{{ currentCart.subtotal | currency }}</span></p>
 				<p><span>Delivery:</span><span>{{ currentCart.deliveryFee | currency }}</span></p>
-				<p><span>Tax:</span><span>{{ currentCart.taxAmount | currency }}</span></p>
+				<p><span>VAT (15%):</span><span>{{ currentCart.taxAmount | currency }}</span></p>
 				<p class="grand-total"><span>Total:</span><span>{{ currentCart.total | currency }}</span></p>
 			</aside>
 

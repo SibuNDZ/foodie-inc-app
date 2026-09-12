@@ -42,6 +42,8 @@ public class DevDataSeeder {
             PasswordEncoder passwordEncoder
     ) {
         return args -> {
+            seedAdminIfMissing(userRepository, passwordEncoder);
+
             if (restaurantRepository.count() > 0) {
                 return;
             }
@@ -163,6 +165,21 @@ public class DevDataSeeder {
         user.setRole(User.UserRole.RESTAURANT_OWNER);
         user.setActive(true);
         return repo.save(user);
+    }
+
+    private void seedAdminIfMissing(UserRepository repo, PasswordEncoder encoder) {
+        if (repo.findByUsername("admin").isPresent()) {
+            return;
+        }
+        User admin = new User();
+        admin.setUsername("admin");
+        admin.setEmail("admin@foodieinc.local");
+        admin.setPassword(encoder.encode("Password123!"));
+        admin.setFirstName("Foodie");
+        admin.setLastName("Admin");
+        admin.setRole(User.UserRole.ADMIN);
+        admin.setActive(true);
+        repo.save(admin);
     }
 
         private User createDeliveryDriver(UserRepository repo, PasswordEncoder encoder,

@@ -312,7 +312,8 @@ public class RestaurantService {
         Restaurant restaurant = restaurantRepository.findByOwnerId(owner.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Restaurant", "owner", owner.getId()));
 
-        // Only allow editing safe profile fields; approval status, owner, and coordinates are immutable here
+        // Approval status and owner stay immutable on this path. Coordinates are
+        // written here so nearest-first search can rank the restaurant.
         if (dto.getName() != null && !dto.getName().isBlank()) restaurant.setName(dto.getName());
         if (dto.getDescription() != null) restaurant.setDescription(dto.getDescription());
         if (dto.getAddress() != null && !dto.getAddress().isBlank()) restaurant.setAddress(dto.getAddress());
@@ -323,7 +324,29 @@ public class RestaurantService {
         if (dto.getOpeningTime() != null) restaurant.setOpeningTime(dto.getOpeningTime());
         if (dto.getClosingTime() != null) restaurant.setClosingTime(dto.getClosingTime());
         restaurant.setOpen(dto.isOpen());
+        applyOwnerCoordinates(restaurant, dto.getLatitude(), dto.getLongitude());
 
         return convertToDTO(restaurantRepository.save(restaurant));
+    }
+
+    public RestaurantDTO updateOwnRestaurantImage(User owner, String imageUrl) {
+        Restaurant restaurant = restaurantRepository.findByOwnerId(owner.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant", "owner", owner.getId()));
+        restaurant.setImageUrl(imageUrl);
+        return convertToDTO(restaurantRepository.save(restaurant));
+    }
+
+    private void applyOwnerCoordinates(Restaurant restaurant, java.math.BigDecimal latitude,
+                                       java.math.BigDecimal longitude) {
+        if (latitude == null && longitude == null) {
+            return;
+        }
+        Double lat = latitude == null ? null : latitude.doubleValue();
+        Double lng = longitude == null ? null : longitude.doubleValue();
+        if (!GeoDistance.isValidCoordinate(lat, lng)) {
+            throw new IllegalArgumentException("Latitude must be between -90 and 90, longitude between -180 and 180");
+        }
+        restaurant.setLatitude(latitude);
+        restaurant.setLongitude(longitude);
     }
 }

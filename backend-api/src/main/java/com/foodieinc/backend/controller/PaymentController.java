@@ -12,6 +12,7 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.Event;
 import com.stripe.model.checkout.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +29,9 @@ public class PaymentController {
     @Autowired private OrderRepository orderRepository;
     @Autowired private UserRepository userRepository;
     @Autowired private PushNotificationService pushNotificationService;
+
+    @Value("${app.frontend-base-url:http://localhost:4200}")
+    private String frontendBaseUrl;
 
     /** Authenticated: customer initiates Stripe Checkout */
     @PostMapping("/create-checkout-session/{orderId}")
@@ -66,37 +70,54 @@ public class PaymentController {
         try {
             Event event = stripeService.constructWebhookEvent(payload, sigHeader);
 
-            if ("checkout.session.completed".equals(event.getType())) {
-                try {
-                    // Use deserializeUnsafe() so API-version mismatches don't silently drop the event
-                    Session session = (Session) event.getDataObjectDeserializer().deserializeUnsafe();
-                    if (session != null) {
-                        String orderId = session.getMetadata().get("orderId");
-                        if (orderId != null) {
-                            Order order = orderRepository.findById(Long.parseLong(orderId)).orElse(null);
-                            if (order != null) {
-                                order.setPaymentStatus(Order.PaymentStatus.PAID);
-                                order.setStatus(Order.OrderStatus.CONFIRMED);
-                                orderRepository.save(order);
-                                pushNotificationService.sendToUser(
-                                    order.getRestaurant().getOwner(),
-                                    "New Order Received",
-                                    "Order #" + order.getId() + " \u2014 R" + order.getTotalAmount() + " from " + order.getUser().getFirstName(),
-                                    "https://www.foodieapp.co.za/owner/dashboard"
-                                );
-                            }
-                        }
-                    }
-                } catch (EventDataObjectDeserializationException e) {
-                    // Deserialization failed — still return 200 so Stripe doesn't retry
-                    return ResponseEntity.ok("Received (deserialization error)");
+            try {
+                if ("checkout.session.completed".equals(event.getType())) {
+                    applyCheckoutSession(event, Order.PaymentStatus.PAID, Order.OrderStatus.CONFIRMED, true);
+                } else if ("checkout.session.expired".equals(event.getType())
+                        || "checkout.session.async_payment_failed".equals(event.getType())) {
+                    applyCheckoutSession(event, Order.PaymentStatus.FAILED, null, false);
                 }
+            } catch (EventDataObjectDeserializationException e) {
+                // Still return 200 so Stripe doesn't retry a payload we cannot parse.
+                return ResponseEntity.ok("Received (deserialization error)");
             }
 
             return ResponseEntity.ok("Received");
 
         } catch (SignatureVerificationException e) {
             return ResponseEntity.status(400).body("Invalid signature");
+        }
+    }
+
+    private void applyCheckoutSession(Event event, Order.PaymentStatus paymentStatus,
+                                      Order.OrderStatus orderStatus, boolean notifyOwner)
+            throws EventDataObjectDeserializationException {
+        Session session = (Session) event.getDataObjectDeserializer().deserializeUnsafe();
+        if (session == null || session.getMetadata() == null) {
+            return;
+        }
+        String orderId = session.getMetadata().get("orderId");
+        if (orderId == null) {
+            return;
+        }
+        Order order = orderRepository.findById(Long.parseLong(orderId)).orElse(null);
+        if (order == null) {
+            return;
+        }
+        order.setPaymentStatus(paymentStatus);
+        if (orderStatus != null) {
+            order.setStatus(orderStatus);
+        }
+        orderRepository.save(order);
+
+        if (notifyOwner && order.getRestaurant().getOwner() != null) {
+            String base = frontendBaseUrl == null ? "http://localhost:4200" : frontendBaseUrl.replaceAll("/$", "");
+            pushNotificationService.sendToUser(
+                    order.getRestaurant().getOwner(),
+                    "New Order Received",
+                    "Order #" + order.getId() + " \u2014 R" + order.getTotalAmount() + " from " + order.getUser().getFirstName(),
+                    base + "/owner/dashboard"
+            );
         }
     }
 }

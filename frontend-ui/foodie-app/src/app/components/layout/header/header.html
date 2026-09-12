@@ -34,7 +34,7 @@
 		<div class="auth-actions">
 			@if (authService.isAuthenticated()) {
 				@if (!cartService.isEmpty()) {
-					<a routerLink="/checkout" class="cart-btn" (click)="closeMenu()">
+					<a routerLink="/cart" class="cart-btn" (click)="closeMenu()">
 						🛒 <span class="cart-count">{{ cartService.itemCount() }}</span>
 					</a>
 				}

@@ -8,6 +8,7 @@ import com.foodieinc.backend.exception.ResourceNotFoundException;
 import com.foodieinc.backend.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +36,9 @@ public class OrderService {
     private final ActiveDriverAssignmentRepository activeDriverAssignmentRepository;
     private final DispatchService dispatchService;
     private final PushNotificationService pushNotificationService;
+
+    @Value("${app.frontend-base-url:http://localhost:4200}")
+    private String frontendBaseUrl;
 
     /**
      * South African VAT.
@@ -240,10 +244,53 @@ public class OrderService {
                 .orElseThrow(() -> new ResourceNotFoundException("Order", "id", orderId));
 
         assertCanRateOrder(user, order);
+        if (order.getStatus() != Order.OrderStatus.DELIVERED) {
+            throw new IllegalArgumentException("Only delivered orders can be rated");
+        }
+        if (rating == null || rating < 1 || rating > 5) {
+            throw new IllegalArgumentException("Rating must be between 1 and 5");
+        }
+
+        Integer previousRating = order.getCustomerRating();
         order.setCustomerRating(rating);
         order.setCustomerFeedback(feedback);
+        applyRestaurantRating(order.getRestaurant(), previousRating, rating);
         Order updatedOrder = orderRepository.save(order);
         return convertToDTO(updatedOrder);
+    }
+
+    /**
+     * Rolls a customer rating into the restaurant's public average. A first
+     * rating increments {@code totalReviews}; changing an existing rating
+     * keeps the count and replaces that score in the average.
+     */
+    void applyRestaurantRating(Restaurant restaurant, Integer previousRating, int nextRating) {
+        int reviewCount = restaurant.getTotalReviews() == null ? 0 : restaurant.getTotalReviews();
+        BigDecimal average = restaurant.getAverageRating() == null
+                ? BigDecimal.ZERO
+                : restaurant.getAverageRating();
+
+        if (previousRating == null) {
+            BigDecimal previousSum = reviewCount == 0
+                    ? BigDecimal.ZERO
+                    : average.multiply(BigDecimal.valueOf(reviewCount));
+            int nextCount = reviewCount + 1;
+            restaurant.setTotalReviews(nextCount);
+            restaurant.setAverageRating(previousSum
+                    .add(BigDecimal.valueOf(nextRating))
+                    .divide(BigDecimal.valueOf(nextCount), 2, RoundingMode.HALF_UP));
+        } else if (reviewCount <= 0) {
+            restaurant.setTotalReviews(1);
+            restaurant.setAverageRating(BigDecimal.valueOf(nextRating).setScale(2, RoundingMode.HALF_UP));
+        } else {
+            BigDecimal previousSum = average.multiply(BigDecimal.valueOf(reviewCount));
+            restaurant.setAverageRating(previousSum
+                    .subtract(BigDecimal.valueOf(previousRating))
+                    .add(BigDecimal.valueOf(nextRating))
+                    .divide(BigDecimal.valueOf(reviewCount), 2, RoundingMode.HALF_UP));
+        }
+
+        restaurantRepository.save(restaurant);
     }
 
     public void cancelOrder(User user, Long id) {
@@ -430,6 +477,16 @@ public class OrderService {
         return dto;
     }
 
+    private String frontendUrl(String path) {
+        String base = frontendBaseUrl == null || frontendBaseUrl.isBlank()
+                ? "http://localhost:4200"
+                : frontendBaseUrl;
+        if (base.endsWith("/")) {
+            base = base.substring(0, base.length() - 1);
+        }
+        return base + path;
+    }
+
     // ── Owner-scoped methods ──────────────────────────────────────────────────
 
     public List<OrderDTO> getOrdersForOwnerRestaurant(User owner) {
@@ -483,15 +540,15 @@ public class OrderService {
             case CONFIRMED -> pushNotificationService.sendToUser(customer,
                 "Order Confirmed",
                 restaurantName + " has confirmed your order",
-                "https://www.foodieapp.co.za/orders");
+                frontendUrl("/orders"));
             case PREPARING -> pushNotificationService.sendToUser(customer,
                 "Order Being Prepared",
                 restaurantName + " is preparing your food",
-                "https://www.foodieapp.co.za/orders");
+                frontendUrl("/orders"));
             case READY_FOR_PICKUP -> pushNotificationService.sendToUser(customer,
                 "Order Ready",
                 "Your order from " + restaurantName + " is ready for pickup",
-                "https://www.foodieapp.co.za/orders");
+                frontendUrl("/orders"));
             default -> { /* no notification needed */ }
         }
 

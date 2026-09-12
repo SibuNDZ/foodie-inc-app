@@ -209,6 +209,19 @@ public class DishService {
         dishRepository.save(dish);
     }
 
+    public DishDTO updateDishImageForOwner(User owner, Long id, String imageUrl) {
+        Restaurant ownerRestaurant = getOwnerRestaurantOrThrow(owner);
+        Dish dish = dishRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Dish", "id", id));
+
+        if (!dish.getRestaurant().getId().equals(ownerRestaurant.getId())) {
+            throw new AccessDeniedException("You do not have permission to manage this dish");
+        }
+
+        dish.setImageUrl(imageUrl);
+        return convertToDTO(dishRepository.save(dish));
+    }
+
     private Restaurant getOwnerRestaurantOrThrow(User owner) {
         return restaurantRepository.findByOwnerId(owner.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Restaurant", "owner", owner.getId()));

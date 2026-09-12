@@ -6,7 +6,7 @@ import { Dish, Cart, CartItem } from '../models';
 })
 export class CartService {
   private readonly CART_KEY = 'shopping_cart';
-  private readonly TAX_RATE = 0.08;
+  private readonly TAX_RATE = 0.15;
 
   private cartSignal = signal<Cart | null>(this.getStoredCart());
 

@@ -82,6 +82,22 @@ export class OwnerService {
     return this.http.delete<void>(`${this.base}/restaurant/dishes/${id}`);
   }
 
+  uploadRestaurantImage(file: File): Observable<Restaurant> {
+    const body = new FormData();
+    body.append('file', file);
+    return this.http
+      .post<any>(`${this.base}/restaurant/image`, body)
+      .pipe(map(r => this.normalizeRestaurant(r)));
+  }
+
+  uploadDishImage(id: number, file: File): Observable<Dish> {
+    const body = new FormData();
+    body.append('file', file);
+    return this.http
+      .post<any>(`${this.base}/restaurant/dishes/${id}/image`, body)
+      .pipe(map(d => this.normalizeDish(d)));
+  }
+
   // ── Orders ──────────────────────────────────────────────────────────────────
 
   getMyOrders(): Observable<Order[]> {

@@ -17,11 +17,16 @@ services:
       context: ./backend-api
     environment:
       SPRING_PROFILES_ACTIVE: prod
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
       DB_URL: jdbc:mysql://db:3306/foodiedb?useSSL=false&serverTimezone=UTC
       DB_USERNAME: ${DB_USERNAME:-foodie}
       DB_PASSWORD: ${DB_PASSWORD:-foodie_pass}
       JWT_SECRET: ${JWT_SECRET:-change_me_please_change}
       CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:4000}
+      FRONTEND_BASE_URL: ${FRONTEND_BASE_URL:-http://localhost:4000}
+      UPLOAD_DIR: /app/uploads
+    volumes:
+      - upload-data:/app/uploads
     depends_on:
       - db
     ports:
@@ -40,3 +45,4 @@ services:
 
 volumes:
   db-data:
+  upload-data:

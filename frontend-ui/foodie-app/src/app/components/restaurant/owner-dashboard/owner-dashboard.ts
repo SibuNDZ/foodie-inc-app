@@ -3,7 +3,7 @@ import { Component, DestroyRef, OnInit, PLATFORM_ID, computed, inject, signal } 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { EMPTY, finalize } from 'rxjs';
+import { EMPTY, finalize, of } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { Dish, DishCategory, Order, OrderStatus, Restaurant } from '../../../models';
 import { OwnerService } from '../../../services/owner';
@@ -52,6 +52,8 @@ export class OwnerDashboard implements OnInit {
     categoryId: undefined, imageUrl: '',
     isVegetarian: false, isVegan: false, isGlutenFree: false, isAvailable: true,
   });
+  readonly pendingRestaurantImage = signal<File | null>(null);
+  readonly pendingDishImage = signal<File | null>(null);
 
   // ── Orders tab ──────────────────────────────────────────────────────────────
   readonly orders = signal<Order[]>([]);
@@ -187,11 +189,13 @@ export class OwnerDashboard implements OnInit {
       latitude: r.latitude,
       longitude: r.longitude,
     });
+    this.pendingRestaurantImage.set(null);
     this.isEditing.set(true);
   }
 
   cancelEdit(): void {
     this.isEditing.set(false);
+    this.pendingRestaurantImage.set(null);
   }
 
   saveRestaurant(): void {
@@ -204,11 +208,21 @@ export class OwnerDashboard implements OnInit {
     }
     this.isSaving.set(true);
     this.ownerService.updateMyRestaurant(form)
-      .pipe(finalize(() => this.isSaving.set(false)))
+      .pipe(
+        switchMap(restaurant => {
+          const image = this.pendingRestaurantImage();
+          if (!image) {
+            return of(restaurant);
+          }
+          return this.ownerService.uploadRestaurantImage(image);
+        }),
+        finalize(() => this.isSaving.set(false)),
+      )
       .subscribe({
         next: r => {
           this.restaurant.set(r);
           this.isEditing.set(false);
+          this.pendingRestaurantImage.set(null);
           this.toastr.success('Restaurant updated.');
         },
         error: () => this.toastr.error('Failed to save restaurant.'),
@@ -267,18 +281,21 @@ export class OwnerDashboard implements OnInit {
       categoryId: undefined, imageUrl: '',
       isVegetarian: false, isVegan: false, isGlutenFree: false, isAvailable: true,
     });
+    this.pendingDishImage.set(null);
     this.showDishForm.set(true);
   }
 
   openEditDish(dish: Dish): void {
     this.editingDishId.set(dish.id);
     this.dishForm.set({ ...dish });
+    this.pendingDishImage.set(null);
     this.showDishForm.set(true);
   }
 
   cancelDishForm(): void {
     this.showDishForm.set(false);
     this.editingDishId.set(null);
+    this.pendingDishImage.set(null);
   }
 
   saveDish(): void {
@@ -290,7 +307,16 @@ export class OwnerDashboard implements OnInit {
     const req$ = id
       ? this.ownerService.updateDish(id, form)
       : this.ownerService.createDish(form);
-    req$.pipe(finalize(() => this.isSavingDish.set(false))).subscribe({
+    req$.pipe(
+      switchMap(saved => {
+        const image = this.pendingDishImage();
+        if (!image) {
+          return of(saved);
+        }
+        return this.ownerService.uploadDishImage(saved.id, image);
+      }),
+      finalize(() => this.isSavingDish.set(false)),
+    ).subscribe({
       next: () => {
         this.toastr.success(id ? 'Dish updated.' : 'Dish added.');
         this.cancelDishForm();
@@ -302,6 +328,14 @@ export class OwnerDashboard implements OnInit {
 
   setDishField<K extends keyof Dish>(key: K, value: any): void {
     this.dishForm.update(f => ({ ...f, [key]: value }));
+  }
+
+  onRestaurantImageSelected(event: Event): void {
+    this.pendingRestaurantImage.set(fileFromInput(event));
+  }
+
+  onDishImageSelected(event: Event): void {
+    this.pendingDishImage.set(fileFromInput(event));
   }
 
   promptDelete(id: number): void { this.confirmDeleteId.set(id); }
@@ -380,4 +414,9 @@ export class OwnerDashboard implements OnInit {
 
   statusLabel(order: Order): string { return getOrderStatusLabel(order.status); }
   statusClass(order: Order): string { return getOrderStatusBadgeClass(order.status); }
+}
+
+function fileFromInput(event: Event): File | null {
+  const input = event.target as HTMLInputElement;
+  return input.files && input.files.length > 0 ? input.files[0] : null;
 }

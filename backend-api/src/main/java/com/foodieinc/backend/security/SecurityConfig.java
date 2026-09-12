@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -74,8 +75,11 @@ public class SecurityConfig {
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers("/restaurants", "/restaurants/{id}", "/restaurants/search").permitAll()
                 .requestMatchers("/dishes/restaurant/{restaurantId}").permitAll()
+                .requestMatchers(HttpMethod.GET, "/dishes/restaurant/{restaurantId}/filter").permitAll()
                 .requestMatchers("/dishes/categories").permitAll()
                 .requestMatchers("/dishes/showcase").permitAll()
+                .requestMatchers(HttpMethod.GET, "/dishes/{id}").permitAll()
+                .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
                 .requestMatchers("/payments/webhook").permitAll()
                 .requestMatchers("/push/vapid-public-key").permitAll()
                 .anyRequest().authenticated()
